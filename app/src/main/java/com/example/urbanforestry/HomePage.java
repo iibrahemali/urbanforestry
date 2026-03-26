@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
@@ -59,11 +59,7 @@ public class HomePage extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE});
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
     }
 
     @Override
@@ -100,13 +96,13 @@ public class HomePage extends AppCompatActivity {
                 permissionsToRequest.add(permission);
             }
         }
-        if (permissionsToRequest.size() > 0) {
+        if (!permissionsToRequest.isEmpty()) {
             ActivityCompat.requestPermissions(
                     this,
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         } else {
-           // setupLocationTracking(); // Permissions already granted
+            setupLocationTracking(); // Permissions already granted
         }
     }
 
@@ -115,7 +111,7 @@ public class HomePage extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //setupLocationTracking();
+                setupLocationTracking();
             }
         }
     }
