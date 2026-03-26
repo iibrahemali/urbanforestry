@@ -1,14 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.example.urbanforestry"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.urbanforestry"
@@ -55,4 +52,13 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.osmdroid.android)
+
+    // Firebase BoM — manages all Firebase library versions
+    implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
+
+    // Firebase Auth — no version needed when using BoM
+    implementation("com.google.firebase:firebase-auth")
+
+    // Optional: Analytics
+    implementation("com.google.firebase:firebase-analytics")
 }
