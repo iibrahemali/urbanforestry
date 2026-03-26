@@ -17,16 +17,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UrbanForestry">
         <activity
-            android:name=".HomePage"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
+            android:name=".WelcomePage"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".HomePage"
+            android:exported="true">
         </activity>
     </application>
 
