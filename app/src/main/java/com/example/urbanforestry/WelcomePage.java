@@ -38,5 +38,16 @@ public class WelcomePage extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        Button b2 = findViewById(R.id.login_button);
+
+        // Normal click -> HomePage
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(i);
+            }
+        });
     }
 }
