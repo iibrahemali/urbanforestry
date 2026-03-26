@@ -17,10 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UrbanForestry">
         <activity
-            android:name=".SignUpActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
+            android:name=".TreeInfo"
             android:exported="false" />
         <activity
             android:name=".WelcomePage"
@@ -33,7 +30,7 @@
         </activity>
         <activity
             android:name=".HomePage"
-            android:exported="true" />
+            android:exported="true"></activity>
     </application>
 
 </manifest>
