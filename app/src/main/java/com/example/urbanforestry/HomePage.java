@@ -57,6 +57,7 @@ public class HomePage extends AppCompatActivity {
         map.setMultiTouchControls(true);
 
         loadTreeData(); // This loads all of the trees
+        map.invalidate();
 
         Button signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(v -> {
@@ -150,7 +151,7 @@ public class HomePage extends AppCompatActivity {
 
             while ((line = reader.readLine()) != null) {
 
-                String[] cols = line.split(",");
+                String[] cols = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 
                 // First row = headers
                 if (firstLine) {
@@ -176,6 +177,15 @@ public class HomePage extends AppCompatActivity {
 
                 // Make it a small green dot
                 marker.setIcon(ContextCompat.getDrawable(this, R.drawable.green_dot));
+
+                String commonName = cols[1];     // iTree Common Name
+                String botanicalName = cols[2];  // iTree Botanical Name
+                String dbh = cols[5];            // DBH
+
+                marker.setTitle(commonName);
+                marker.setSnippet("Species: " + botanicalName + "\nDBH: " + dbh);
+
+                marker.setSubDescription("");
 
                 map.getOverlays().add(marker);
             }
