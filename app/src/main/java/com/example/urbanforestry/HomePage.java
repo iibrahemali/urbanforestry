@@ -26,6 +26,13 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.Marker;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import java.util.ArrayList;
 
 
@@ -48,6 +55,8 @@ public class HomePage extends AppCompatActivity {
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
+
+        loadTreeData(); // This loads all of the trees
 
         Button signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(v -> {
@@ -125,6 +134,54 @@ public class HomePage extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setupLocationTracking();
             }
+        }
+    }
+
+    private void loadTreeData() {
+        try {
+            InputStream is = getAssets().open("trees.csv");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+
+            String line;
+            boolean firstLine = true;
+
+            int latIndex = -1;
+            int lngIndex = -1;
+
+            while ((line = reader.readLine()) != null) {
+
+                String[] cols = line.split(",");
+
+                // First row = headers
+                if (firstLine) {
+                    firstLine = false;
+
+                    for (int i = 0; i < cols.length; i++) {
+                        if (cols[i].equals("LATITUDE")) latIndex = i;
+                        if (cols[i].equals("LONGITUDE")) lngIndex = i;
+                    }
+                    continue;
+                }
+
+                if (latIndex == -1 || lngIndex == -1) continue;
+
+                double lat = Double.parseDouble(cols[latIndex]);
+                double lng = Double.parseDouble(cols[lngIndex]);
+
+                GeoPoint point = new GeoPoint(lat, lng);
+
+                Marker marker = new Marker(map);
+                marker.setPosition(point);
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+
+                // Make it a small green dot
+                marker.setIcon(ContextCompat.getDrawable(this, R.drawable.green_dot));
+
+                map.getOverlays().add(marker);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

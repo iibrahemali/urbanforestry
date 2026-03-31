@@ -28,7 +28,7 @@ public class WelcomePage extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        Button b = findViewById(R.id.start_button);
+        Button b = findViewById(R.id.goToSignUpButton);
 
         // Normal click -> HomePage
         b.setOnClickListener(new View.OnClickListener() {
@@ -39,13 +39,24 @@ public class WelcomePage extends AppCompatActivity {
             }
         });
 
-        Button b2 = findViewById(R.id.login_button);
+        Button b2 = findViewById(R.id.goToLoginButton);
 
         // Normal click -> HomePage
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(i);
+            }
+        });
+
+        Button b3 = findViewById(R.id.gotoMapButton);
+
+        // Normal click -> HomePage
+        b3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), HomePage.class);
                 startActivity(i);
             }
         });

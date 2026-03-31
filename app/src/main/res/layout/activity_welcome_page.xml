@@ -49,4 +49,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:strokeColor="@color/logo_color" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/gotoMapButton"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginBottom="208dp"
+        android:text="Map "
+        android:textColor="@color/logo_color"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:cornerRadius="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:strokeColor="@color/logo_color"
+        tools:layout_editor_absoluteX="41dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
