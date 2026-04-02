@@ -49,7 +49,6 @@ public class HomePage extends AppCompatActivity {
 
     final String[] gameList = {"Find invasive tree species", "Find trees that squirrels like"}; // these should be combined into a hash/tree map eventually for better control, just a stopgap now
     final int[] scoreList = {6, 8};
-    Random rand;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,34 +67,6 @@ public class HomePage extends AppCompatActivity {
         loadTreeData(); // This loads all of the trees
         map.invalidate();
 
-        Button signOutButton = findViewById(R.id.signOutButton);
-        signOutButton.setOnClickListener(v -> {
-            new AlertDialog.Builder(this)
-                    .setTitle("Sign Out")
-                    .setMessage("Are you sure you want to sign out?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                        FirebaseAuth.getInstance().signOut();
-                        startActivity(new Intent(this, WelcomePage.class));
-                        finish();
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-        });
-
-        Button gameButton = findViewById(R.id.gameButton);
-        gameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rand = new Random(System.nanoTime());
-                TextView goal = findViewById(R.id.gameGoal);
-                TextView goalProgress = findViewById(R.id.goalProgress);
-
-                goal.setText(gameList[rand.nextInt(gameList.length)]);
-                String goalP = ": 0/" + String.valueOf(scoreList[rand.nextInt(gameList.length)]);
-                goalProgress.setText(goalP);
-            }
-        });
-
         requestPermissionsIfNecessary(new String[]{
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE});
@@ -106,22 +77,12 @@ public class HomePage extends AppCompatActivity {
             return insets;
         });
 
-        Button cameraButton = findViewById(R.id.cameraButton);
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), CameraActivity.class);
-                startActivity(i);
-            }
-        });
-
-        Button aboutButton = findViewById(R.id.aboutButton);
-        aboutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), AboutActivity.class);
-                startActivity(i);
-            }
+        Button menuButton = findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(v -> {
+            Intent i = new Intent(getApplicationContext(), Menu.class);
+            i.putExtra("gameList", gameList);
+            i.putExtra("scoreList", scoreList);
+            startActivity(i);
         });
     }
 
