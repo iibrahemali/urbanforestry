@@ -91,7 +91,7 @@ public class HomePage extends AppCompatActivity {
                 TextView goalProgress = findViewById(R.id.goalProgress);
 
                 goal.setText(gameList[rand.nextInt(gameList.length)]);
-                String goalP = "0/" + String.valueOf(scoreList[rand.nextInt(gameList.length)]);
+                String goalP = ": 0/" + String.valueOf(scoreList[rand.nextInt(gameList.length)]);
                 goalProgress.setText(goalP);
             }
         });
