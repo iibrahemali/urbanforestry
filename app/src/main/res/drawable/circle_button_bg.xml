@@ -1,0 +1,21 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Outer semi-transparent circle -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#80000000"/>
+        </shape>
+    </item>
+
+    <!-- Inner white circle -->
+    <item
+        android:width="50dp"
+        android:height="50dp"
+        android:gravity="center">
+
+        <shape android:shape="oval">
+            <solid android:color="#FFFFFF"/>
+        </shape>
+    </item>
+
+</layer-list>

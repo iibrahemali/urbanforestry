@@ -105,6 +105,15 @@ public class HomePage extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        Button cameraButton = findViewById(R.id.cameraButton);
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), HomePage.class);
+                startActivity(i);
+            }
+        });
     }
 
     @Override
