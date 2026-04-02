@@ -30,4 +30,35 @@
         app:strokeColor="@color/logo_color"
         app:strokeWidth="1dp" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/gameButton"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/background_color"
+        android:padding="12dp"
+        android:text="Game"
+        android:textColor="@color/logo_color"
+        app:cornerRadius="12dp"
+        app:iconTint="@color/logo_color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/logo_color"
+        app:strokeWidth="1dp" />
+
+    <TextView
+        android:id="@+id/gameGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/gameButton"
+        app:layout_constraintLeft_toLeftOf="@id/gameButton" />
+
+    <TextView
+        android:id="@+id/goalProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/gameButton"
+        app:layout_constraintStart_toEndOf="@id/gameGoal"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
