@@ -3,8 +3,56 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:background="@color/background_color"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AboutActivity">
+
+    <TextView
+        android:id="@+id/phone_number_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="28sp"
+        android:textColor="@color/logo_color"
+        android:text="717-555-3911"
+        android:layout_marginTop = "50dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/open_map_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop = "50dp"
+        android:text="Open Map"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phone_number_tv" />
+
+    <EditText
+        android:id="@+id/sharable_text_et"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_marginTop="50dp"
+        android:hint="Your Lucky Number"
+        android:textColorHint="@color/logo_color"
+        android:inputType="number"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/open_map_button"
+        />
+
+    <ImageButton
+        android:id="@+id/share_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Share"
+        android:src="@drawable/share_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/sharable_text_et"
+        app:layout_constraintLeft_toRightOf="@+id/sharable_text_et"
+        app:layout_constraintTop_toTopOf="@+id/sharable_text_et" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
