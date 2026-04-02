@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
     tools:context=".TreeInfo">
 
     <TextView
         android:id="@+id/commonName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:text="[Common name]"
-        android:layout_marginTop="50dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,7 +24,6 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:text="[Botanical name]"
-        android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/commonName" />
@@ -33,10 +32,9 @@
         android:id="@+id/family"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Family:"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="20dp"
+        android:textSize="15sp"
+        android:text="Family: "
+        android:layout_marginTop="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/botanicalName" />
 
@@ -44,10 +42,9 @@
         android:id="@+id/nativeOrCultivated"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Native or cultivated:"
+        android:textSize="15sp"
+        android:text="Native or cultivated: "
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/family" />
 
@@ -55,10 +52,9 @@
         android:id="@+id/wildlife"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Wildlife:"
+        android:textSize="15sp"
+        android:text="Wildlife: "
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nativeOrCultivated" />
 
@@ -66,10 +62,9 @@
         android:id="@+id/fallColors"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Fall colors:"
+        android:textSize="15sp"
+        android:text="Fall colors: "
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/wildlife" />
 
@@ -77,10 +72,9 @@
         android:id="@+id/flowers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Flowers:"
+        android:textSize="15sp"
+        android:text="Flowers: "
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fallColors" />
 
@@ -88,10 +82,9 @@
         android:id="@+id/dbh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="DBH:"
+        android:textSize="15sp"
+        android:text="DBH: "
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/flowers" />
 
@@ -99,10 +92,9 @@
         android:id="@+id/height"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Height:"
+        android:textSize="15sp"
+        android:text="Height: "
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dbh" />
 

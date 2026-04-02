@@ -19,6 +19,7 @@
         android:theme="@style/Theme.UrbanForestry">
         <activity
             android:name=".TreeInfo"
+            android:theme="@style/Theme.Dialog"
             android:exported="false" />
         <activity
             android:name=".WelcomePage"
@@ -37,7 +38,7 @@
             android:exported="false" />
         <activity
             android:name=".HomePage"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>

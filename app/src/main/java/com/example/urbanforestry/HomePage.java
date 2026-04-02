@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+
 import androidx.preference.PreferenceManager;
+
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
@@ -85,22 +87,22 @@ public class HomePage extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         map.onResume(); // an overridden method so the map doesn't have to be destroyed and recreated
-        if(locationOverlay != null)
+        if (locationOverlay != null)
             locationOverlay.enableMyLocation();
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         map.onPause();
-        if(locationOverlay != null)
+        if (locationOverlay != null)
             locationOverlay.disableMyLocation();
     }
 
-    private void setupLocationTracking(){
+    private void setupLocationTracking() {
         this.locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this), map);
 
         this.locationOverlay.enableMyLocation();
@@ -123,6 +125,7 @@ public class HomePage extends AppCompatActivity {
                     this,
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
+            setupLocationTracking();
         } else {
             setupLocationTracking(); // Permissions already granted
         }
@@ -153,6 +156,10 @@ public class HomePage extends AppCompatActivity {
 
                 String[] cols = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 
+                // Remove quotes around strings
+                for (int i = 0; i < cols.length; i++)
+                    cols[i] = cols[i].replaceAll("^\"|\"$", "");
+
                 // First row = headers
                 if (firstLine) {
                     firstLine = false;
@@ -178,14 +185,22 @@ public class HomePage extends AppCompatActivity {
                 // Make it a small green dot
                 marker.setIcon(ContextCompat.getDrawable(this, R.drawable.green_dot));
 
-                String commonName = cols[1];     // iTree Common Name
-                String botanicalName = cols[2];  // iTree Botanical Name
-                String dbh = cols[5];            // DBH
-
-                marker.setTitle(commonName);
-                marker.setSnippet("Species: " + botanicalName + "\nDBH: " + dbh);
-
-                marker.setSubDescription("");
+                marker.setOnMarkerClickListener((m, mapView) -> {
+                    Intent i = new Intent(getApplicationContext(), TreeInfo.class);
+                    i.putExtra("commonName", cols[1]);
+                    i.putExtra("botanicalName", cols[2]);
+                    i.putExtra("familyCommon", cols[55]);
+                    i.putExtra("familyBotanical", cols[56]);
+                    i.putExtra("botanicalName", cols[2]);
+                    i.putExtra("nativeOrCultivated", cols[23]);
+                    i.putExtra("wildlife", cols[31]);
+                    i.putExtra("fallColors", cols[33]);
+                    i.putExtra("flowers", cols[35]);
+                    i.putExtra("dbh", cols[5]);
+                    i.putExtra("height", cols[27]);
+                    startActivity(i);
+                    return true;
+                });
 
                 map.getOverlays().add(marker);
             }
