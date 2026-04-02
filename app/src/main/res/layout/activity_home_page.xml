@@ -30,4 +30,23 @@
         app:strokeColor="@color/logo_color"
         app:strokeWidth="1dp" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cameraButton"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/background_color"
+        android:padding="12dp"
+        android:text="Camera"
+        android:textColor="@color/logo_color"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_camera"
+        app:iconTint="@color/logo_color"
+        app:layout_constraintEnd_toStartOf="@id/signOutButton"
+        app:layout_constraintTop_toTopOf="@id/signOutButton"
+        app:layout_constraintBottom_toBottomOf="@id/signOutButton"
+        app:strokeColor="@color/logo_color"
+        app:strokeWidth="1dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
