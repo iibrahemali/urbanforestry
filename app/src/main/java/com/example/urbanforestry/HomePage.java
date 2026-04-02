@@ -8,7 +8,9 @@ import android.os.Bundle;
 
 import androidx.preference.PreferenceManager;
 
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -36,6 +38,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class HomePage extends AppCompatActivity {
@@ -43,6 +46,10 @@ public class HomePage extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
     private MyLocationNewOverlay locationOverlay;
+
+    final String[] gameList = {"Find invasive tree species", "Find trees that squirrels like"}; // these should be combined into a hash/tree map eventually for better control, just a stopgap now
+    final int[] scoreList = {6, 8};
+    Random rand;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +82,20 @@ public class HomePage extends AppCompatActivity {
                     .show();
         });
 
+        Button gameButton = findViewById(R.id.gameButton);
+        gameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rand = new Random(System.nanoTime());
+                TextView goal = findViewById(R.id.gameGoal);
+                TextView goalProgress = findViewById(R.id.goalProgress);
+
+                goal.setText(gameList[rand.nextInt(gameList.length)]);
+                String goalP = "0/" + String.valueOf(scoreList[rand.nextInt(gameList.length)]);
+                goalProgress.setText(goalP);
+            }
+        });
+
         requestPermissionsIfNecessary(new String[]{
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE});
@@ -83,6 +104,15 @@ public class HomePage extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        Button cameraButton = findViewById(R.id.cameraButton);
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), HomePage.class);
+                startActivity(i);
+            }
         });
     }
 

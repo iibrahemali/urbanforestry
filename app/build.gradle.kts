@@ -53,7 +53,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.osmdroid.android)
-
+    implementation("androidx.preference:preference-ktx:1.2.1")
     // Firebase BoM — manages all Firebase library versions
     implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
 
