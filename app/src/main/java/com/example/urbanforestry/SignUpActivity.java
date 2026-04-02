@@ -27,7 +27,7 @@ public class SignUpActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
 
     private static final String[] EMAIL_DOMAINS = {
-            "gmail.com", "outlook.com", "yahoo.com", "hotmail.com", "icloud.com"
+            "gmail.com", "outlook.com", "yahoo.com", "hotmail.com", "icloud.com", "fandm.edu", "cityoflancasterpa.gov"
     };
 
     @Override
