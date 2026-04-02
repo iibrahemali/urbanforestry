@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Urban Forestry</string>
+    <string name="username">\@username</string>
+    <string name="social">Social</string>
 </resources>

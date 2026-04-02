@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UrbanForestry">
         <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".TreeInfo"
             android:theme="@style/Theme.Dialog"
             android:exported="false" />
