@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -25,19 +27,27 @@ public class AboutActivity extends AppCompatActivity {
             return insets;
         });
 
-        TextView tv = (TextView) findViewById(R.id.phone_number_tv);
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //get the number
-                TextView tv2 = (TextView) v;
-                String digits = tv2.getText().toString();
+        TextView tv = findViewById(R.id.phone_number_tv);
+        tv.setOnClickListener(v -> {
+            //get the number
+            TextView tv2 = (TextView) v;
+            String digits = tv2.getText().toString();
 
-                digits.replace("-","");
-                String number = "tel:" + digits;
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(number));
-                startActivity(intent);
-            }
+            digits.replace("-", "");
+            String number = "tel:" + digits;
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(number));
+            startActivity(intent);
+        });
+
+        ImageButton ib = findViewById(R.id.share_button);
+        ib.setOnClickListener(v -> {
+            EditText numET = findViewById(R.id.sharable_text_et);
+            String luckyNum = numET.getText().toString();
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TEXT, "My lucky number is: " + luckyNum);
+            intent.setType("text/plain");
+            startActivity(Intent.createChooser(intent, "Share via"));
         });
 
     }
