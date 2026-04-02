@@ -1,6 +1,10 @@
 package com.example.urbanforestry;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,5 +24,21 @@ public class AboutActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        TextView tv = (TextView) findViewById(R.id.phone_number_tv);
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //get the number
+                TextView tv2 = (TextView) v;
+                String digits = tv2.getText().toString();
+
+                digits.replace("-","");
+                String number = "tel:" + digits;
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(number));
+                startActivity(intent);
+            }
+        });
+
     }
 }

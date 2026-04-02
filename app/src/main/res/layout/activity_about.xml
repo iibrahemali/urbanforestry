@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textSize="28sp"
         android:textColor="@color/logo_color"
-        android:text="717-555-3911"
+        android:text="717-517-0864"
         android:layout_marginTop = "50dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
