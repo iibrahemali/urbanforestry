@@ -96,7 +96,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(
                             SignUpActivity.this,
-                            android.R.layout.simple_dropdown_item_1line,
+                            R.layout.dropdown_item,
                             suggestions
                     );
                     emailEditText.setAdapter(adapter);
