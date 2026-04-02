@@ -45,12 +45,13 @@
         app:hintTextColor="@color/logo_color"
         app:layout_constraintTop_toBottomOf="@id/signUpSubtitle">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:popupBackground="@color/background_color" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
