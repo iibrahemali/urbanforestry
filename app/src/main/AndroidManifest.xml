@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UrbanForestry">
         <activity
+            android:name=".FeedActivity"
+            android:exported="false" />
+        <activity
             android:name=".CameraActivity"
             android:exported="false" />
         <activity

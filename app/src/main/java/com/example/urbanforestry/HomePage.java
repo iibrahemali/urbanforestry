@@ -110,7 +110,7 @@ public class HomePage extends AppCompatActivity {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), HomePage.class);
+                Intent i = new Intent(getApplicationContext(), CameraActivity.class);
                 startActivity(i);
             }
         });
