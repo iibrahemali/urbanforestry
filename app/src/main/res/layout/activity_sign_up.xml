@@ -50,6 +50,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
+            android:minHeight="64dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:textColor="@color/white"
             android:popupBackground="@color/background_color" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -73,6 +76,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
+            android:minHeight="64dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
