@@ -20,7 +20,6 @@ import java.util.Random;
 public class Menu extends AppCompatActivity {
     String[] gameList;
     int[] scoreList;
-    Random rand;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,22 +50,18 @@ public class Menu extends AppCompatActivity {
                     .show();
         });
 
-        Button gameButton = findViewById(R.id.gameButton);
-        gameButton.setOnClickListener(v -> {
-            rand = new Random(System.nanoTime());
-            TextView goal = findViewById(R.id.gameGoal);
-            TextView goalProgress = findViewById(R.id.goalProgress);
+        TextView goal1 = findViewById(R.id.gameGoal1);
+        TextView goalProgress1 = findViewById(R.id.goalProgress1);
+        TextView goal2 = findViewById(R.id.gameGoal2);
+        TextView goalProgress2 = findViewById(R.id.goalProgress2);
 
-            goal.setText(gameList[rand.nextInt(gameList.length)]);
-            String goalP = ": 0/" + scoreList[rand.nextInt(gameList.length)];
-            goalProgress.setText(goalP);
-        });
+        goal1.setText(gameList[0]);
+        String goalP1 = ": 0/" + scoreList[0];
+        goalProgress1.setText(goalP1);
 
-        Button cameraButton = findViewById(R.id.cameraButton);
-        cameraButton.setOnClickListener(v -> {
-            Intent i2 = new Intent(getApplicationContext(), CameraActivity.class);
-            startActivity(i2);
-        });
+        goal2.setText(gameList[1]);
+        String goalP2 = ": 0/" + scoreList[1];
+        goalProgress2.setText(goalP2);
 
         Button aboutButton = findViewById(R.id.aboutButton);
         aboutButton.setOnClickListener(new View.OnClickListener() {

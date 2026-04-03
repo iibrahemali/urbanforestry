@@ -12,20 +12,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.google.android.material.button.MaterialButton
+    <ImageButton
         android:id="@+id/menuButton"
-        style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_margin="16dp"
-        android:backgroundTint="@color/background_color"
-        android:text="Menu"
-        android:textColor="@color/logo_color"
-        app:cornerRadius="12dp"
-        app:iconTint="@color/logo_color"
+        android:background="@drawable/round_button"
+        android:src="@drawable/ic_menu"
+        android:scaleType="fitCenter"
+        android:padding="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:strokeColor="@color/logo_color"
-        app:strokeWidth="1dp" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/cameraButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/round_button"
+        android:src="@drawable/ic_camera"
+        android:scaleType="fitCenter"
+        android:padding="10dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

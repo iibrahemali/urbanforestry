@@ -10,6 +10,7 @@ import androidx.preference.PreferenceManager;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -77,12 +78,18 @@ public class HomePage extends AppCompatActivity {
             return insets;
         });
 
-        Button menuButton = findViewById(R.id.menuButton);
+        ImageButton menuButton = findViewById(R.id.menuButton);
         menuButton.setOnClickListener(v -> {
             Intent i = new Intent(getApplicationContext(), Menu.class);
             i.putExtra("gameList", gameList);
             i.putExtra("scoreList", scoreList);
             startActivity(i);
+        });
+
+        ImageButton cameraButton = findViewById(R.id.cameraButton);
+        cameraButton.setOnClickListener(v -> {
+            Intent i2 = new Intent(getApplicationContext(), CameraActivity.class);
+            startActivity(i2);
         });
     }
 
