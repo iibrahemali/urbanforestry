@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -41,13 +43,40 @@ public class FeedActivity extends AppCompatActivity {
         loadDummyPosts();
 
         fab.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CameraActivity.class);
-            startActivity(intent);
+            Intent intent = new Intent(this, CreatePostActivity.class);
+            postLauncher.launch(intent);
         });
     }
 
     private void loadDummyPosts() {
-        postList.add(new Post("User1", "/storage/emulated/0/Pictures/test.jpg"));
+        // Use R.drawable.logo_title instead of a file path
+        postList.add(new Post("User1", R.drawable.logo_title, "This is our logo"));
+        postList.add(new Post("User2", null, "This is a text post example"));
         adapter.notifyDataSetChanged();
     }
+
+    private ActivityResultLauncher<Intent> postLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == RESULT_OK) {
+
+                            Intent data = result.getData();
+
+                            // TEXT POST
+                            if (data.getStringExtra("text") != null) {
+                                String text = data.getStringExtra("text");
+                                postList.add(0, new Post("You", null, text));
+                            }
+
+                            // IMAGE POST
+                            else if (data.getStringExtra("imagePath") != null) {
+                                String path = data.getStringExtra("imagePath");
+                                postList.add(0, new Post("You", path, null));
+                            }
+
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+            );
 }

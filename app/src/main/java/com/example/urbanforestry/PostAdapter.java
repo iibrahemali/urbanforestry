@@ -23,11 +23,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView username;
+        TextView textView;
 
         public ViewHolder(View view) {
             super(view);
             imageView = view.findViewById(R.id.post_image);
             username = view.findViewById(R.id.post_username);
+            textView = view.findViewById(R.id.post_text);
         }
     }
 
@@ -44,9 +46,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         holder.username.setText(post.username);
 
-        // Load image from file path
-        Bitmap bitmap = BitmapFactory.decodeFile(post.imagePath);
-        holder.imageView.setImageBitmap(bitmap);
+        // ALWAYS reset first
+        holder.imageView.setVisibility(View.GONE);
+        holder.textView.setVisibility(View.GONE);
+
+        // CASE 1: Resource ID (Dummy Data)
+        if (post.resourceId != -1) {
+            holder.imageView.setVisibility(View.VISIBLE);
+            holder.imageView.setImageResource(post.resourceId);
+        }
+        // CASE 2: Image Path (Disk File)
+        else if (post.imagePath != null && !post.imagePath.isEmpty()) {
+            holder.imageView.setVisibility(View.VISIBLE);
+            Bitmap bitmap = BitmapFactory.decodeFile(post.imagePath);
+            holder.imageView.setImageBitmap(bitmap);
+        }
+        // CASE 3: Text Post
+        else if (post.text != null && !post.text.isEmpty()) {
+            holder.textView.setVisibility(View.VISIBLE);
+            holder.textView.setText(post.text);
+        }
+        else {
+            holder.textView.setVisibility(View.VISIBLE);
+            holder.textView.setText("Empty post");
+        }
     }
 
     @Override

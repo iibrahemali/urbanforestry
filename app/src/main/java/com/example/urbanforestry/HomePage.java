@@ -88,7 +88,7 @@ public class HomePage extends AppCompatActivity {
 
         ImageButton cameraButton = findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(v -> {
-            Intent i2 = new Intent(getApplicationContext(), CameraActivity.class);
+            Intent i2 = new Intent(getApplicationContext(), FeedActivity.class);
             startActivity(i2);
         });
     }

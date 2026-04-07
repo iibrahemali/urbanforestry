@@ -210,6 +210,7 @@ public class CameraActivity extends AppCompatActivity {
     // ========================
     protected void takePicture() {
         if (cameraDevice == null) return;
+        int rotation = getWindowManager().getDefaultDisplay().getRotation();
 
         try {
             imageReader = ImageReader.newInstance(
@@ -239,6 +240,14 @@ public class CameraActivity extends AppCompatActivity {
                     );
 
             captureBuilder.addTarget(imageReader.getSurface());
+
+            rotation = getWindowManager().getDefaultDisplay().getRotation();
+            CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+            int sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
+            int jpegOrientation = (sensorOrientation + getJpegOrientation(rotation)) % 360;
+
+            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, jpegOrientation);
 
             cameraDevice.createCaptureSession(
                     Arrays.asList(imageReader.getSurface()),
@@ -282,13 +291,11 @@ public class CameraActivity extends AppCompatActivity {
 
             String path = file.getAbsolutePath();
 
-            runOnUiThread(() ->
-                    Toast.makeText(this,
-                            "Saved: " + path,
-                            Toast.LENGTH_SHORT).show()
-            );
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("imagePath", path);
 
-            Log.d(TAG, "Saved: " + path);
+            setResult(RESULT_OK, resultIntent);
+            finish(); // go back to FeedActivity
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -357,5 +364,18 @@ public class CameraActivity extends AppCompatActivity {
             imageReader.close();
             imageReader = null;
         }
+    }
+
+    private int getJpegOrientation(int deviceRotation) {
+        int rotationDegrees = 0;
+
+        switch (deviceRotation) {
+            case Surface.ROTATION_0: rotationDegrees = 0; break;
+            case Surface.ROTATION_90: rotationDegrees = 90; break;
+            case Surface.ROTATION_180: rotationDegrees = 180; break;
+            case Surface.ROTATION_270: rotationDegrees = 270; break;
+        }
+
+        return rotationDegrees;
     }
 }

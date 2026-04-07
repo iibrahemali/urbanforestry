@@ -1,20 +1,54 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/background_color">
 
-    <TextView
-        android:id="@+id/post_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:textStyle="bold"/>
-
-    <ImageView
-        android:id="@+id/post_image"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:scaleType="centerCrop"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:ignore="ExtraText">
 
-</LinearLayout>
+        <!-- Username -->
+        <TextView
+            android:id="@+id/post_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/logo_color"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Text Post -->
+        <TextView
+            android:id="@+id/post_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sample text post"
+            android:textSize="16sp"
+            android:textColor="@color/logo_color"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"/>
+
+        <!-- Image Post -->
+        <ImageView
+            android:id="@+id/post_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:visibility="gone"
+            android:contentDescription="Post Image"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
