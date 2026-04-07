@@ -189,23 +189,31 @@ public class HomePage extends AppCompatActivity {
                 marker.setPosition(point);
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
 
+                marker.setRelatedObject(cols.clone());
+
                 // Make it a small green dot
                 marker.setIcon(ContextCompat.getDrawable(this, R.drawable.green_dot));
 
                 marker.setOnMarkerClickListener((m, mapView) -> {
-                    Intent i = new Intent(getApplicationContext(), TreeInfo.class);
-                    i.putExtra("commonName", cols[1]);
-                    i.putExtra("botanicalName", cols[2]);
-                    i.putExtra("familyCommon", cols[55]);
-                    i.putExtra("familyBotanical", cols[56]);
-                    i.putExtra("botanicalName", cols[2]);
-                    i.putExtra("nativeOrCultivated", cols[23]);
-                    i.putExtra("wildlife", cols[31]);
-                    i.putExtra("fallColors", cols[33]);
-                    i.putExtra("flowers", cols[35]);
-                    i.putExtra("dbh", cols[5]);
-                    i.putExtra("height", cols[27]);
-                    startActivity(i);
+
+                    String[] treeData = (String[]) m.getRelatedObject();
+
+                    if(treeData != null) {
+                        Intent i = new Intent(getApplicationContext(), TreeInfo.class);
+
+                        i.putExtra("commonName", treeData[1]);
+                        i.putExtra("botanicalName", treeData[2]);
+                        i.putExtra("familyCommon", treeData[55]);
+                        i.putExtra("familyBotanical", treeData[56]);
+                        i.putExtra("botanicalName", treeData[2]);
+                        i.putExtra("nativeOrCultivated", treeData[23]);
+                        i.putExtra("wildlife", treeData[31]);
+                        i.putExtra("fallColors", treeData[33]);
+                        i.putExtra("flowers", treeData[35]);
+                        i.putExtra("dbh", treeData[5]);
+                        i.putExtra("height", treeData[27]);
+                        startActivity(i);
+                    }
                     return true;
                 });
 
