@@ -12,7 +12,7 @@
         android:id="@+id/signUpTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="32dp"
         android:text="Create Account"
         android:textColor="@color/letter_color"
         android:textSize="32sp"
@@ -34,26 +34,74 @@
         app:layout_constraintTop_toBottomOf="@id/signUpTitle" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailInputLayout"
+        android:id="@+id/nameInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:hint="Email"
+        android:layout_marginTop="32dp"
+        android:hint="Full Name"
         android:textColorHint="@color/white"
         app:boxStrokeColor="@color/logo_color"
         app:hintTextColor="@color/logo_color"
         app:layout_constraintTop_toBottomOf="@id/signUpSubtitle">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/nameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:inputType="textPersonName"
+            android:textColor="@color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/usernameInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Username"
+        android:textColorHint="@color/white"
+        app:boxStrokeColor="@color/logo_color"
+        app:hintTextColor="@color/logo_color"
+        app:layout_constraintTop_toBottomOf="@id/nameInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/usernameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="60dp"
+            android:inputType="text"
+            android:textColor="@color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/emailInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Email"
+        android:textColorHint="@color/white"
+        app:boxStrokeColor="@color/logo_color"
+        app:hintTextColor="@color/logo_color"
+        app:layout_constraintTop_toBottomOf="@id/usernameInputLayout">
+
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="60dp"
             android:inputType="textEmailAddress"
-            android:minHeight="64dp"
+            android:textColor="@color/white"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:textColor="@color/white"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             android:popupBackground="@color/background_color" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,18 +123,18 @@
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="60dp"
             android:inputType="textPassword"
-            android:minHeight="64dp"
+            android:textColor="@color/white"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/white" />
+            android:paddingEnd="16dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signUpButton"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:backgroundTint="@color/logo_color"
         android:text="Sign Up"
         android:textColor="@color/background_color"
@@ -99,7 +147,7 @@
         android:id="@+id/goToLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="Already have an account? Log in"
         android:textColor="@color/letter_color"
         android:textSize="14sp"

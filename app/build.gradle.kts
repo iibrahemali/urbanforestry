@@ -65,6 +65,9 @@ dependencies {
     // Firebase Auth — no version needed when using BoM
     implementation("com.google.firebase:firebase-auth")
 
+    // Firebase Database
+    implementation("com.google.firebase:firebase-database")
+
     // Optional: Analytics
     implementation("com.google.firebase:firebase-analytics")
 }

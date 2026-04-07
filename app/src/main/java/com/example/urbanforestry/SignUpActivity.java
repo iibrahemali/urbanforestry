@@ -14,17 +14,23 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
+    EditText nameEditText, usernameEditText, passwordEditText;
     AutoCompleteTextView emailEditText;
-    EditText passwordEditText;
     Button signUpButton;
     TextView goToLogin;
     FirebaseAuth mAuth;
+    DatabaseReference mDatabase;
 
     private static final String[] EMAIL_DOMAINS = {
             "gmail.com", "outlook.com", "yahoo.com", "hotmail.com", "icloud.com", "fandm.edu", "cityoflancasterpa.gov"
@@ -36,7 +42,10 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        nameEditText = findViewById(R.id.nameEditText);
+        usernameEditText = findViewById(R.id.usernameEditText);
         emailEditText    = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         signUpButton     = findViewById(R.id.signUpButton);
@@ -45,10 +54,12 @@ public class SignUpActivity extends AppCompatActivity {
         setupEmailAutocomplete();
 
         signUpButton.setOnClickListener(v -> {
+            String name = nameEditText.getText().toString().trim();
+            String username = usernameEditText.getText().toString().trim();
             String email    = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
 
-            if (email.isEmpty() || password.isEmpty()) {
+            if (name.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -60,9 +71,10 @@ public class SignUpActivity extends AppCompatActivity {
             mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, HomePage.class));
-                        finish();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            saveUserToDatabase(user.getUid(), name, username, email);
+                        }
                     } else {
                         Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
@@ -73,6 +85,24 @@ public class SignUpActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         });
+    }
+
+    private void saveUserToDatabase(String userId, String name, String username, String email) {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("name", name);
+        userMap.put("username", username);
+        userMap.put("email", email);
+
+        mDatabase.child("users").child(userId).setValue(userMap)
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this, HomePage.class));
+                    finish();
+                } else {
+                    Toast.makeText(this, "Database Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
     private void setupEmailAutocomplete() {
@@ -100,7 +130,6 @@ public class SignUpActivity extends AppCompatActivity {
                             suggestions
                     );
                     emailEditText.setAdapter(adapter);
-                    // Force the dropdown to show if there are matches
                     if (!suggestions.isEmpty() && !suffix.equals(suggestions.get(0).substring(prefix.length()))) {
                          emailEditText.showDropDown();
                     }
