@@ -91,8 +91,8 @@ public class HomePage extends AppCompatActivity {
             startActivity(i);
         });
 
-        ImageButton cameraButton = findViewById(R.id.cameraButton);
-        cameraButton.setOnClickListener(v -> {
+        ImageButton feedButton = findViewById(R.id.feedButton);
+        feedButton.setOnClickListener(v -> {
             Intent i2 = new Intent(getApplicationContext(), FeedActivity.class);
             startActivity(i2);
         });
@@ -205,7 +205,7 @@ public class HomePage extends AppCompatActivity {
 
                     String[] treeData = (String[]) m.getRelatedObject();
 
-                    if(treeData != null) {
+                    if (treeData != null) {
                         Intent i = new Intent(getApplicationContext(), TreeInfo.class);
 
                         i.putExtra("commonName", treeData[1]);
@@ -222,14 +222,14 @@ public class HomePage extends AppCompatActivity {
                         startActivity(i);
 
                         String treeKey = treeData[finalLat] + "_" + treeData[finalLng];
-                        if(foundTreeKeys.contains(treeKey)){
+                        if (foundTreeKeys.contains(treeKey)) {
                             Toast.makeText(this, "Tree already found", Toast.LENGTH_SHORT).show();
                             return true; // tree already counted
                         }
 
                         boolean isTarget = false;
 
-                        switch(currentGoal){
+                        switch (currentGoal) {
                             case 0:
                                 break;
                             case 1: // invasive trees
@@ -239,7 +239,7 @@ public class HomePage extends AppCompatActivity {
                                 isTarget = treeData[1].equalsIgnoreCase("oak");
                                 break;
                         }
-                        if(isTarget) {
+                        if (isTarget) {
                             foundTreeKeys.add(treeKey);
                             goalCount++;
 
