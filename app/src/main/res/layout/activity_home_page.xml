@@ -25,7 +25,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/socialButton"
+        android:id="@+id/feedButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="16dp"

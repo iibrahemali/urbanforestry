@@ -91,8 +91,8 @@ public class HomePage extends AppCompatActivity {
             startActivity(i);
         });
 
-        ImageButton socialButton = findViewById(R.id.socialButton);
-        socialButton.setOnClickListener(v -> {
+        ImageButton feedButton = findViewById(R.id.feedButton);
+        feedButton.setOnClickListener(v -> {
             Intent i2 = new Intent(getApplicationContext(), FeedActivity.class);
             startActivity(i2);
         });
