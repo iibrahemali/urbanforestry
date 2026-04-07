@@ -14,8 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
-        tools:ignore="ExtraText">
+        android:padding="16dp">
 
         <!-- Username -->
         <TextView
@@ -47,7 +46,61 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:visibility="gone"
-            android:contentDescription="Post Image"/>
+            android:contentDescription="Post Image"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Emoji/Reaction Bar -->
+        <TextView
+            android:id="@+id/emoji_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/logo_color"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            tools:text="🌳 ❤️ 👍"/>
+
+        <!-- Interaction Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:divider="?android:attr/dividerVertical"
+            android:showDividers="middle">
+
+            <Button
+                android:id="@+id/btn_emoji"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="React"
+                android:textColor="@color/logo_color"
+                app:icon="@drawable/ic_add"
+                app:iconTint="@color/logo_color"/>
+
+            <Button
+                android:id="@+id/btn_comment"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Comment"
+                android:textColor="@color/logo_color"
+                app:icon="@drawable/ic_logout"
+                app:iconTint="@color/logo_color"
+                tools:ignore="RtlHardcoded" />
+
+        </LinearLayout>
+
+        <!-- Comments Section -->
+        <LinearLayout
+            android:id="@+id/comments_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

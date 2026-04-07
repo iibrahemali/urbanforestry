@@ -1,10 +1,15 @@
 package com.example.urbanforestry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Post {
     public String username;
     public String imagePath; // null if text post (for disk files)
     public int resourceId = -1; // -1 if not a drawable resource
     public String text;      // null if image post
+    public List<String> emojis = new ArrayList<>();
+    public List<Comment> comments = new ArrayList<>();
 
     public Post(String username, String imagePath, String text) {
         this.username = username;
