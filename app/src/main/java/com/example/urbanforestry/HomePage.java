@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -48,8 +49,12 @@ public class HomePage extends AppCompatActivity {
     private MapView map = null;
     private MyLocationNewOverlay locationOverlay;
 
-    final String[] gameList = {"Find invasive tree species", "Find trees that squirrels like"}; // these should be combined into a hash/tree map eventually for better control, just a stopgap now
-    final int[] scoreList = {6, 8};
+    final String[] gameList = {"N/A", "Find invasive tree species", "find Oaks"}; // these should be combined into a hash/tree map eventually for better control, just a stopgap now
+    final int[] scoreList = {0, 6, 8};
+    private int currentGoal = 0;
+    private int goalCount = 0;
+    private java.util.HashSet<String> foundTreeKeys = new java.util.HashSet<>(); // so each tree is unique and the game can't be cheated easily
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,23 +194,58 @@ public class HomePage extends AppCompatActivity {
                 marker.setPosition(point);
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
 
+                marker.setRelatedObject(cols.clone());
+
                 // Make it a small green dot
                 marker.setIcon(ContextCompat.getDrawable(this, R.drawable.green_dot));
 
+                final int finalLat = latIndex;
+                final int finalLng = lngIndex;
                 marker.setOnMarkerClickListener((m, mapView) -> {
-                    Intent i = new Intent(getApplicationContext(), TreeInfo.class);
-                    i.putExtra("commonName", cols[1]);
-                    i.putExtra("botanicalName", cols[2]);
-                    i.putExtra("familyCommon", cols[55]);
-                    i.putExtra("familyBotanical", cols[56]);
-                    i.putExtra("botanicalName", cols[2]);
-                    i.putExtra("nativeOrCultivated", cols[23]);
-                    i.putExtra("wildlife", cols[31]);
-                    i.putExtra("fallColors", cols[33]);
-                    i.putExtra("flowers", cols[35]);
-                    i.putExtra("dbh", cols[5]);
-                    i.putExtra("height", cols[27]);
-                    startActivity(i);
+
+                    String[] treeData = (String[]) m.getRelatedObject();
+
+                    if(treeData != null) {
+                        Intent i = new Intent(getApplicationContext(), TreeInfo.class);
+
+                        i.putExtra("commonName", treeData[1]);
+                        i.putExtra("botanicalName", treeData[2]);
+                        i.putExtra("familyCommon", treeData[55]);
+                        i.putExtra("familyBotanical", treeData[56]);
+                        i.putExtra("botanicalName", treeData[2]);
+                        i.putExtra("nativeOrCultivated", treeData[23]);
+                        i.putExtra("wildlife", treeData[31]);
+                        i.putExtra("fallColors", treeData[33]);
+                        i.putExtra("flowers", treeData[35]);
+                        i.putExtra("dbh", treeData[5]);
+                        i.putExtra("height", treeData[27]);
+                        startActivity(i);
+
+                        String treeKey = treeData[finalLat] + "_" + treeData[finalLng];
+                        if(foundTreeKeys.contains(treeKey)){
+                            Toast.makeText(this, "Tree already found", Toast.LENGTH_SHORT).show();
+                            return true; // tree already counted
+                        }
+
+                        boolean isTarget = false;
+
+                        switch(currentGoal){
+                            case 0:
+                                break;
+                            case 1: // invasive trees
+                                isTarget = treeData[23].equalsIgnoreCase("Invasive");
+                                break;
+                            case 2:
+                                isTarget = treeData[1].equalsIgnoreCase("oak");
+                                break;
+                        }
+                        if(isTarget) {
+                            foundTreeKeys.add(treeKey);
+                            goalCount++;
+
+
+                        }
+                    }
                     return true;
                 });
 
