@@ -8,7 +8,9 @@ public class Post {
     public String imagePath; // null if text post (for disk files)
     public int resourceId = -1; // -1 if not a drawable resource
     public String text;      // null if image post
-    public List<String> emojis = new ArrayList<>();
+    public int heartCount = 0;
+    public boolean isHeartedByMe = false;
+    public boolean isCommentsVisible = false;
     public List<Comment> comments = new ArrayList<>();
 
     public Post(String username, String imagePath, String text) {

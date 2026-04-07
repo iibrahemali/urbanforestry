@@ -1,6 +1,5 @@
 package com.example.urbanforestry;
 
-import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -28,20 +27,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         ImageView imageView;
         TextView username;
         TextView textView;
-        TextView emojiDisplay;
-        Button btnEmoji;
+        Button btnHeart;
         Button btnComment;
-        LinearLayout commentsContainer;
+        
+        // Comment section views
+        View commentsSection;
+        LinearLayout commentsList;
+        TextView noCommentsTv;
+        EditText etComment;
+        Button btnSendComment;
 
         public ViewHolder(View view) {
             super(view);
             imageView = view.findViewById(R.id.post_image);
             username = view.findViewById(R.id.post_username);
             textView = view.findViewById(R.id.post_text);
-            emojiDisplay = view.findViewById(R.id.emoji_display);
-            btnEmoji = view.findViewById(R.id.btn_emoji);
+            btnHeart = view.findViewById(R.id.btn_heart);
             btnComment = view.findViewById(R.id.btn_comment);
-            commentsContainer = view.findViewById(R.id.comments_container);
+            
+            commentsSection = view.findViewById(R.id.comments_section);
+            commentsList = view.findViewById(R.id.comments_list);
+            noCommentsTv = view.findViewById(R.id.no_comments_tv);
+            etComment = view.findViewById(R.id.et_comment);
+            btnSendComment = view.findViewById(R.id.btn_send_comment);
         }
     }
 
@@ -61,9 +69,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         // ALWAYS reset first
         holder.imageView.setVisibility(View.GONE);
         holder.textView.setVisibility(View.GONE);
-        holder.emojiDisplay.setVisibility(View.GONE);
-        holder.commentsContainer.removeAllViews();
-        holder.commentsContainer.setVisibility(View.GONE);
+        holder.commentsList.removeAllViews();
+        holder.commentsSection.setVisibility(View.GONE);
+        holder.noCommentsTv.setVisibility(View.GONE);
 
         boolean hasImage = false;
 
@@ -91,53 +99,55 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.textView.setText("Empty post");
         }
 
-        // Handle Emojis
-        if (!post.emojis.isEmpty()) {
-            holder.emojiDisplay.setVisibility(View.VISIBLE);
-            StringBuilder sb = new StringBuilder();
-            for (String emoji : post.emojis) {
-                sb.append(emoji).append(" ");
-            }
-            holder.emojiDisplay.setText(sb.toString().trim());
-        }
+        // Handle Heart Button
+        holder.btnHeart.setText("💚 " + post.heartCount);
+        holder.btnHeart.setAlpha(post.isHeartedByMe ? 1.0f : 0.5f);
 
-        // Handle Comments
-        if (!post.comments.isEmpty()) {
-            holder.commentsContainer.setVisibility(View.VISIBLE);
-            for (Comment comment : post.comments) {
-                TextView ct = new TextView(holder.itemView.getContext());
-                ct.setText(comment.username + ": " + comment.text);
-                ct.setPadding(0, 4, 0, 4);
-                holder.commentsContainer.addView(ct);
+        // Handle Comment Button (Counter)
+        holder.btnComment.setText("💬 " + post.comments.size());
+
+        // Handle Comments Visibility
+        if (post.isCommentsVisible) {
+            holder.commentsSection.setVisibility(View.VISIBLE);
+            
+            if (post.comments.isEmpty()) {
+                holder.noCommentsTv.setVisibility(View.VISIBLE);
+            } else {
+                holder.noCommentsTv.setVisibility(View.GONE);
+                for (Comment comment : post.comments) {
+                    TextView ct = new TextView(holder.itemView.getContext());
+                    ct.setText(comment.username + ": " + comment.text);
+                    ct.setPadding(8, 4, 8, 4);
+                    ct.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.logo_color));
+                    holder.commentsList.addView(ct);
+                }
             }
         }
 
         // Click Listeners
-        holder.btnEmoji.setOnClickListener(v -> {
-            String[] items = {"🌳", "❤️", "👍", "🌱", "🦋"};
-            new AlertDialog.Builder(v.getContext())
-                    .setTitle("Pick a reaction")
-                    .setItems(items, (dialog, which) -> {
-                        post.emojis.add(items[which]);
-                        notifyItemChanged(position);
-                    })
-                    .show();
+        holder.btnHeart.setOnClickListener(v -> {
+            if (post.isHeartedByMe) {
+                post.heartCount--;
+                post.isHeartedByMe = false;
+            } else {
+                post.heartCount++;
+                post.isHeartedByMe = true;
+            }
+            notifyItemChanged(position);
         });
 
         holder.btnComment.setOnClickListener(v -> {
-            EditText input = new EditText(v.getContext());
-            new AlertDialog.Builder(v.getContext())
-                    .setTitle("Add Comment")
-                    .setView(input)
-                    .setPositiveButton("Post", (dialog, which) -> {
-                        String commentText = input.getText().toString();
-                        if (!commentText.isEmpty()) {
-                            post.comments.add(new Comment("You", commentText));
-                            notifyItemChanged(position);
-                        }
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+            post.isCommentsVisible = !post.isCommentsVisible;
+            notifyItemChanged(position);
+        });
+
+        holder.btnSendComment.setOnClickListener(v -> {
+            String commentText = holder.etComment.getText().toString().trim();
+            if (!commentText.isEmpty()) {
+                post.comments.add(new Comment("You", commentText));
+                holder.etComment.setText(""); // Clear input
+                notifyItemChanged(position);
+            }
         });
     }
 
