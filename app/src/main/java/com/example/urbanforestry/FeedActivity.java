@@ -2,14 +2,11 @@ package com.example.urbanforestry;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +29,7 @@ public class FeedActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         fab = findViewById(R.id.fab_add);
+        ImageView profileButton = findViewById(R.id.profile_button);
 
         postList = new ArrayList<>();
         adapter = new PostAdapter(postList);
@@ -45,6 +43,11 @@ public class FeedActivity extends AppCompatActivity {
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(this, CreatePostActivity.class);
             postLauncher.launch(intent);
+        });
+
+        profileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
         });
     }
 
