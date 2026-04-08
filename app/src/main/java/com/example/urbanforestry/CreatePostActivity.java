@@ -17,30 +17,39 @@ import java.io.File;
 public class CreatePostActivity extends AppCompatActivity {
     private String photoPath;
 
+    private ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    setResult(RESULT_OK, result.getData());
+                    finish(); // pass back to FeedActivity
+                }
+            });
+
+    private ActivityResultLauncher<Intent> imageCaptionLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    setResult(RESULT_OK, result.getData());
+                    finish(); // pass back to FeedActivity
+                }
+            });
+
+    private ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    // Photo taken, now go to PostImageActivity to add caption
+                    Intent intent = new Intent(this, PostImageActivity.class);
+                    intent.putExtra("imagePath", photoPath);
+                    imageCaptionLauncher.launch(intent);
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
-
-        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        setResult(RESULT_OK, result.getData());
-                        finish(); // pass back to FeedActivity
-                    }
-                });
-
-        ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent i = new Intent();
-                        i.putExtra("imagePath", photoPath);
-                        setResult(RESULT_OK, i);
-                        finish();
-                    }
-                });
 
         findViewById(R.id.btn_camera).setOnClickListener(v -> {
             try {

@@ -62,23 +62,17 @@ public class FeedActivity extends AppCompatActivity {
             registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
-                        if (result.getResultCode() == RESULT_OK) {
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
 
                             Intent data = result.getData();
+                            String text = data.getStringExtra("text");
+                            String imagePath = data.getStringExtra("imagePath");
 
-                            // TEXT POST
-                            if (data.getStringExtra("text") != null) {
-                                String text = data.getStringExtra("text");
-                                postList.add(0, new Post("You", null, text));
+                            // Image post (with optional caption) or Text post
+                            if (imagePath != null || text != null) {
+                                postList.add(0, new Post("You", imagePath, text));
+                                adapter.notifyDataSetChanged();
                             }
-
-                            // IMAGE POST
-                            else if (data.getStringExtra("imagePath") != null) {
-                                String path = data.getStringExtra("imagePath");
-                                postList.add(0, new Post("You", path, null));
-                            }
-
-                            adapter.notifyDataSetChanged();
                         }
                     }
             );

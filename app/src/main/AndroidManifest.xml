@@ -23,6 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UrbanForestry">
         <activity
+            android:name=".PostImageActivity"
+            android:exported="false" />
+        <activity
             android:name=".PostTextActivity"
             android:exported="false" />
         <activity
