@@ -3,7 +3,6 @@ package com.example.urbanforestry;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -27,28 +26,36 @@ public class AboutActivity extends AppCompatActivity {
             return insets;
         });
 
-        TextView tv = findViewById(R.id.phone_number_tv);
-        tv.setOnClickListener(v -> {
-            //get the number
-            TextView tv2 = (TextView) v;
-            String digits = tv2.getText().toString();
+        // Contact Michael Meyer
+        findViewById(R.id.phone_michael).setOnClickListener(v -> dialNumber("(717) 517-0864"));
+        findViewById(R.id.email_michael).setOnClickListener(v -> sendEmail("mmeyer@cityoflancasterpa.gov"));
 
-            digits.replace("-", "");
-            String number = "tel:" + digits;
-            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(number));
-            startActivity(intent);
-        });
+        // Contact Rick Anderer
+        findViewById(R.id.phone_rick).setOnClickListener(v -> dialNumber("(717) 291-4846"));
+        findViewById(R.id.email_rick).setOnClickListener(v -> sendEmail("randerer@cityoflancasterpa.gov"));
 
-        ImageButton ib = findViewById(R.id.share_button);
-        ib.setOnClickListener(v -> {
-            EditText numET = findViewById(R.id.sharable_text_et);
-            String luckyNum = numET.getText().toString();
+        // Social Media Links
+        findViewById(R.id.btn_linkedin).setOnClickListener(v -> openUrl("https://www.linkedin.com/company/cityoflancasterpa"));
+        findViewById(R.id.btn_youtube).setOnClickListener(v -> openUrl("https://www.youtube.com/c/cityoflancasterpagov"));
+        findViewById(R.id.btn_instagram).setOnClickListener(v -> openUrl("https://www.instagram.com/cityoflancpa"));
+        findViewById(R.id.btn_facebook).setOnClickListener(v -> openUrl("https://www.facebook.com/CityOfLancasterPA/"));
 
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.putExtra(Intent.EXTRA_TEXT, "My lucky number is: " + luckyNum);
-            intent.setType("text/plain");
-            startActivity(Intent.createChooser(intent, "Share via"));
-        });
+    }
 
+    private void dialNumber(String digits) {
+        String number = "tel:" + digits.replaceAll("[^0-9]", "");
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(number));
+        startActivity(intent);
+    }
+
+    private void sendEmail(String email) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:" + email));
+        startActivity(intent);
+    }
+
+    private void openUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
     }
 }
