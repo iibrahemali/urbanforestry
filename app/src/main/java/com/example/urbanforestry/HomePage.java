@@ -49,7 +49,7 @@ public class HomePage extends AppCompatActivity {
     private MapView map = null;
     private MyLocationNewOverlay locationOverlay;
 
-    final String[] gameList = {"N/A", "Find invasive tree species", "find Oaks"}; // these should be combined into a hash/tree map eventually for better control, just a stopgap now
+    final String[] gameList = {"N/A", "Find non-native tree species", "Find Oaks"};
     final int[] scoreList = {0, 6, 8};
     public static int[] currentGoals = {0, 0};
     public static int[] goalsProgress = {0, 0};
@@ -210,9 +210,9 @@ public class HomePage extends AppCompatActivity {
                     String commonName = treeData[1].toLowerCase();
 
                     // Goal 1: Find invasive tree species (index 1 in gameList)
-                    if (currentGoals[0] == 1 && status.contains("invasive")) {
+                    if (currentGoals[0] == 1 && status.contains("Non-native")) {
                         goalsProgress[0]++;
-                        Toast.makeText(this, "Progress: Invasive tree found!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Progress: Non-native tree found!", Toast.LENGTH_SHORT).show();
                     }
 
                     // Goal 2: Find Oaks (index 2 in gameList)
