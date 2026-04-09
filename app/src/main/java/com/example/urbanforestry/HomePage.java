@@ -227,13 +227,11 @@ public class HomePage extends AppCompatActivity {
                     Intent i = getIntent(treeData);
                     startActivity(i);
 
-
                     return true;
                 });
 
                 map.getOverlays().add(marker);
             }
-
 
 
         } catch (Exception e) {
@@ -256,21 +254,44 @@ public class HomePage extends AppCompatActivity {
         i.putExtra("flowers", treeData[35]);
         i.putExtra("dbh", treeData[5]);
         i.putExtra("height", treeData[27]);
+        i.putExtra("description", getDescription(treeData));
+
         return i;
     }
 
-    public void updateGoals(){
+    private String getDescription(String[] treeData) {
+        String strName = treeData[2].replaceAll(" ", "_");
+        int strId = getResources().getIdentifier(strName, "string", getPackageName());
 
-        if(currentGoals[0] == 0) currentGoals[0] = 1; // will be made random once list is expanded
-        if(currentGoals[1] == 0) currentGoals[1] = 2;
+        if (strId != 0)
+            return getString(strId);
+        else
+            // Handle cases without botanical species names
+            switch (treeData[1]) {
+                case "White swamp birch":
+                    return getString(R.string.white_swamp_birch);
+                case "Serviceberry":
+                    return getString(R.string.serviceberry);
+                case "Okame cherry":
+                    return getString(R.string.okame_cherry);
+                default:
+                    // No description exists
+                    return "";
+            }
+    }
 
-        if(goalsProgress[0] >= scoreList[currentGoals[0]]) {
+    public void updateGoals() {
+
+        if (currentGoals[0] == 0) currentGoals[0] = 1; // will be made random once list is expanded
+        if (currentGoals[1] == 0) currentGoals[1] = 2;
+
+        if (goalsProgress[0] >= scoreList[currentGoals[0]]) {
             Toast.makeText(this, "Goal complete!", Toast.LENGTH_SHORT).show();
             goalsProgress[0] = 0;
             currentGoals[0] = 1; // new random int
         }
 
-        if(goalsProgress[1] >= scoreList[currentGoals[1]]) {
+        if (goalsProgress[1] >= scoreList[currentGoals[1]]) {
             Toast.makeText(this, "Goal complete!", Toast.LENGTH_SHORT).show();
             goalsProgress[1] = 0;
             currentGoals[1] = 2; // new random int not equal to the first one

@@ -2,6 +2,7 @@ package com.example.urbanforestry;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -69,5 +70,11 @@ public class TreeInfo extends AppCompatActivity {
             height.append("Not listed");
         else
             height.append(i.getStringExtra("height"));
+
+        TextView description = findViewById(R.id.description);
+        if (!i.getStringExtra("description").isEmpty())
+            description.setText(i.getStringExtra("description"));
+        else
+            description.setVisibility(View.GONE);
     }
 }
