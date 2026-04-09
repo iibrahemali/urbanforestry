@@ -224,19 +224,7 @@ public class HomePage extends AppCompatActivity {
                     // Call your update method to check for completion
                     updateGoals();
 
-                    Intent i = new Intent(getApplicationContext(), TreeInfo.class);
-
-                    i.putExtra("commonName", treeData[1]);
-                    i.putExtra("botanicalName", treeData[2]);
-                    i.putExtra("familyCommon", treeData[55]);
-                    i.putExtra("familyBotanical", treeData[56]);
-                    i.putExtra("botanicalName", treeData[2]);
-                    i.putExtra("nativeOrCultivated", treeData[23]);
-                    i.putExtra("wildlife", treeData[31]);
-                    i.putExtra("fallColors", treeData[33]);
-                    i.putExtra("flowers", treeData[35]);
-                    i.putExtra("dbh", treeData[5]);
-                    i.putExtra("height", treeData[27]);
+                    Intent i = getIntent(treeData);
                     startActivity(i);
 
 
@@ -251,6 +239,24 @@ public class HomePage extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @NonNull
+    private Intent getIntent(String[] treeData) {
+        Intent i = new Intent(getApplicationContext(), TreeInfo.class);
+
+        i.putExtra("commonName", treeData[1]);
+        i.putExtra("botanicalName", treeData[2]);
+        i.putExtra("familyCommon", treeData[55]);
+        i.putExtra("familyBotanical", treeData[56]);
+        i.putExtra("botanicalName", treeData[2]);
+        i.putExtra("nativeOrCultivated", treeData[23]);
+        i.putExtra("wildlife", treeData[31]);
+        i.putExtra("fallColors", treeData[33]);
+        i.putExtra("flowers", treeData[35]);
+        i.putExtra("dbh", treeData[5]);
+        i.putExtra("height", treeData[27]);
+        return i;
     }
 
     public void updateGoals(){
