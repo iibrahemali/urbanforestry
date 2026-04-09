@@ -17,7 +17,7 @@ import java.io.File;
 public class CreatePostActivity extends AppCompatActivity {
     private String photoPath;
 
-    private ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+    private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
@@ -26,23 +26,14 @@ public class CreatePostActivity extends AppCompatActivity {
                 }
             });
 
-    private ActivityResultLauncher<Intent> imageCaptionLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    setResult(RESULT_OK, result.getData());
-                    finish(); // pass back to FeedActivity
-                }
-            });
-
-    private ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
                     // Photo taken, now go to PostImageActivity to add caption
                     Intent intent = new Intent(this, PostImageActivity.class);
                     intent.putExtra("imagePath", photoPath);
-                    imageCaptionLauncher.launch(intent);
+                    launcher.launch(intent);
                 }
             });
 
