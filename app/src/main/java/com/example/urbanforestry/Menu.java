@@ -20,6 +20,8 @@ import java.util.Random;
 public class Menu extends AppCompatActivity {
     String[] gameList;
     int[] scoreList;
+    int[] goalsProgress;
+    int[] currentGoals;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,8 @@ public class Menu extends AppCompatActivity {
         Intent i = getIntent();
         gameList = i.getStringArrayExtra("gameList");
         scoreList = i.getIntArrayExtra("scoreList");
+        currentGoals = i.getIntArrayExtra("currentGoals");
+        goalsProgress = i.getIntArrayExtra("goalsProgress");
 
         Button signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(v -> {
@@ -55,12 +59,14 @@ public class Menu extends AppCompatActivity {
         TextView goal2 = findViewById(R.id.gameGoal2);
         TextView goalProgress2 = findViewById(R.id.goalProgress2);
 
-        goal1.setText(gameList[0]);
-        String goalP1 = ": 0/" + scoreList[0];
+        int currentGoal1 = currentGoals[0];
+        goal1.setText(gameList[currentGoal1]);
+        String goalP1 = ": " + String.valueOf(goalsProgress[0]) + "/" + scoreList[currentGoal1];
         goalProgress1.setText(goalP1);
 
-        goal2.setText(gameList[1]);
-        String goalP2 = ": 0/" + scoreList[1];
+        int currentGoal2 = currentGoals[1];
+        goal1.setText(gameList[currentGoal2]);
+        String goalP2 = ": " + String.valueOf(goalsProgress[1]) + "/" + scoreList[currentGoal2];
         goalProgress2.setText(goalP2);
 
         Button aboutButton = findViewById(R.id.aboutButton);

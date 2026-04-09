@@ -51,9 +51,8 @@ public class HomePage extends AppCompatActivity {
 
     final String[] gameList = {"N/A", "Find invasive tree species", "find Oaks"}; // these should be combined into a hash/tree map eventually for better control, just a stopgap now
     final int[] scoreList = {0, 6, 8};
-    private int currentGoal = 0;
-    private int goalCount = 0;
-    private java.util.HashSet<String> foundTreeKeys = new java.util.HashSet<>(); // so each tree is unique and the game can't be cheated easily
+    public static int[] currentGoals = {0, 0};
+    public static int[] goalsProgress = {0, 0};
 
 
     @Override
@@ -88,6 +87,8 @@ public class HomePage extends AppCompatActivity {
             Intent i = new Intent(getApplicationContext(), Menu.class);
             i.putExtra("gameList", gameList);
             i.putExtra("scoreList", scoreList);
+            i.putExtra("currentGoals", currentGoals);
+            i.putExtra("goalsProgress", goalsProgress);
             startActivity(i);
         });
 
@@ -205,55 +206,69 @@ public class HomePage extends AppCompatActivity {
 
                     String[] treeData = (String[]) m.getRelatedObject();
 
-                    if (treeData != null) {
-                        Intent i = new Intent(getApplicationContext(), TreeInfo.class);
+                    String status = treeData[23].toLowerCase();
+                    String commonName = treeData[1].toLowerCase();
 
-                        i.putExtra("commonName", treeData[1]);
-                        i.putExtra("botanicalName", treeData[2]);
-                        i.putExtra("familyCommon", treeData[55]);
-                        i.putExtra("familyBotanical", treeData[56]);
-                        i.putExtra("botanicalName", treeData[2]);
-                        i.putExtra("nativeOrCultivated", treeData[23]);
-                        i.putExtra("wildlife", treeData[31]);
-                        i.putExtra("fallColors", treeData[33]);
-                        i.putExtra("flowers", treeData[35]);
-                        i.putExtra("dbh", treeData[5]);
-                        i.putExtra("height", treeData[27]);
-                        startActivity(i);
-
-                        String treeKey = treeData[finalLat] + "_" + treeData[finalLng];
-                        if (foundTreeKeys.contains(treeKey)) {
-                            Toast.makeText(this, "Tree already found", Toast.LENGTH_SHORT).show();
-                            return true; // tree already counted
-                        }
-
-                        boolean isTarget = false;
-
-                        switch (currentGoal) {
-                            case 0:
-                                break;
-                            case 1: // invasive trees
-                                isTarget = treeData[23].equalsIgnoreCase("Invasive");
-                                break;
-                            case 2:
-                                isTarget = treeData[1].equalsIgnoreCase("oak");
-                                break;
-                        }
-                        if (isTarget) {
-                            foundTreeKeys.add(treeKey);
-                            goalCount++;
-
-
-                        }
+                    // Goal 1: Find invasive tree species (index 1 in gameList)
+                    if (currentGoals[0] == 1 && status.contains("invasive")) {
+                        goalsProgress[0]++;
+                        Toast.makeText(this, "Progress: Invasive tree found!", Toast.LENGTH_SHORT).show();
                     }
+
+                    // Goal 2: Find Oaks (index 2 in gameList)
+                    if (currentGoals[1] == 2 && commonName.contains("oak")) {
+                        goalsProgress[1]++;
+                        Toast.makeText(this, "Progress: Oak tree found!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    // Call your update method to check for completion
+                    updateGoals();
+
+                    Intent i = new Intent(getApplicationContext(), TreeInfo.class);
+
+                    i.putExtra("commonName", treeData[1]);
+                    i.putExtra("botanicalName", treeData[2]);
+                    i.putExtra("familyCommon", treeData[55]);
+                    i.putExtra("familyBotanical", treeData[56]);
+                    i.putExtra("botanicalName", treeData[2]);
+                    i.putExtra("nativeOrCultivated", treeData[23]);
+                    i.putExtra("wildlife", treeData[31]);
+                    i.putExtra("fallColors", treeData[33]);
+                    i.putExtra("flowers", treeData[35]);
+                    i.putExtra("dbh", treeData[5]);
+                    i.putExtra("height", treeData[27]);
+                    startActivity(i);
+
+
                     return true;
                 });
 
                 map.getOverlays().add(marker);
             }
 
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateGoals(){
+
+        if(currentGoals[0] == 0) currentGoals[0] = 1; // will be made random once list is expanded
+        if(currentGoals[1] == 0) currentGoals[1] = 2;
+
+        if(goalsProgress[0] >= scoreList[currentGoals[0]]) {
+            Toast.makeText(this, "Goal complete!", Toast.LENGTH_SHORT).show();
+            goalsProgress[0] = 0;
+            currentGoals[0] = 1; // new random int
+        }
+
+        if(goalsProgress[1] >= scoreList[currentGoals[1]]) {
+            Toast.makeText(this, "Goal complete!", Toast.LENGTH_SHORT).show();
+            goalsProgress[1] = 0;
+            currentGoals[1] = 2; // new random int not equal to the first one
+        }
+
     }
 }
