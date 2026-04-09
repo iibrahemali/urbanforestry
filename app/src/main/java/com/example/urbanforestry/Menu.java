@@ -1,5 +1,7 @@
 package com.example.urbanforestry;
 
+import static com.example.urbanforestry.HomePage.goalsProgress;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +22,6 @@ import java.util.Random;
 public class Menu extends AppCompatActivity {
     String[] gameList;
     int[] scoreList;
-    int[] goalsProgress;
     int[] currentGoals;
 
     @Override
@@ -38,7 +39,6 @@ public class Menu extends AppCompatActivity {
         gameList = i.getStringArrayExtra("gameList");
         scoreList = i.getIntArrayExtra("scoreList");
         currentGoals = i.getIntArrayExtra("currentGoals");
-        goalsProgress = i.getIntArrayExtra("goalsProgress");
 
         Button signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(v -> {
@@ -65,7 +65,7 @@ public class Menu extends AppCompatActivity {
         goalProgress1.setText(goalP1);
 
         int currentGoal2 = currentGoals[1];
-        goal1.setText(gameList[currentGoal2]);
+        goal2.setText(gameList[currentGoal2]);
         String goalP2 = ": " + String.valueOf(goalsProgress[1]) + "/" + scoreList[currentGoal2];
         goalProgress2.setText(goalP2);
 
