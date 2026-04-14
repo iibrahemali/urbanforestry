@@ -13,6 +13,15 @@ public class Post {
     public boolean isCommentsVisible = false;
     public List<Comment> comments = new ArrayList<>();
 
+    // Location fields
+    public boolean hasLocation = false;
+    public double latitude;
+    public double longitude;
+
+    // No-argument constructor required for Firebase
+    public Post() {
+    }
+
     public Post(String username, String imagePath, String text) {
         this.username = username;
         this.imagePath = imagePath;
@@ -24,5 +33,15 @@ public class Post {
         this.username = username;
         this.resourceId = resourceId;
         this.text = text;
+    }
+
+    // Constructor with location
+    public Post(String username, String imagePath, String text, double latitude, double longitude) {
+        this.username = username;
+        this.imagePath = imagePath;
+        this.text = text;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.hasLocation = true;
     }
 }
