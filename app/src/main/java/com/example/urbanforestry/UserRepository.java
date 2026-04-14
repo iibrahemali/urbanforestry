@@ -33,12 +33,10 @@ public class UserRepository {
 
         Task<Void> rtdbTask = mDatabase.child("users").child(userId).setValue(rtdbMap);
 
-        // Firestore: Extended profile document
+        // Firestore: Extended profile document (cleaned up)
         Map<String, Object> firestoreMap = new HashMap<>();
         firestoreMap.put("uid", userId);
         firestoreMap.put("bio", "");
-        firestoreMap.put("followerCount", 0);
-        firestoreMap.put("followingCount", 0);
         firestoreMap.put("postCount", 0);
         firestoreMap.put("totalLikes", 0);
         firestoreMap.put("createdAt", FieldValue.serverTimestamp());
