@@ -1,11 +1,13 @@
 package com.example.urbanforestry;
 
+import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -21,10 +24,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     private List<Post> posts;
     private PostRepository postRepository;
+    private String currentUid;
 
     public PostAdapter(List<Post> posts) {
         this.posts = posts;
         this.postRepository = new PostRepository();
+        this.currentUid = FirebaseAuth.getInstance().getUid();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -33,6 +38,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         TextView textView;
         MaterialButton btnHeart;
         MaterialButton btnComment;
+        ImageButton btnDelete;
         
         View commentsSection;
         LinearLayout commentsList;
@@ -47,6 +53,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             textView = view.findViewById(R.id.post_text);
             btnHeart = (MaterialButton) view.findViewById(R.id.btn_heart);
             btnComment = (MaterialButton) view.findViewById(R.id.btn_comment);
+            btnDelete = view.findViewById(R.id.btn_delete);
             
             commentsSection = view.findViewById(R.id.comments_section);
             commentsList = view.findViewById(R.id.comments_list);
@@ -74,6 +81,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.commentsList.removeAllViews();
         holder.commentsSection.setVisibility(View.GONE);
         holder.noCommentsTv.setVisibility(View.GONE);
+
+        // Show delete button only if current user is the owner
+        if (post.uid != null && post.uid.equals(currentUid)) {
+            holder.btnDelete.setVisibility(View.VISIBLE);
+        } else {
+            holder.btnDelete.setVisibility(View.GONE);
+        }
+
+        // Delete Click Listener
+        holder.btnDelete.setOnClickListener(v -> {
+            new AlertDialog.Builder(holder.itemView.getContext())
+                .setTitle("Delete Post")
+                .setMessage("Are you sure you want to delete this post?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    postRepository.deletePost(post.postId)
+                        .addOnSuccessListener(aVoid -> {
+                            posts.remove(position);
+                            notifyItemRemoved(position);
+                            notifyItemRangeChanged(position, posts.size());
+                            Toast.makeText(holder.itemView.getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(holder.itemView.getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+        });
 
         // Handle Image
         if (post.resourceId != -1) {
@@ -114,7 +149,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         // Like Click Listener
         holder.btnHeart.setOnClickListener(v -> {
             if (post.postId == null) {
-                // Local dummy data toggle
                 if (post.isHeartedByMe) { 
                     post.heartCount--; 
                     post.isHeartedByMe = false; 
@@ -124,11 +158,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 }
                 notifyItemChanged(position);
             } else {
-                // Firebase toggle
                 String reactionEmoji = "❤️"; 
                 postRepository.toggleLike(post.postId, reactionEmoji)
                     .addOnSuccessListener(aVoid -> {
-                        // Toggle local state for immediate feedback
                         if (post.isLikedByMe) {
                             post.likeCount--;
                             post.isLikedByMe = false;
@@ -155,7 +187,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             if (post.postId != null) {
                 loadComments(holder, post);
             } else {
-                // Display local comments for dummy data
                 if (post.comments.isEmpty()) {
                     holder.noCommentsTv.setVisibility(View.VISIBLE);
                 } else {
@@ -177,7 +208,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             if (commentText.isEmpty()) return;
 
             if (post.postId == null) {
-                // Dummy data
                 post.comments.add(new Comment("You", commentText));
                 holder.etComment.setText("");
                 notifyItemChanged(position);
@@ -187,7 +217,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     .addOnSuccessListener(aVoid -> {
                         holder.etComment.setText("");
                         holder.btnSendComment.setEnabled(true);
-                        // Local update if needed, though SnapshotListener might handle it
                         post.commentCount++;
                         notifyItemChanged(position);
                     })
