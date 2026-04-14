@@ -5,8 +5,10 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,11 +40,21 @@ public class UserRepository {
         firestoreMap.put("followerCount", 0);
         firestoreMap.put("followingCount", 0);
         firestoreMap.put("postCount", 0);
+        firestoreMap.put("totalLikes", 0);
         firestoreMap.put("createdAt", FieldValue.serverTimestamp());
 
         Task<Void> firestoreTask = mFirestore.collection("users").document(userId).set(firestoreMap);
 
-        // Combine both tasks
         return Tasks.whenAll(rtdbTask, firestoreTask);
+    }
+
+    public Task<DocumentSnapshot> getUserFirestoreData(String userId) {
+        return mFirestore.collection("users").document(userId).get();
+    }
+
+    public Task<QuerySnapshot> getUserPosts(String userId) {
+        return mFirestore.collection("posts")
+                .whereEqualTo("uid", userId)
+                .get();
     }
 }

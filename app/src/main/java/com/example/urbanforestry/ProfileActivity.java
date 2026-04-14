@@ -15,13 +15,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private TextView accountName, usernameText;
-    private Button backButton;
+    private TextView accountName, usernameText, profileBio, postsCount, likesCount;
+    private Button backButton, editProfileButton;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
+    private UserRepository userRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +33,15 @@ public class ProfileActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        userRepository = new UserRepository();
 
         accountName = findViewById(R.id.accountName);
         usernameText = findViewById(R.id.username);
+        profileBio = findViewById(R.id.profileBio);
+        postsCount = findViewById(R.id.postsCount);
+        likesCount = findViewById(R.id.likesCount);
         backButton = findViewById(R.id.backButton);
+        editProfileButton = findViewById(R.id.editProfileButton);
 
         backButton.setOnClickListener(v -> finish());
 
@@ -45,6 +53,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (user != null) {
             String userId = user.getUid();
             
+            // 1. Load basic info from Realtime Database (Name/Username)
             mDatabase.child("users").child(userId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -58,10 +67,42 @@ public class ProfileActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(ProfileActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show();
+                public void onCancelled(@NonNull DatabaseError error) {}
+            });
+
+            // 2. Load Firestore Profile Data (Bio, PostCount)
+            userRepository.getUserFirestoreData(userId).addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    String bio = documentSnapshot.getString("bio");
+                    Long pCount = documentSnapshot.getLong("postCount");
+                    
+                    if (bio != null && !bio.isEmpty()) {
+                        profileBio.setText(bio);
+                    } else {
+                        profileBio.setText("No bio yet.");
+                    }
+                    
+                    if (pCount != null) {
+                        postsCount.setText(String.valueOf(pCount));
+                    }
                 }
             });
+
+            // 3. Calculate Total Likes from all user's posts
+            userRepository.getUserPosts(userId).addOnSuccessListener(queryDocumentSnapshots -> {
+                long totalLikes = 0;
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    Long likes = document.getLong("likeCount");
+                    if (likes != null) {
+                        totalLikes += likes;
+                    }
+                }
+                likesCount.setText(String.valueOf(totalLikes));
+                
+                // Optional: sync postCount if mismatch
+                postsCount.setText(String.valueOf(queryDocumentSnapshots.size()));
+            });
+
         } else {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
         }
