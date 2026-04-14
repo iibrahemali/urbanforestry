@@ -15,14 +15,19 @@ public class Post {
 
     // UI state
     public boolean isLikedByMe;
-    public String userEmoji; // The emoji the user reacted with if any
+    public String userEmoji;
 
-    // Legacy fields (keeping for compatibility if needed, but Firestore uses the above)
+    // Location fields (for the logo post / library directions)
+    public boolean hasLocation = false;
+    public double latitude;
+    public double longitude;
+
+    // Legacy fields
     public String imagePath;
     public int resourceId = -1;
-    public String text; // We'll map caption to this
-    public int heartCount = 0; // We'll map likeCount to this
-    public boolean isHeartedByMe = false; // We'll map isLikedByMe to this
+    public String text; 
+    public int heartCount = 0;
+    public boolean isHeartedByMe = false;
     public boolean isCommentsVisible = false;
     public List<Comment> comments = new ArrayList<>();
 
@@ -37,7 +42,6 @@ public class Post {
         this.caption = text;
     }
 
-    // Constructor for drawable resources (dummy data)
     public Post(String username, int resourceId, String text) {
         this.username = username;
         this.resourceId = resourceId;
