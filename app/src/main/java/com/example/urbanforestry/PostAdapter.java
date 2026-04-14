@@ -10,17 +10,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     private List<Post> posts;
+    private PostRepository postRepository;
 
     public PostAdapter(List<Post> posts) {
         this.posts = posts;
+        this.postRepository = new PostRepository();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -30,7 +36,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         Button btnHeart;
         Button btnComment;
         
-        // Comment section views
         View commentsSection;
         LinearLayout commentsList;
         TextView noCommentsTv;
@@ -66,89 +71,136 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         holder.username.setText(post.username);
 
-        // ALWAYS reset first
         holder.imageView.setVisibility(View.GONE);
         holder.textView.setVisibility(View.GONE);
         holder.commentsList.removeAllViews();
         holder.commentsSection.setVisibility(View.GONE);
         holder.noCommentsTv.setVisibility(View.GONE);
 
-        boolean hasImage = false;
-
-        // CASE 1: Resource ID (Dummy Data)
+        // Handle Image
         if (post.resourceId != -1) {
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageResource(post.resourceId);
-            hasImage = true;
-        }
-        // CASE 2: Image Path (Disk File)
-        else if (post.imagePath != null && !post.imagePath.isEmpty()) {
+        } else if (post.imagePath != null && !post.imagePath.isEmpty()) {
             holder.imageView.setVisibility(View.VISIBLE);
             Bitmap bitmap = BitmapFactory.decodeFile(post.imagePath);
             holder.imageView.setImageBitmap(bitmap);
-            hasImage = true;
         }
 
-        // Handle Text / Caption
-        if (post.text != null && !post.text.isEmpty()) {
+        // Handle Caption/Text
+        String displayCaption = post.caption != null ? post.caption : post.text;
+        if (displayCaption != null && !displayCaption.isEmpty()) {
             holder.textView.setVisibility(View.VISIBLE);
-            holder.textView.setText(post.text);
-        }
-        else if (!hasImage) {
-            holder.textView.setVisibility(View.VISIBLE);
-            holder.textView.setText("Empty post");
+            holder.textView.setText(displayCaption);
         }
 
-        // Handle Heart Button
-        holder.btnHeart.setText("💚 " + post.heartCount);
-        holder.btnHeart.setAlpha(post.isHeartedByMe ? 1.0f : 0.5f);
+        // Handle Like/Heart Button
+        int currentLikes = post.postId != null ? post.likeCount : post.heartCount;
+        boolean isLiked = post.postId != null ? post.isLikedByMe : post.isHeartedByMe;
+        String emoji = post.userEmoji != null ? post.userEmoji : "❤️";
+        
+        holder.btnHeart.setText(emoji + " " + currentLikes);
+        holder.btnHeart.setAlpha(isLiked ? 1.0f : 0.5f);
 
-        // Handle Comment Button (Counter)
-        holder.btnComment.setText("💬 " + post.comments.size());
+        // Handle Comment Button
+        int currentComments = post.postId != null ? post.commentCount : (post.comments != null ? post.comments.size() : 0);
+        holder.btnComment.setText("💬 " + currentComments);
 
-        // Handle Comments Visibility
-        if (post.isCommentsVisible) {
-            holder.commentsSection.setVisibility(View.VISIBLE);
-            
-            if (post.comments.isEmpty()) {
-                holder.noCommentsTv.setVisibility(View.VISIBLE);
-            } else {
-                holder.noCommentsTv.setVisibility(View.GONE);
-                for (Comment comment : post.comments) {
-                    TextView ct = new TextView(holder.itemView.getContext());
-                    ct.setText(comment.username + ": " + comment.text);
-                    ct.setPadding(8, 4, 8, 4);
-                    ct.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.logo_color));
-                    holder.commentsList.addView(ct);
-                }
-            }
-        }
-
-        // Click Listeners
+        // Like Click Listener
         holder.btnHeart.setOnClickListener(v -> {
-            if (post.isHeartedByMe) {
-                post.heartCount--;
-                post.isHeartedByMe = false;
-            } else {
-                post.heartCount++;
-                post.isHeartedByMe = true;
+            if (post.postId == null) {
+                if (post.isHeartedByMe) { post.heartCount--; post.isHeartedByMe = false; }
+                else { post.heartCount++; post.isHeartedByMe = true; }
+                notifyItemChanged(position);
+                return;
             }
-            notifyItemChanged(position);
+
+            String reactionEmoji = "❤️";
+            postRepository.toggleLike(post.postId, reactionEmoji)
+                .addOnSuccessListener(aVoid -> {
+                    if (post.isLikedByMe) {
+                        post.likeCount--;
+                        post.isLikedByMe = false;
+                        post.userEmoji = null;
+                    } else {
+                        post.likeCount++;
+                        post.isLikedByMe = true;
+                        post.userEmoji = reactionEmoji;
+                    }
+                    notifyItemChanged(position);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(holder.itemView.getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
         });
 
+        // Toggle Comments & Load them
         holder.btnComment.setOnClickListener(v -> {
             post.isCommentsVisible = !post.isCommentsVisible;
+            if (post.isCommentsVisible && post.postId != null) {
+                loadComments(holder, post);
+            } else {
+                holder.commentsSection.setVisibility(View.GONE);
+            }
             notifyItemChanged(position);
         });
 
+        if (post.isCommentsVisible) {
+            holder.commentsSection.setVisibility(View.VISIBLE);
+            if (post.postId != null) {
+                loadComments(holder, post);
+            }
+        }
+
+        // Add Comment Listener
         holder.btnSendComment.setOnClickListener(v -> {
             String commentText = holder.etComment.getText().toString().trim();
-            if (!commentText.isEmpty()) {
+            if (commentText.isEmpty()) return;
+
+            if (post.postId == null) {
+                // Dummy data
                 post.comments.add(new Comment("You", commentText));
-                holder.etComment.setText(""); // Clear input
+                holder.etComment.setText("");
                 notifyItemChanged(position);
+                return;
             }
+
+            holder.btnSendComment.setEnabled(false);
+            postRepository.addComment(post.postId, commentText)
+                .addOnSuccessListener(aVoid -> {
+                    holder.etComment.setText("");
+                    holder.btnSendComment.setEnabled(true);
+                    post.commentCount++;
+                    loadComments(holder, post); // Refresh
+                    notifyItemChanged(position);
+                })
+                .addOnFailureListener(e -> {
+                    holder.btnSendComment.setEnabled(true);
+                    Toast.makeText(holder.itemView.getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
         });
+    }
+
+    private void loadComments(ViewHolder holder, Post post) {
+        if (post.postId == null) return;
+        
+        postRepository.getComments(post.postId)
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                holder.commentsList.removeAllViews();
+                List<Comment> comments = queryDocumentSnapshots.toObjects(Comment.class);
+                if (comments.isEmpty()) {
+                    holder.noCommentsTv.setVisibility(View.VISIBLE);
+                } else {
+                    holder.noCommentsTv.setVisibility(View.GONE);
+                    for (Comment comment : comments) {
+                        TextView ct = new TextView(holder.itemView.getContext());
+                        ct.setText(comment.username + ": " + comment.text);
+                        ct.setPadding(8, 4, 8, 4);
+                        ct.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.logo_color));
+                        holder.commentsList.addView(ct);
+                    }
+                }
+            });
     }
 
     @Override

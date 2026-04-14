@@ -1,31 +1,40 @@
 package com.example.urbanforestry;
 
+import com.google.firebase.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Post {
+    public String postId;
+    public String uid;
     public String username;
-    public String imagePath; // null if text post (for disk files)
-    public int resourceId = -1; // -1 if not a drawable resource
-    public String text;      // null if image post
-    public int heartCount = 0;
-    public boolean isHeartedByMe = false;
+    public String caption;
+    public int likeCount;
+    public int commentCount;
+    public Timestamp createdAt;
+
+    // UI state
+    public boolean isLikedByMe;
+    public String userEmoji; // The emoji the user reacted with if any
+
+    // Legacy fields (keeping for compatibility if needed, but Firestore uses the above)
+    public String imagePath;
+    public int resourceId = -1;
+    public String text; // We'll map caption to this
+    public int heartCount = 0; // We'll map likeCount to this
+    public boolean isHeartedByMe = false; // We'll map isLikedByMe to this
     public boolean isCommentsVisible = false;
     public List<Comment> comments = new ArrayList<>();
 
-    // Location fields
-    public boolean hasLocation = false;
-    public double latitude;
-    public double longitude;
-
-    // No-argument constructor required for Firebase
     public Post() {
+        // Required for Firestore
     }
 
     public Post(String username, String imagePath, String text) {
         this.username = username;
         this.imagePath = imagePath;
         this.text = text;
+        this.caption = text;
     }
 
     // Constructor for drawable resources (dummy data)
@@ -33,15 +42,6 @@ public class Post {
         this.username = username;
         this.resourceId = resourceId;
         this.text = text;
-    }
-
-    // Constructor with location
-    public Post(String username, String imagePath, String text, double latitude, double longitude) {
-        this.username = username;
-        this.imagePath = imagePath;
-        this.text = text;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.hasLocation = true;
+        this.caption = text;
     }
 }
