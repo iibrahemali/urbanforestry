@@ -2,6 +2,8 @@ package com.example.urbanforestry;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 
@@ -76,5 +78,16 @@ public class TreeInfo extends AppCompatActivity {
             description.setText(i.getStringExtra("description"));
         else
             description.setVisibility(View.GONE);
+
+        TextView mortonLink = findViewById(R.id.mortonLink);
+        if (!i.getStringExtra("mortonPage").isEmpty()) {
+            String url = "https://mortonarb.org/plant-and-protect/trees-and-plants/"
+                    + i.getStringExtra("mortonPage") + "/";
+            String linkHtml = "<a href=\"" + url + "\">More info from the Morton Arboretum</a>";
+            mortonLink.setText(Html.fromHtml(linkHtml, Html.FROM_HTML_MODE_COMPACT));
+            mortonLink.setMovementMethod(LinkMovementMethod.getInstance());
+        } else {
+            mortonLink.setVisibility(View.GONE);
+        }
     }
 }

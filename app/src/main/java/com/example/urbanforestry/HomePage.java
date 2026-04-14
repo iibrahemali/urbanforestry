@@ -11,10 +11,7 @@ import android.os.Bundle;
 
 import androidx.preference.PreferenceManager;
 
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -26,8 +23,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
@@ -65,7 +60,6 @@ public class HomePage extends AppCompatActivity {
     private List<HashSet<String>> visitedTreesBySlot = new ArrayList<>();
 
     private Polyline roadOverlay;
-
 
 
     @Override
@@ -120,7 +114,7 @@ public class HomePage extends AppCompatActivity {
         if (getIntent().getBooleanExtra("getDirections", false)) {
             double destLat = getIntent().getDoubleExtra("destLat", 0.0);
             double destLng = getIntent().getDoubleExtra("destLng", 0.0);
-            
+
             if (locationOverlay != null) {
                 locationOverlay.runOnFirstFix(() -> {
                     GeoPoint myLocation = locationOverlay.getMyLocation();
@@ -151,14 +145,14 @@ public class HomePage extends AppCompatActivity {
             if (roadOverlay != null) {
                 map.getOverlays().remove(roadOverlay);
             }
-            
+
             if (road != null && road.mStatus == Road.STATUS_OK) {
                 roadOverlay = RoadManager.buildRoadOverlay(road);
                 roadOverlay.setColor(Color.BLUE);
                 roadOverlay.setWidth(10);
                 map.getOverlays().add(roadOverlay);
                 map.invalidate();
-                
+
                 // Zoom to fit the road
                 map.zoomToBoundingBox(road.mBoundingBox, true);
             } else {
@@ -191,7 +185,7 @@ public class HomePage extends AppCompatActivity {
 
         map.getOverlays().add(this.locationOverlay);
         map.getController().setZoom(18.0);
-        
+
         handleDirectionsIntent();
     }
 
@@ -272,36 +266,40 @@ public class HomePage extends AppCompatActivity {
 
 
                 marker.setOnMarkerClickListener((m, mapView) -> {
-
-                    if (locationOverlay.getMyLocation() == null) return true;
-
-                    double distance = locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
-                    if (distance > 10.0) {
-                        Toast.makeText(this, "Too far!", Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-
-                    String treeId = m.getPosition().getLatitude() + "," + m.getPosition().getLongitude();
                     String[] treeData = (String[]) m.getRelatedObject();
-                    boolean progressMade = false;
+                    String treeId = m.getPosition().getLatitude() + "," + m.getPosition().getLongitude();
 
-                    // Loop through all active goal slots, to make it more flexible in case later more are deired
-                    for (int ii = 0; ii < currentGoals.length; ii++) {
-                        int activeGoalId = currentGoals[ii];
-                        HashSet<String> visitedForThisSlot = visitedTreesBySlot.get(ii);
+                    // Update goal progress
+                    if (locationOverlay.getMyLocation() != null) {
+                        double distance = locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
+                        boolean progressMade = false;
 
-                        // has this tree been checked for this specific goal
-                        if (!visitedForThisSlot.contains(treeId)) {
-                            if (isGoalSatisfied(activeGoalId, treeData)) {
-                                goalsProgress[ii]++;
-                                visitedForThisSlot.add(treeId);
-                                progressMade = true;
-                                Toast.makeText(this, "Made rogress on Goal: " + gameList[activeGoalId], Toast.LENGTH_SHORT).show();
+                        // Trees can only be "discovered" if the user is within 10m
+                        if (distance <= 10.0) {
+                            // Loop through all active goal slots, to make it more flexible in case later more are deired
+                            for (int ii = 0; ii < currentGoals.length; ii++) {
+                                int activeGoalId = currentGoals[ii];
+                                HashSet<String> visitedForThisSlot = visitedTreesBySlot.get(ii);
+
+                                // has this tree been checked for this specific goal
+                                if (!visitedForThisSlot.contains(treeId)) {
+                                    if (isGoalSatisfied(activeGoalId, treeData)) {
+                                        goalsProgress[ii]++;
+                                        visitedForThisSlot.add(treeId);
+                                        progressMade = true;
+                                        Toast.makeText(this, "Made rogress on Goal: " + gameList[activeGoalId], Toast.LENGTH_SHORT).show();
+                                    }
+                                }
                             }
                         }
+
+                        if (progressMade) updateGoals();
                     }
 
-                    if (progressMade) updateGoals();
+                    // Show the tree info
+                    Intent i = getIntent(treeData);
+                    startActivity(i);
+
                     return true;
                 });
 
@@ -321,17 +319,24 @@ public class HomePage extends AppCompatActivity {
         String status = treeData[23].toLowerCase();
 
         switch (goalId) {
-            case 1: return status.contains("non-native");
-            case 2: return commonName.contains("oak");
-            case 3: return commonName.contains("maple");
-            case 4: return treeData[33].toLowerCase().contains("red"); // Fall color check
-            default: return false;
+            case 1:
+                return status.contains("non-native");
+            case 2:
+                return commonName.contains("oak");
+            case 3:
+                return commonName.contains("maple");
+            case 4:
+                return treeData[33].toLowerCase().contains("red"); // Fall color check
+            default:
+                return false;
         }
     }
+
     @NonNull
     private Intent getIntent(String[] treeData) {
         Intent i = new Intent(getApplicationContext(), TreeInfo.class);
 
+        // Send relevant tree data to the info page
         i.putExtra("commonName", treeData[1]);
         i.putExtra("botanicalName", treeData[2]);
         i.putExtra("familyCommon", treeData[55]);
@@ -344,11 +349,14 @@ public class HomePage extends AppCompatActivity {
         i.putExtra("dbh", treeData[5]);
         i.putExtra("height", treeData[27]);
         i.putExtra("description", getDescription(treeData));
+        i.putExtra("mortonPage", getMortonPageName(treeData));
 
         return i;
     }
 
     private String getDescription(String[] treeData) {
+        // Get the tree's botanical name, and return the corresponding description in strings.xml
+
         String strName = treeData[2].replaceAll(" ", "_");
         int strId = getResources().getIdentifier(strName, "string", getPackageName());
 
@@ -369,6 +377,54 @@ public class HomePage extends AppCompatActivity {
             }
     }
 
+    // When new species are added to the database, this function must be updated to ensure no invalid links
+    private String getMortonPageName(String[] treeData) {
+        // Handle cases where the common name in our data doesn't match the site's
+        switch (treeData[1]) {
+            case "Baldcypress":
+                return "bald-cypress";
+            case "Bigleaf linden":
+                return "big-leaved-linden";
+            case "Black tupelo":
+                return "tupelo";
+            case "Eastern redbud":
+                return "redbud";
+            case "Freeman maple":
+                return "freemans-maple";
+            case "Goldenrain tree":
+                return "golden-rain-tree";
+            case "Honeylocust":
+                return "honey-locust";
+            case "Kentucky Coffee tree":
+                return "kentucky-coffeetree";
+            case "Northern white cedar":
+                return "eastern-arborvitae";
+            case "Pagoda-tree":
+                return "japanese-scholar-tree";
+            case "Paperbark maple":
+                return "paper-barked-maple";
+            case "Snowdrop tree":
+                return "silverbell";
+            case "Sweetgum":
+                return "sweet-gum";
+            case "Deodar cedar":
+            case "Lily Magnolia":
+            case "Punk tree":
+            case "Sawtooth oak":
+            case "Soulard crab":
+            case "Southern red oak":
+            case "Weeping willow":
+            case "Yellow wood":
+            case "yew spp":
+            case "Tree, Unknown":
+                // No page exists
+                return "";
+            default:
+                // Default format
+                return treeData[1].toLowerCase().replaceAll(" ", "-");
+        }
+    }
+
     public void updateGoals() {
         Random rand = new Random();
         if (currentGoals[0] == 0) currentGoals[0] = 1; // will be made random once list is expanded
@@ -382,9 +438,9 @@ public class HomePage extends AppCompatActivity {
                 visitedTreesBySlot.get(ii).clear();
 
                 goalsProgress[ii] = 0;
-                do{
+                do {
                     currentGoals[ii] = rand.nextInt(gameList.length);
-                }while(currentGoals[ii] == 0 || currentGoals[ii] == currentGoals[ii - 1]); // may need to change to make more robust
+                } while (currentGoals[ii] == 0 || currentGoals[ii] == currentGoals[ii - 1]); // may need to change to make more robust
             }
         }
 
@@ -401,7 +457,7 @@ public class HomePage extends AppCompatActivity {
             while ((line = reader.readLine()) != null) {
                 // Bin Name,Coordinates,Link
                 String[] cols = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-                
+
                 if (firstLine) {
                     firstLine = false;
                     continue;
