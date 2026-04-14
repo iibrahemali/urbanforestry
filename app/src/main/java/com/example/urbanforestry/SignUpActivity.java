@@ -15,13 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -30,7 +26,7 @@ public class SignUpActivity extends AppCompatActivity {
     Button signUpButton;
     TextView goToLogin;
     FirebaseAuth mAuth;
-    DatabaseReference mDatabase;
+    UserRepository userRepository;
 
     private static final String[] EMAIL_DOMAINS = {
             "gmail.com", "outlook.com", "yahoo.com", "hotmail.com", "icloud.com", "fandm.edu", "cityoflancasterpa.gov"
@@ -42,7 +38,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        userRepository = new UserRepository();
 
         nameEditText = findViewById(R.id.nameEditText);
         usernameEditText = findViewById(R.id.usernameEditText);
@@ -88,20 +84,14 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void saveUserToDatabase(String userId, String name, String username, String email) {
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("name", name);
-        userMap.put("username", username);
-        userMap.put("email", email);
-
-        mDatabase.child("users").child(userId).setValue(userMap)
-            .addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(this, HomePage.class));
-                    finish();
-                } else {
-                    Toast.makeText(this, "Database Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
+        userRepository.createUserProfile(userId, name, username, email)
+            .addOnSuccessListener(aVoid -> {
+                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, HomePage.class));
+                finish();
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(this, "Database Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             });
     }
 
