@@ -4,6 +4,9 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.preference.PreferenceManager;
@@ -26,9 +29,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.views.MapView;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -54,6 +61,7 @@ public class HomePage extends AppCompatActivity {
     public static int[] currentGoals = {0, 0};
     public static int[] goalsProgress = {0, 0};
 
+    private Polyline roadOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +78,7 @@ public class HomePage extends AppCompatActivity {
         map.setMultiTouchControls(true);
 
         loadTreeData(); // This loads all of the trees
+        loadCompostData(); // This loads all of the compost bins
         map.invalidate();
 
         requestPermissionsIfNecessary(new String[]{
@@ -99,6 +108,57 @@ public class HomePage extends AppCompatActivity {
         });
     }
 
+    private void handleDirectionsIntent() {
+        if (getIntent().getBooleanExtra("getDirections", false)) {
+            double destLat = getIntent().getDoubleExtra("destLat", 0.0);
+            double destLng = getIntent().getDoubleExtra("destLng", 0.0);
+            
+            if (locationOverlay != null) {
+                locationOverlay.runOnFirstFix(() -> {
+                    GeoPoint myLocation = locationOverlay.getMyLocation();
+                    if (myLocation != null) {
+                        runOnUiThread(() -> getDirections(myLocation, new GeoPoint(destLat, destLng)));
+                    }
+                });
+            }
+        }
+    }
+
+    private void getDirections(GeoPoint startPoint, GeoPoint endPoint) {
+        new UpdateRoadTask().execute(startPoint, endPoint);
+    }
+
+    private class UpdateRoadTask extends AsyncTask<GeoPoint, Void, Road> {
+        @Override
+        protected Road doInBackground(GeoPoint... params) {
+            RoadManager roadManager = new OSRMRoadManager(HomePage.this, "Urban Forestry App");
+            ArrayList<GeoPoint> waypoints = new ArrayList<>();
+            waypoints.add(params[0]);
+            waypoints.add(params[1]);
+            return roadManager.getRoad(waypoints);
+        }
+
+        @Override
+        protected void onPostExecute(Road road) {
+            if (roadOverlay != null) {
+                map.getOverlays().remove(roadOverlay);
+            }
+            
+            if (road != null && road.mStatus == Road.STATUS_OK) {
+                roadOverlay = RoadManager.buildRoadOverlay(road);
+                roadOverlay.setColor(Color.BLUE);
+                roadOverlay.setWidth(10);
+                map.getOverlays().add(roadOverlay);
+                map.invalidate();
+                
+                // Zoom to fit the road
+                map.zoomToBoundingBox(road.mBoundingBox, true);
+            } else {
+                Toast.makeText(HomePage.this, "Error getting directions", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -123,6 +183,8 @@ public class HomePage extends AppCompatActivity {
 
         map.getOverlays().add(this.locationOverlay);
         map.getController().setZoom(18.0);
+        
+        handleDirectionsIntent();
     }
 
     private void requestPermissionsIfNecessary(String[] permissions) {
@@ -297,5 +359,57 @@ public class HomePage extends AppCompatActivity {
             currentGoals[1] = 2; // new random int not equal to the first one
         }
 
+    }
+
+    private void loadCompostData() {
+        try {
+            InputStream is = getAssets().open("compostBins.csv");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+
+            String line;
+            boolean firstLine = true;
+
+            while ((line = reader.readLine()) != null) {
+                // Bin Name,Coordinates,Link
+                String[] cols = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+
+                String binName = cols[0].replaceAll("^\"|\"$", "");
+                String coordsStr = cols[1].replaceAll("^\"|\"$", "");
+                String link = cols[2].replaceAll("^\"|\"$", "");
+
+                String[] latLng = coordsStr.split(",");
+                double lat = Double.parseDouble(latLng[0].trim());
+                double lng = Double.parseDouble(latLng[1].trim());
+
+                GeoPoint point = new GeoPoint(lat, lng);
+                Marker marker = new Marker(map);
+                marker.setPosition(point);
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                marker.setIcon(ContextCompat.getDrawable(this, R.drawable.brown_dot));
+                marker.setTitle(binName);
+
+                marker.setOnMarkerClickListener((m, mapView) -> {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
+                    builder.setTitle(binName);
+                    builder.setMessage("Composting is the process of recycling organic waste, like food scraps and leaves, into nutrient-rich soil.");
+                    builder.setPositiveButton("Visit Link", (dialog, which) -> {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                        startActivity(browserIntent);
+                    });
+                    builder.setNegativeButton("Close", null);
+                    builder.show();
+                    return true;
+                });
+
+                map.getOverlays().add(marker);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

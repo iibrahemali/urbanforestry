@@ -81,7 +81,7 @@
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/goalContainer2"
-        app:layout_cosntraintRight_toLeftOf="@id/aboutButton" />
+        app:layout_constraintRight_toLeftOf="@id/aboutButton" />
 
     <Button
         android:id="@+id/aboutButton"
