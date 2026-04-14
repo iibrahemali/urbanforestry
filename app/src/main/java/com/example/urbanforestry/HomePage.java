@@ -60,8 +60,12 @@ public class HomePage extends AppCompatActivity {
     final int[] scoreList = {0, 6, 8};
     public static int[] currentGoals = {0, 0};
     public static int[] goalsProgress = {0, 0};
+    private java.util.HashSet<String> visitedTreesGoal1 = new java.util.HashSet<>();
+    private java.util.HashSet<String> visitedTreesGoal2 = new java.util.HashSet<>();
 
     private Polyline roadOverlay;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -262,37 +266,47 @@ public class HomePage extends AppCompatActivity {
                 // Make it a small green dot
                 marker.setIcon(ContextCompat.getDrawable(this, R.drawable.green_dot));
 
-                final int finalLat = latIndex;
-                final int finalLng = lngIndex;
+
                 marker.setOnMarkerClickListener((m, mapView) -> {
 
                     String[] treeData = (String[]) m.getRelatedObject();
+                    String treeId = m.getPosition().getLatitude() + "," + m.getPosition().getLongitude();
+
 
                     String status = treeData[23].toLowerCase();
                     String commonName = treeData[1].toLowerCase();
 
+                    double distance = locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
                     // Goal 1: Find invasive tree species (index 1 in gameList)
-                    if (currentGoals[0] == 1 && status.contains("Non-native")) {
-                        goalsProgress[0]++;
-                        Toast.makeText(this, "Progress: Non-native tree found!", Toast.LENGTH_SHORT).show();
+                    if(distance <= 10 && !(visitedTreesGoal1.contains(treeId)) || !(visitedTreesGoal2.contains(treeId)) ) {
+                        if (currentGoals[0] == 1 && status.contains("Non-native")) {
+                            goalsProgress[0]++;
+                            Toast.makeText(this, "Progress: Non-native tree found!", Toast.LENGTH_SHORT).show();
+                            visitedTreesGoal1.add(treeId);
+                        }
+
+                        // Goal 2: Find Oaks (index 2 in gameList)
+                        if (currentGoals[1] == 2 && commonName.contains("oak")) {
+                            goalsProgress[1]++;
+                            Toast.makeText(this, "Progress: Oak tree found!", Toast.LENGTH_SHORT).show();
+                            visitedTreesGoal2.add(treeId);
+                        }
+
+                        // Call update method to check for completion
+                        updateGoals();
+                    } else{
+                        if(distance >= 10) Toast.makeText(this, "Get closer to the tree!", Toast.LENGTH_SHORT).show();
+                        else Toast.makeText(this, "Tree already counted for a goal", Toast.LENGTH_SHORT).show();
                     }
-
-                    // Goal 2: Find Oaks (index 2 in gameList)
-                    if (currentGoals[1] == 2 && commonName.contains("oak")) {
-                        goalsProgress[1]++;
-                        Toast.makeText(this, "Progress: Oak tree found!", Toast.LENGTH_SHORT).show();
-                    }
-
-                    // Call your update method to check for completion
-                    updateGoals();
-
                     Intent i = getIntent(treeData);
                     startActivity(i);
 
                     return true;
                 });
 
+
                 map.getOverlays().add(marker);
+
             }
 
 
@@ -351,12 +365,14 @@ public class HomePage extends AppCompatActivity {
             Toast.makeText(this, "Goal complete!", Toast.LENGTH_SHORT).show();
             goalsProgress[0] = 0;
             currentGoals[0] = 1; // new random int
+            visitedTreesGoal1.clear();
         }
 
         if (goalsProgress[1] >= scoreList[currentGoals[1]]) {
             Toast.makeText(this, "Goal complete!", Toast.LENGTH_SHORT).show();
             goalsProgress[1] = 0;
             currentGoals[1] = 2; // new random int not equal to the first one
+            visitedTreesGoal2.clear();
         }
 
     }
