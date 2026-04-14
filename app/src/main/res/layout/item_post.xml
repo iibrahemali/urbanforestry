@@ -53,30 +53,31 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:divider="?android:attr/dividerVertical"
-            android:showDividers="middle">
+            android:orientation="horizontal">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_heart"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="💚 0"
+                android:text="0"
                 android:textColor="@color/logo_color"
-                app:iconTint="@color/logo_color"/>
+                app:icon="@drawable/ic_heart_outline"
+                app:iconTint="@color/logo_color"
+                app:iconGravity="textStart"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_comment"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="💬 0"
+                android:text="0"
                 android:textColor="@color/logo_color"
+                app:icon="@drawable/ic_comment_outline"
                 app:iconTint="@color/logo_color"
-                tools:ignore="RtlHardcoded" />
+                app:iconGravity="textStart"/>
 
         </LinearLayout>
 
@@ -121,7 +122,7 @@
                     android:textColor="@color/logo_color"
                     android:textColorHint="@color/logo_color"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_send_comment"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
