@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -35,6 +38,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         TextView textView;
         Button btnHeart;
         Button btnComment;
+        ImageButton btnDelete;
         
         View commentsSection;
         LinearLayout commentsList;
@@ -49,6 +53,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             textView = view.findViewById(R.id.post_text);
             btnHeart = view.findViewById(R.id.btn_heart);
             btnComment = view.findViewById(R.id.btn_comment);
+            btnDelete = view.findViewById(R.id.btn_delete);
             
             commentsSection = view.findViewById(R.id.comments_section);
             commentsList = view.findViewById(R.id.comments_list);
@@ -76,6 +81,47 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.commentsList.removeAllViews();
         holder.commentsSection.setVisibility(View.GONE);
         holder.noCommentsTv.setVisibility(View.GONE);
+
+        // Show delete button only if current user is the owner
+        String currentUid = FirebaseAuth.getInstance().getUid();
+        if (currentUid != null && post.uid != null && currentUid.equals(post.uid)) {
+            holder.btnDelete.setVisibility(View.VISIBLE);
+        } else {
+            holder.btnDelete.setVisibility(View.GONE);
+        }
+
+        holder.btnDelete.setOnClickListener(v -> {
+            if (post.postId == null) return;
+
+            BottomSheetDialog dialog = new BottomSheetDialog(holder.itemView.getContext(), R.style.DeleteBottomSheetStyle);
+            View dialogView = LayoutInflater.from(holder.itemView.getContext())
+                    .inflate(R.layout.dialog_delete_confirm, null);
+            dialog.setContentView(dialogView);
+
+            // Remove dim background and make it transparent
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+
+            dialogView.getRootView().setBackground(
+                holder.itemView.getContext().getDrawable(R.drawable.bottom_sheet_bg)
+            );
+
+            dialogView.findViewById(R.id.btn_confirm_delete).setOnClickListener(confirmView -> {
+                dialog.dismiss();
+                postRepository.deletePost(post.postId)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(holder.itemView.getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(holder.itemView.getContext(), "Delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+            });
+
+            dialogView.findViewById(R.id.btn_cancel_delete).setOnClickListener(cancelView -> dialog.dismiss());
+
+            dialog.show();
+        });
 
         // Handle Image
         if (post.resourceId != -1) {

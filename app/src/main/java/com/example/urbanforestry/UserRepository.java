@@ -33,7 +33,7 @@ public class UserRepository {
 
         Task<Void> rtdbTask = mDatabase.child("users").child(userId).setValue(rtdbMap);
 
-        // Firestore: Extended profile document (cleaned up)
+        // Firestore: Extended profile document
         Map<String, Object> firestoreMap = new HashMap<>();
         firestoreMap.put("uid", userId);
         firestoreMap.put("bio", "");
@@ -54,5 +54,20 @@ public class UserRepository {
         return mFirestore.collection("posts")
                 .whereEqualTo("uid", userId)
                 .get();
+    }
+
+    public Task<Void> updateProfile(String userId, String name, String username, String bio) {
+        // Update Realtime Database (Name/Username)
+        Map<String, Object> rtdbUpdates = new HashMap<>();
+        rtdbUpdates.put("name", name);
+        rtdbUpdates.put("username", username);
+        Task<Void> rtdbTask = mDatabase.child("users").child(userId).updateChildren(rtdbUpdates);
+
+        // Update Firestore (Bio)
+        Map<String, Object> firestoreUpdates = new HashMap<>();
+        firestoreUpdates.put("bio", bio);
+        Task<Void> firestoreTask = mFirestore.collection("users").document(userId).update(firestoreUpdates);
+
+        return Tasks.whenAll(rtdbTask, firestoreTask);
     }
 }

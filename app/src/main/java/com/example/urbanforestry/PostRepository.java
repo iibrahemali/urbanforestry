@@ -61,6 +61,18 @@ public class PostRepository {
         });
     }
 
+    public Task<Void> deletePost(String postId) {
+        String uid = mAuth.getCurrentUser().getUid();
+        DocumentReference postRef = mFirestore.collection("posts").document(postId);
+        DocumentReference userRef = mFirestore.collection("users").document(uid);
+
+        return mFirestore.runTransaction(transaction -> {
+            transaction.delete(postRef);
+            transaction.update(userRef, "postCount", FieldValue.increment(-1));
+            return null;
+        });
+    }
+
     public Task<Void> toggleLike(String postId, String emoji) {
         String uid = mAuth.getCurrentUser().getUid();
         DocumentReference postRef = mFirestore.collection("posts").document(postId);

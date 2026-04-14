@@ -1,5 +1,6 @@
 package com.example.urbanforestry;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -44,6 +45,16 @@ public class ProfileActivity extends AppCompatActivity {
         editProfileButton = findViewById(R.id.editProfileButton);
 
         backButton.setOnClickListener(v -> finish());
+
+        editProfileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EditProfileActivity.class);
+            // Pass current data to the edit screen
+            intent.putExtra("currentName", accountName.getText().toString());
+            String rawUsername = usernameText.getText().toString();
+            if (rawUsername.startsWith("@")) rawUsername = rawUsername.substring(1);
+            intent.putExtra("currentUsername", rawUsername);
+            startActivity(intent);
+        });
 
         loadUserProfile();
     }
@@ -99,7 +110,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 likesCount.setText(String.valueOf(totalLikes));
                 
-                // Optional: sync postCount if mismatch
+                // Sync postCount based on actual posts found
                 postsCount.setText(String.valueOf(queryDocumentSnapshots.size()));
             });
 

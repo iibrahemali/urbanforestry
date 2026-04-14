@@ -17,6 +17,11 @@ public class Post {
     public boolean isLikedByMe;
     public String userEmoji; // The emoji the user reacted with if any
     
+    // Location fields
+    public boolean hasLocation;
+    public double latitude;
+    public double longitude;
+
     // Legacy fields (keeping for compatibility if needed, but Firestore uses the above)
     public String imagePath; 
     public int resourceId = -1;
