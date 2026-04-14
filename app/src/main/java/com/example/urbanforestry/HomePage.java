@@ -47,6 +47,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 
@@ -56,12 +58,11 @@ public class HomePage extends AppCompatActivity {
     private MapView map = null;
     private MyLocationNewOverlay locationOverlay;
 
-    final String[] gameList = {"N/A", "Find non-native tree species", "Find Oaks"};
-    final int[] scoreList = {0, 6, 8};
+    final String[] gameList = {"N/A", "Find non-native tree species", "Find Oaks", "Find Maple Trees"};
+    final int[] scoreList = {0, 6, 8, 4};
     public static int[] currentGoals = {0, 0};
     public static int[] goalsProgress = {0, 0};
-    private java.util.HashSet<String> visitedTreesGoal1 = new java.util.HashSet<>();
-    private java.util.HashSet<String> visitedTreesGoal2 = new java.util.HashSet<>();
+    private List<HashSet<String>> visitedTreesBySlot = new ArrayList<>();
 
     private Polyline roadOverlay;
 
@@ -80,6 +81,9 @@ public class HomePage extends AppCompatActivity {
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
+
+        visitedTreesBySlot.add(new HashSet<>()); // Slot 0
+        visitedTreesBySlot.add(new HashSet<>());
 
         loadTreeData(); // This loads all of the trees
         loadCompostData(); // This loads all of the compost bins
@@ -269,38 +273,35 @@ public class HomePage extends AppCompatActivity {
 
                 marker.setOnMarkerClickListener((m, mapView) -> {
 
-                    String[] treeData = (String[]) m.getRelatedObject();
-                    String treeId = m.getPosition().getLatitude() + "," + m.getPosition().getLongitude();
-
-
-                    String status = treeData[23].toLowerCase();
-                    String commonName = treeData[1].toLowerCase();
+                    if (locationOverlay.getMyLocation() == null) return true;
 
                     double distance = locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
-                    // Goal 1: Find invasive tree species (index 1 in gameList)
-                    if(distance <= 10 && !(visitedTreesGoal1.contains(treeId)) || !(visitedTreesGoal2.contains(treeId)) ) {
-                        if (currentGoals[0] == 1 && status.contains("Non-native")) {
-                            goalsProgress[0]++;
-                            Toast.makeText(this, "Progress: Non-native tree found!", Toast.LENGTH_SHORT).show();
-                            visitedTreesGoal1.add(treeId);
-                        }
-
-                        // Goal 2: Find Oaks (index 2 in gameList)
-                        if (currentGoals[1] == 2 && commonName.contains("oak")) {
-                            goalsProgress[1]++;
-                            Toast.makeText(this, "Progress: Oak tree found!", Toast.LENGTH_SHORT).show();
-                            visitedTreesGoal2.add(treeId);
-                        }
-
-                        // Call update method to check for completion
-                        updateGoals();
-                    } else{
-                        if(distance >= 10) Toast.makeText(this, "Get closer to the tree!", Toast.LENGTH_SHORT).show();
-                        else Toast.makeText(this, "Tree already counted for a goal", Toast.LENGTH_SHORT).show();
+                    if (distance > 10.0) {
+                        Toast.makeText(this, "Too far!", Toast.LENGTH_SHORT).show();
+                        return true;
                     }
-                    Intent i = getIntent(treeData);
-                    startActivity(i);
 
+                    String treeId = m.getPosition().getLatitude() + "," + m.getPosition().getLongitude();
+                    String[] treeData = (String[]) m.getRelatedObject();
+                    boolean progressMade = false;
+
+                    // Loop through all active goal slots, to make it more flexible in case later more are deired
+                    for (int ii = 0; ii < currentGoals.length; ii++) {
+                        int activeGoalId = currentGoals[ii];
+                        HashSet<String> visitedForThisSlot = visitedTreesBySlot.get(ii);
+
+                        // has this tree been checked for this specific goal
+                        if (!visitedForThisSlot.contains(treeId)) {
+                            if (isGoalSatisfied(activeGoalId, treeData)) {
+                                goalsProgress[ii]++;
+                                visitedForThisSlot.add(treeId);
+                                progressMade = true;
+                                Toast.makeText(this, "Made rogress on Goal: " + gameList[activeGoalId], Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    if (progressMade) updateGoals();
                     return true;
                 });
 
@@ -315,6 +316,18 @@ public class HomePage extends AppCompatActivity {
         }
     }
 
+    private boolean isGoalSatisfied(int goalId, String[] treeData) {
+        String commonName = treeData[1].toLowerCase();
+        String status = treeData[23].toLowerCase();
+
+        switch (goalId) {
+            case 1: return status.contains("non-native");
+            case 2: return commonName.contains("oak");
+            case 3: return commonName.contains("maple");
+            case 4: return treeData[33].toLowerCase().contains("red"); // Fall color check
+            default: return false;
+        }
+    }
     @NonNull
     private Intent getIntent(String[] treeData) {
         Intent i = new Intent(getApplicationContext(), TreeInfo.class);
@@ -357,22 +370,22 @@ public class HomePage extends AppCompatActivity {
     }
 
     public void updateGoals() {
-
+        Random rand = new Random();
         if (currentGoals[0] == 0) currentGoals[0] = 1; // will be made random once list is expanded
         if (currentGoals[1] == 0) currentGoals[1] = 2;
 
-        if (goalsProgress[0] >= scoreList[currentGoals[0]]) {
-            Toast.makeText(this, "Goal complete!", Toast.LENGTH_SHORT).show();
-            goalsProgress[0] = 0;
-            currentGoals[0] = 1; // new random int
-            visitedTreesGoal1.clear();
-        }
+        for (int ii = 0; ii < currentGoals.length; ii++) {
+            if (goalsProgress[ii] >= scoreList[currentGoals[ii]]) {
+                Toast.makeText(this, "Goal \"" + gameList[currentGoals[ii]] + "\" Complete!", Toast.LENGTH_SHORT).show();
 
-        if (goalsProgress[1] >= scoreList[currentGoals[1]]) {
-            Toast.makeText(this, "Goal complete!", Toast.LENGTH_SHORT).show();
-            goalsProgress[1] = 0;
-            currentGoals[1] = 2; // new random int not equal to the first one
-            visitedTreesGoal2.clear();
+                // RESET the specific tracking for this slot
+                visitedTreesBySlot.get(ii).clear();
+
+                goalsProgress[ii] = 0;
+                do{
+                    currentGoals[ii] = rand.nextInt(gameList.length);
+                }while(currentGoals[ii] == 0 || currentGoals[ii] == currentGoals[ii - 1]); // may need to change to make more robust
+            }
         }
 
     }
