@@ -7,58 +7,76 @@ import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class WelcomePage extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
+    private Button btnLogin, btnSignUp, btnMap, btnSignOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_welcome_page);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
-        Button b = findViewById(R.id.goToSignUpButton);
+        mAuth = FirebaseAuth.getInstance();
 
-        // Normal click -> HomePage
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), SignUpActivity.class);
-                startActivity(i);
+        btnLogin = findViewById(R.id.goToLoginButton);
+        btnSignUp = findViewById(R.id.goToSignUpButton);
+        btnMap = findViewById(R.id.gotoMapButton);
+        // We'll reuse the signup button for signout when logged in
+        btnSignOut = findViewById(R.id.goToSignUpButton); 
+
+        updateUI(mAuth.getCurrentUser());
+
+        btnLogin.setOnClickListener(v -> {
+            startActivity(new Intent(this, LoginActivity.class));
+        });
+
+        btnSignUp.setOnClickListener(v -> {
+            if (mAuth.getCurrentUser() != null) {
+                // Currently logged in, so this button acts as Sign Out
+                mAuth.signOut();
+                updateUI(null);
+            } else {
+                startActivity(new Intent(this, SignUpActivity.class));
             }
         });
 
-        Button b2 = findViewById(R.id.goToLoginButton);
-
-        // Normal click -> HomePage
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(i);
-            }
+        btnMap.setOnClickListener(v -> {
+            startActivity(new Intent(this, HomePage.class));
         });
+    }
 
-        Button b3 = findViewById(R.id.gotoMapButton);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Check session again when returning to this page
+        updateUI(mAuth.getCurrentUser());
+    }
 
-        // Normal click -> HomePage
-        b3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), HomePage.class);
-                startActivity(i);
-            }
-        });
+    private void updateUI(FirebaseUser user) {
+        if (user != null) {
+            // User is logged in
+            btnLogin.setVisibility(View.GONE);
+            btnMap.setVisibility(View.VISIBLE);
+            
+            btnSignUp.setText("Sign Out");
+            btnSignUp.setVisibility(View.VISIBLE);
+        } else {
+            // User is NOT logged in
+            btnLogin.setVisibility(View.VISIBLE);
+            btnSignUp.setText("Sign Up");
+            btnSignUp.setVisibility(View.VISIBLE);
+            
+            btnMap.setVisibility(View.GONE);
+        }
     }
 }

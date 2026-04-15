@@ -17,52 +17,62 @@
         android:contentDescription="App Logo"
         android:scaleType="fitCenter"
         android:src="@drawable/logo_title"
-        app:layout_constraintBottom_toTopOf="@id/goToLoginButton"
+        app:layout_constraintBottom_toTopOf="@id/buttonContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/goToLoginButton"
-        style="@style/Widget.MaterialComponents.Button"
+    <LinearLayout
+        android:id="@+id/buttonContainer"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/logo_color"
-        android:text="Log in"
-        android:textColor="@color/background_color"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:cornerRadius="12dp"
-        app:layout_constraintBottom_toTopOf="@id/goToSignUpButton" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/goToSignUpButton"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginBottom="48dp"
-        android:text="Sign Up"
-        android:textColor="@color/logo_color"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:cornerRadius="12dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="76dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:strokeColor="@color/logo_color" />
+        tools:layout_editor_absoluteX="24dp">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/gotoMapButton"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginBottom="208dp"
-        android:text="Map "
-        android:textColor="@color/logo_color"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:cornerRadius="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:strokeColor="@color/logo_color"
-        tools:layout_editor_absoluteX="41dp" />
+        <!-- Top Button Slot: Map (Logged In) or Log In (Logged Out) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/gotoMapButton"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/logo_color"
+            android:text="Map"
+            android:textColor="@color/background_color"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:cornerRadius="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/goToLoginButton"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/logo_color"
+            android:text="Log in"
+            android:textColor="@color/background_color"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cornerRadius="12dp" />
+
+        <!-- Bottom Button Slot: Sign Up (Logged Out) or Sign Out (Logged In) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/goToSignUpButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="24dp"
+            android:text="Sign Up"
+            android:textColor="@color/logo_color"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cornerRadius="12dp"
+            app:strokeColor="@color/logo_color" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
