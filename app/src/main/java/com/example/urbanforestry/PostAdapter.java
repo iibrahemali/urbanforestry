@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -16,9 +15,8 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 
 import java.util.List;
 
@@ -36,30 +34,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         ImageView imageView;
         TextView username;
         TextView textView;
-        Button btnHeart;
-        Button btnComment;
+        MaterialButton btnHeart;
+        MaterialButton btnComment;
         ImageButton btnDelete;
         
         View commentsSection;
         LinearLayout commentsList;
         TextView noCommentsTv;
         EditText etComment;
-        Button btnSendComment;
+        MaterialButton btnSendComment;
 
         public ViewHolder(View view) {
             super(view);
             imageView = view.findViewById(R.id.post_image);
             username = view.findViewById(R.id.post_username);
             textView = view.findViewById(R.id.post_text);
-            btnHeart = view.findViewById(R.id.btn_heart);
-            btnComment = view.findViewById(R.id.btn_comment);
+            btnHeart = (MaterialButton) view.findViewById(R.id.btn_heart);
+            btnComment = (MaterialButton) view.findViewById(R.id.btn_comment);
             btnDelete = view.findViewById(R.id.btn_delete);
             
             commentsSection = view.findViewById(R.id.comments_section);
             commentsList = view.findViewById(R.id.comments_list);
             noCommentsTv = view.findViewById(R.id.no_comments_tv);
             etComment = view.findViewById(R.id.et_comment);
-            btnSendComment = view.findViewById(R.id.btn_send_comment);
+            btnSendComment = (MaterialButton) view.findViewById(R.id.btn_send_comment);
         }
     }
 
@@ -140,17 +138,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.textView.setText(displayCaption);
         }
 
-        // Handle Like/Heart Button
-        int currentLikes = post.postId != null ? post.likeCount : post.heartCount;
-        boolean isLiked = post.postId != null ? post.isLikedByMe : post.isHeartedByMe;
-        String emoji = post.userEmoji != null ? post.userEmoji : "❤️";
+        // Handle Like/Heart Button UI
+        int currentLikes = (post.postId != null) ? post.likeCount : post.heartCount;
+        boolean isLiked = (post.postId != null) ? post.isLikedByMe : post.isHeartedByMe;
         
-        holder.btnHeart.setText(emoji + " " + currentLikes);
-        holder.btnHeart.setAlpha(isLiked ? 1.0f : 0.5f);
+        holder.btnHeart.setText(String.valueOf(currentLikes));
+        if (isLiked) {
+            holder.btnHeart.setIconResource(R.drawable.ic_heart_filled);
+            holder.btnHeart.setAlpha(1.0f);
+        } else {
+            holder.btnHeart.setIconResource(R.drawable.ic_heart_outline);
+            holder.btnHeart.setAlpha(0.6f);
+        }
 
-        // Handle Comment Button
-        int currentComments = post.postId != null ? post.commentCount : (post.comments != null ? post.comments.size() : 0);
-        holder.btnComment.setText("💬 " + currentComments);
+        // Handle Comment Button UI
+        int currentComments = (post.postId != null) ? post.commentCount : (post.comments != null ? post.comments.size() : 0);
+        holder.btnComment.setText(String.valueOf(currentComments));
+        holder.btnComment.setIconResource(R.drawable.ic_comment_outline);
 
         // Like Click Listener
         holder.btnHeart.setOnClickListener(v -> {
