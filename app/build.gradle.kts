@@ -60,7 +60,7 @@ dependencies {
     implementation(libs.osmdroid.android)
     implementation("com.github.MKergall:osmbonuspack:6.9.0")
     implementation("androidx.preference:preference-ktx:1.2.1")
-    
+
     // Google Play Services for Location
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
@@ -85,4 +85,7 @@ dependencies {
 
     // Optional: Analytics
     implementation("com.google.firebase:firebase-analytics")
+
+    // Splash screen
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }

@@ -26,18 +26,11 @@
             android:name=".achievements"
             android:exported="false" />
         <activity
-            android:name=".TrophyList"
-            android:exported="false" />
-        <activity
             android:name=".PostImageActivity"
             android:exported="false" />
         <activity
             android:name=".PostTextActivity"
             android:exported="false" />
-        <activity
-            android:name=".TextPostActivity"
-            android:exported="false"
-            android:theme="@style/Theme.UrbanForestry" />
         <activity
             android:name=".CreatePostActivity"
             android:exported="false" />
@@ -61,10 +54,10 @@
         <activity
             android:name=".WelcomePage"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
