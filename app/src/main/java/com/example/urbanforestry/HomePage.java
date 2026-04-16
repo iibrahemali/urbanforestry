@@ -5,13 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.preference.PreferenceManager;
 
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -23,6 +29,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
@@ -38,12 +46,14 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.Marker;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 
@@ -60,7 +70,7 @@ public class HomePage extends AppCompatActivity {
     private List<HashSet<String>> visitedTreesBySlot = new ArrayList<>();
 
     private Polyline roadOverlay;
-
+    private Marker destinationMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,16 +124,48 @@ public class HomePage extends AppCompatActivity {
         if (getIntent().getBooleanExtra("getDirections", false)) {
             double destLat = getIntent().getDoubleExtra("destLat", 0.0);
             double destLng = getIntent().getDoubleExtra("destLng", 0.0);
+            GeoPoint destination = new GeoPoint(destLat, destLng);
 
             if (locationOverlay != null) {
                 locationOverlay.runOnFirstFix(() -> {
                     GeoPoint myLocation = locationOverlay.getMyLocation();
                     if (myLocation != null) {
-                        runOnUiThread(() -> getDirections(myLocation, new GeoPoint(destLat, destLng)));
+                        String startName = getAddressName(myLocation);
+                        String destName = getAddressName(destination);
+
+                        runOnUiThread(() -> {
+                            Toast.makeText(this, "Start: " + startName + "\nTarget: " + destName, Toast.LENGTH_LONG).show();
+
+                            // Mark destination
+                            if (destinationMarker != null) {
+                                map.getOverlays().remove(destinationMarker);
+                            }
+                            destinationMarker = new Marker(map);
+                            destinationMarker.setPosition(destination);
+                            destinationMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                            destinationMarker.setTitle("Target Location");
+                            destinationMarker.setSnippet(destName);
+                            map.getOverlays().add(destinationMarker);
+
+                            getDirections(myLocation, destination);
+                        });
                     }
                 });
             }
         }
+    }
+
+    private String getAddressName(GeoPoint point) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(point.getLatitude(), point.getLongitude(), 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                return addresses.get(0).getAddressLine(0);
+            }
+        } catch (IOException e) {
+            Log.e("HomePage", "Geocoding failed", e);
+        }
+        return String.format(Locale.US, "%.4f, %.4f", point.getLatitude(), point.getLongitude());
     }
 
     private void getDirections(GeoPoint startPoint, GeoPoint endPoint) {
@@ -149,7 +191,7 @@ public class HomePage extends AppCompatActivity {
             if (road != null && road.mStatus == Road.STATUS_OK) {
                 roadOverlay = RoadManager.buildRoadOverlay(road);
                 roadOverlay.setColor(Color.BLUE);
-                roadOverlay.setWidth(10);
+                roadOverlay.setWidth(12.0f);
                 map.getOverlays().add(roadOverlay);
                 map.invalidate();
 

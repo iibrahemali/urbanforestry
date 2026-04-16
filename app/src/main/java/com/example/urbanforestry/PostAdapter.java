@@ -1,5 +1,6 @@
 package com.example.urbanforestry;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -80,6 +81,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.commentsSection.setVisibility(View.GONE);
         holder.noCommentsTv.setVisibility(View.GONE);
 
+        // CLICK LISTENER FOR THE LOGO IMAGE
+        holder.imageView.setOnClickListener(v -> {
+            if (post.hasLocation) {
+                Intent intent = new Intent(v.getContext(), HomePage.class);
+                intent.putExtra("destLat", post.latitude);
+                intent.putExtra("destLng", post.longitude);
+                intent.putExtra("getDirections", true);
+                v.getContext().startActivity(intent);
+            } else {
+                Toast.makeText(v.getContext(), "No location data for this photo", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         // Show delete button only if current user is the owner
         String currentUid = FirebaseAuth.getInstance().getUid();
         if (currentUid != null && post.uid != null && currentUid.equals(post.uid)) {
@@ -96,7 +110,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     .inflate(R.layout.dialog_delete_confirm, null);
             dialog.setContentView(dialogView);
 
-            // Remove dim background and make it transparent
             if (dialog.getWindow() != null) {
                 dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }

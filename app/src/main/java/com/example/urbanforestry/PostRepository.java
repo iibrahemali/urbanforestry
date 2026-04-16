@@ -34,7 +34,7 @@ public class PostRepository {
         });
     }
 
-    public Task<Void> createPost(String caption) {
+    public Task<Void> createPost(String caption, Double latitude, double longitude) {
         String uid = mAuth.getCurrentUser().getUid();
         
         return getUsername(uid).continueWithTask(task -> {
@@ -51,6 +51,14 @@ public class PostRepository {
             postMap.put("likeCount", 0);
             postMap.put("commentCount", 0);
             postMap.put("createdAt", FieldValue.serverTimestamp());
+            
+            if (latitude != null) {
+                postMap.put("hasLocation", true);
+                postMap.put("latitude", latitude);
+                postMap.put("longitude", longitude);
+            } else {
+                postMap.put("hasLocation", false);
+            }
 
             return mFirestore.runTransaction(transaction -> {
                 DocumentReference userRef = mFirestore.collection("users").document(uid);
