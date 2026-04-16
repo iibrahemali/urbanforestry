@@ -59,11 +59,11 @@ public class achievements extends AppCompatActivity {
      * CurrentProgress = 7 % 5 = 2
      * Result: Level 2, 2/5 progress
      */
-    private Achievement calculateProgress(String name, int totalGoalsFinished, int threshold) {
+    private achievement calculateProgress(String name, int totalGoalsFinished, int threshold) {
         int level = (totalGoalsFinished / threshold) + 1;
         int progressTowardNextLevel = totalGoalsFinished % threshold;
 
-        return new Achievement(name, progressTowardNextLevel, threshold, level);
+        return new achievement(name, progressTowardNextLevel, threshold, level);
     }
     }
 }
