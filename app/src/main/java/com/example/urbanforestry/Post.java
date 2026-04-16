@@ -9,9 +9,10 @@ public class Post {
     public String uid;
     public String username;
     public String caption;
-    public String imageUrl; // Added this field
+    public String imageUrl; 
     public int likeCount;
     public int commentCount;
+    public int reportCount; // Added this field
     public Timestamp createdAt;
     
     // UI state

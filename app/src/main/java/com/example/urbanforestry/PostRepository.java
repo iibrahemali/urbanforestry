@@ -57,6 +57,7 @@ public class PostRepository {
             postMap.put("caption", caption);
             postMap.put("likeCount", 0);
             postMap.put("commentCount", 0);
+            postMap.put("reportCount", 0);
             postMap.put("createdAt", FieldValue.serverTimestamp());
             
             if (latitude != null && longitude != null) {
@@ -100,6 +101,7 @@ public class PostRepository {
                 postMap.put("imageUrl", imageUrl);
                 postMap.put("likeCount", 0);
                 postMap.put("commentCount", 0);
+                postMap.put("reportCount", 0);
                 postMap.put("createdAt", FieldValue.serverTimestamp());
 
                 if (latitude != null && longitude != null) {
@@ -126,14 +128,43 @@ public class PostRepository {
     }
 
     public Task<Void> deletePost(String postId) {
-        String uid = mAuth.getCurrentUser().getUid();
         DocumentReference postRef = mFirestore.collection("posts").document(postId);
-        DocumentReference userRef = mFirestore.collection("users").document(uid);
+        return postRef.get().continueWithTask(task -> {
+            DocumentSnapshot snapshot = task.getResult();
+            String uid = snapshot.getString("uid");
+            
+            return mFirestore.runTransaction(transaction -> {
+                transaction.delete(postRef);
+                if (uid != null) {
+                    DocumentReference userRef = mFirestore.collection("users").document(uid);
+                    transaction.update(userRef, "postCount", FieldValue.increment(-1));
+                }
+                return null;
+            });
+        });
+    }
+
+    public Task<Boolean> reportPost(String postId) {
+        DocumentReference postRef = mFirestore.collection("posts").document(postId);
 
         return mFirestore.runTransaction(transaction -> {
-            transaction.delete(postRef);
-            transaction.update(userRef, "postCount", FieldValue.increment(-1));
-            return null;
+            DocumentSnapshot snapshot = transaction.get(postRef);
+            long currentReports = snapshot.getLong("reportCount") != null ? snapshot.getLong("reportCount") : 0;
+            long newReportCount = currentReports + 1;
+
+            if (newReportCount > 5) {
+                // Delete logic moved inside transaction to be atomic
+                String uid = snapshot.getString("uid");
+                transaction.delete(postRef);
+                if (uid != null) {
+                    DocumentReference userRef = mFirestore.collection("users").document(uid);
+                    transaction.update(userRef, "postCount", FieldValue.increment(-1));
+                }
+                return true; // Deleted
+            } else {
+                transaction.update(postRef, "reportCount", newReportCount);
+                return false; // Not deleted
+            }
         });
     }
 

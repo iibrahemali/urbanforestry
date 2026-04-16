@@ -41,6 +41,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         MaterialButton btnComment;
         ImageButton btnDelete;
         ImageButton btnEdit;
+        ImageButton btnReport;
         
         View commentsSection;
         LinearLayout commentsList;
@@ -57,6 +58,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             btnComment = (MaterialButton) view.findViewById(R.id.btn_comment);
             btnDelete = view.findViewById(R.id.btn_delete);
             btnEdit = view.findViewById(R.id.btn_edit);
+            btnReport = view.findViewById(R.id.btn_report);
             
             commentsSection = view.findViewById(R.id.comments_section);
             commentsList = view.findViewById(R.id.comments_list);
@@ -87,13 +89,44 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         // Show edit and delete buttons only if current user is the owner
         String currentUid = FirebaseAuth.getInstance().getUid();
-        if (currentUid != null && post.uid != null && currentUid.equals(post.uid)) {
+        boolean isOwner = currentUid != null && post.uid != null && currentUid.equals(post.uid);
+        
+        if (isOwner) {
             holder.btnDelete.setVisibility(View.VISIBLE);
             holder.btnEdit.setVisibility(View.VISIBLE);
+            holder.btnReport.setVisibility(View.GONE);
         } else {
             holder.btnDelete.setVisibility(View.GONE);
             holder.btnEdit.setVisibility(View.GONE);
+            holder.btnReport.setVisibility(View.VISIBLE);
         }
+
+        // REPORT BUTTON LOGIC
+        holder.btnReport.setOnClickListener(v -> {
+            if (post.postId == null) return;
+
+            new AlertDialog.Builder(holder.itemView.getContext())
+                    .setTitle("Report Post")
+                    .setMessage("Are you sure you want to report this post for inappropriate content?")
+                    .setPositiveButton("Report", (dialog, which) -> {
+                        postRepository.reportPost(post.postId)
+                                .addOnSuccessListener(deleted -> {
+                                    if (deleted) {
+                                        Toast.makeText(holder.itemView.getContext(), "Post removed due to multiple reports.", Toast.LENGTH_LONG).show();
+                                        posts.remove(position);
+                                        notifyItemRemoved(position);
+                                        notifyItemRangeChanged(position, posts.size());
+                                    } else {
+                                        Toast.makeText(holder.itemView.getContext(), "Post reported.", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(holder.itemView.getContext(), "Report failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
 
         // EDIT BUTTON LOGIC
         holder.btnEdit.setOnClickListener(v -> {

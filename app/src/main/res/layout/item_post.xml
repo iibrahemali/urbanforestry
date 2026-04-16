@@ -52,6 +52,17 @@
                     app:tint="@color/logo_color"
                     android:contentDescription="Edit Post" />
 
+                <!-- Report Button -->
+                <ImageButton
+                    android:id="@+id/btn_report"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_report_outline"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="8dp"
+                    app:tint="@color/logo_color"
+                    android:contentDescription="Report Post" />
+
                 <!-- Delete Button -->
                 <ImageButton
                     android:id="@+id/btn_delete"
