@@ -493,7 +493,7 @@ public class HomePage extends AppCompatActivity {
 
                         // Trees can only be "discovered" if the user is within 10m
                         if (distance <= 10.0) {
-                            // Loop through all active goal slots, to make it more flexible in case later more are deired
+                            // Loop through all active goal slots, to make it more flexible in case later more are desired
                             for (int ii = 0; ii < currentGoals.length; ii++) {
                                 int activeGoalId = currentGoals[ii];
                                 HashSet<String> visitedForThisSlot = visitedTreesBySlot.get(ii);
@@ -504,7 +504,7 @@ public class HomePage extends AppCompatActivity {
                                         goalsProgress[ii]++;
                                         visitedForThisSlot.add(treeId);
                                         progressMade = true;
-                                        Toast.makeText(this, "Made rogress on Goal: " + gameList[activeGoalId], Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, "Made progress on Goal: " + gameList[activeGoalId], Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -643,7 +643,6 @@ public class HomePage extends AppCompatActivity {
     }
 
     public void updateGoals() {
-        Random rand = new Random();
         if (currentGoals[0] == 0) currentGoals[0] = 1; // will be made random once list is expanded
         if (currentGoals[1] == 0) currentGoals[1] = 2;
 
@@ -651,16 +650,35 @@ public class HomePage extends AppCompatActivity {
             if (goalsProgress[ii] >= scoreList[currentGoals[ii]]) {
                 Toast.makeText(this, "Goal \"" + gameList[currentGoals[ii]] + "\" Complete!", Toast.LENGTH_SHORT).show();
 
+                incrementLifetimeAchievement(currentGoals[ii]);
                 // RESET the specific tracking for this slot
                 visitedTreesBySlot.get(ii).clear();
 
                 goalsProgress[ii] = 0;
-                do {
-                    currentGoals[ii] = rand.nextInt(gameList.length);
-                } while (currentGoals[ii] == 0 || (ii > 0 && currentGoals[ii] == currentGoals[ii - 1])); // may need to change to make more robust
+                assignNewGoal(ii);
             }
         }
 
+    }
+
+    private void assignNewGoal(int slotIndex) {
+        Random random = new Random();
+        int newGoal;
+
+        do {
+            // Pick a random index from gameList (skipping 0 which is "N/A")
+            newGoal = random.nextInt(gameList.length - 1) + 1;
+        } while (isGoalAlreadyActive(newGoal)); // Keep picking if it's already in another slot
+
+        currentGoals[slotIndex] = newGoal;
+        visitedTreesBySlot.get(slotIndex).clear(); // Always clear the history for the new goal
+    }
+
+    private boolean isGoalAlreadyActive(int goalId) {
+        for (int activeGoal : currentGoals) {
+            if (activeGoal == goalId) return true;
+        }
+        return false;
     }
 
     private void loadCompostData() {
@@ -713,5 +731,21 @@ public class HomePage extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void incrementLifetimeAchievement(int goalId) {
+        // Open the storage file named "UserStats"
+        android.content.SharedPreferences prefs = getSharedPreferences("UserStats", MODE_PRIVATE);
+        android.content.SharedPreferences.Editor editor = prefs.edit();
+
+        // Create a key based on the goal index (e.g., "goal_count_2")
+        String key = "goal_count_" + goalId;
+
+        // Get the current total, add 1, and save it
+        int currentTotal = prefs.getInt(key, 0);
+        editor.putInt(key, currentTotal + 1);
+
+        // Use apply() to save in the background
+        editor.apply();
     }
 }

@@ -78,11 +78,12 @@ public class Menu extends AppCompatActivity {
             }
         });
 
-        Button trophyButton = findViewById(R.id.achievementsButton);
-        trophyButton.setOnClickListener(new View.OnClickListener() {
+        Button achievementButton = findViewById(R.id.achievementsButton);
+        achievementButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent trophyIntent = new Intent(getApplicationContext(), achievements.class);
+                startActivity(trophyIntent);
             }
         });
     }
