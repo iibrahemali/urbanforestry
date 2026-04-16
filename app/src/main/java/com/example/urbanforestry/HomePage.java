@@ -16,11 +16,8 @@ import androidx.preference.PreferenceManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -34,7 +31,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
@@ -76,7 +72,7 @@ public class HomePage extends AppCompatActivity {
     private List<HashSet<String>> visitedTreesBySlot = new ArrayList<>();
 
     private LinearLayout routeControlsContainer;
-    
+
     // PERSISTENT STATIC LIST - prevents buttons from disappearing when switching activities
     private static List<ActiveRoute> activeRoutes = new ArrayList<>();
 
@@ -88,7 +84,7 @@ public class HomePage extends AppCompatActivity {
         String destName;
         String sourceUser;
         String sourceText;
-        
+
         // UI objects for the current Activity instance
         Polyline overlay;
         Marker marker;
@@ -122,7 +118,7 @@ public class HomePage extends AppCompatActivity {
         map.setMultiTouchControls(true);
         routeControlsContainer = findViewById(R.id.routeControlsContainer);
 
-        visitedTreesBySlot.add(new HashSet<>()); 
+        visitedTreesBySlot.add(new HashSet<>());
         visitedTreesBySlot.add(new HashSet<>());
 
         loadTreeData(); // This loads all of the trees
@@ -305,14 +301,14 @@ public class HomePage extends AppCompatActivity {
                 do {
                     hsv[0] = rnd.nextInt(360); // Hue [0, 360]
                 } while (hsv[0] > 35 && hsv[0] < 85); // Avoid yellow and orange range (approx 40-80)
-                
+
                 hsv[1] = 0.8f + rnd.nextFloat() * 0.2f; // High saturation (0.8 - 1.0)
                 hsv[2] = 0.5f + rnd.nextFloat() * 0.3f; // Medium brightness (0.5 - 0.8) to keep it visible
                 int color = Color.HSVToColor(hsv);
 
                 ActiveRoute newRoute = new ActiveRoute(routeId, road, color, destination, destName, sourceUser, sourceText);
                 activeRoutes.add(newRoute);
-                
+
                 // Rebuild the UI to include the new route and refresh overlays
                 rebuildRouteUI();
 
@@ -325,7 +321,7 @@ public class HomePage extends AppCompatActivity {
 
     private void showRouteInfoDialog(ActiveRoute route) {
         String info = "From post by: " + (route.sourceUser != null ? route.sourceUser : "Unknown") +
-                      "\nText: " + (route.sourceText != null ? route.sourceText : "No description");
+                "\nText: " + (route.sourceText != null ? route.sourceText : "No description");
 
         new AlertDialog.Builder(this)
                 .setTitle("Route Information")
@@ -340,7 +336,7 @@ public class HomePage extends AppCompatActivity {
 
     private void checkArrival(GeoPoint currentLoc) {
         if (currentLoc == null) return;
-        
+
         for (int i = 0; i < activeRoutes.size(); i++) {
             ActiveRoute ar = activeRoutes.get(i);
             if (ar.arrivalPromptShown) continue;
@@ -496,7 +492,7 @@ public class HomePage extends AppCompatActivity {
 
                         // Trees can only be "discovered" if the user is within 10m
                         if (distance <= 10.0) {
-                            // Loop through all active goal slots, to make it more flexible in case later more are deired
+                            // Loop through all active goal slots, to make it more flexible in case later more are desired
                             for (int ii = 0; ii < currentGoals.length; ii++) {
                                 int activeGoalId = currentGoals[ii];
                                 HashSet<String> visitedForThisSlot = visitedTreesBySlot.get(ii);
@@ -507,7 +503,7 @@ public class HomePage extends AppCompatActivity {
                                         goalsProgress[ii]++;
                                         visitedForThisSlot.add(treeId);
                                         progressMade = true;
-                                        Toast.makeText(this, "Made rogress on Goal: " + gameList[activeGoalId], Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, "Made progress on Goal: " + gameList[activeGoalId], Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }

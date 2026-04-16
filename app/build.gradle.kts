@@ -67,7 +67,7 @@ dependencies {
     // Firebase BoM — manages all Firebase library versions
     implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
 
-    // Firebase Auth — no version needed when using BoM
+    // Firebase Auth
     implementation("com.google.firebase:firebase-auth")
 
     // Firebase Database
@@ -75,6 +75,9 @@ dependencies {
 
     // Firebase Firestore
     implementation("com.google.firebase:firebase-firestore")
+
+    // Firebase Storage
+    implementation("com.google.firebase:firebase-storage")
 
     // Optional: Analytics
     implementation("com.google.firebase:firebase-analytics")
