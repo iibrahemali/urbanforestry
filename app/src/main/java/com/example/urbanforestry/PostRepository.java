@@ -69,6 +69,11 @@ public class PostRepository {
         });
     }
 
+    public Task<Void> updatePost(String postId, String newCaption) {
+        DocumentReference postRef = mFirestore.collection("posts").document(postId);
+        return postRef.update("caption", newCaption);
+    }
+
     public Task<Void> deletePost(String postId) {
         String uid = mAuth.getCurrentUser().getUid();
         DocumentReference postRef = mFirestore.collection("posts").document(postId);

@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -38,6 +39,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         MaterialButton btnHeart;
         MaterialButton btnComment;
         ImageButton btnDelete;
+        ImageButton btnEdit;
         
         View commentsSection;
         LinearLayout commentsList;
@@ -53,6 +55,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             btnHeart = (MaterialButton) view.findViewById(R.id.btn_heart);
             btnComment = (MaterialButton) view.findViewById(R.id.btn_comment);
             btnDelete = view.findViewById(R.id.btn_delete);
+            btnEdit = view.findViewById(R.id.btn_edit);
             
             commentsSection = view.findViewById(R.id.comments_section);
             commentsList = view.findViewById(R.id.comments_list);
@@ -81,6 +84,45 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.commentsSection.setVisibility(View.GONE);
         holder.noCommentsTv.setVisibility(View.GONE);
 
+        // Show edit and delete buttons only if current user is the owner
+        String currentUid = FirebaseAuth.getInstance().getUid();
+        if (currentUid != null && post.uid != null && currentUid.equals(post.uid)) {
+            holder.btnDelete.setVisibility(View.VISIBLE);
+            holder.btnEdit.setVisibility(View.VISIBLE);
+        } else {
+            holder.btnDelete.setVisibility(View.GONE);
+            holder.btnEdit.setVisibility(View.GONE);
+        }
+
+        // EDIT BUTTON LOGIC
+        holder.btnEdit.setOnClickListener(v -> {
+            if (post.postId == null) return;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
+            builder.setTitle("Edit Post");
+
+            final EditText input = new EditText(holder.itemView.getContext());
+            input.setText(post.caption != null ? post.caption : post.text);
+            builder.setView(input);
+
+            builder.setPositiveButton("Save", (dialog, which) -> {
+                String newCaption = input.getText().toString().trim();
+                postRepository.updatePost(post.postId, newCaption)
+                    .addOnSuccessListener(aVoid -> {
+                        post.caption = newCaption;
+                        post.text = newCaption;
+                        notifyItemChanged(position);
+                        Toast.makeText(holder.itemView.getContext(), "Post updated", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(holder.itemView.getContext(), "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+            builder.show();
+        });
+
         // CLICK LISTENER FOR THE PHOTO IMAGE - FOR DIRECTIONS
         holder.imageView.setOnClickListener(v -> {
             if (post.hasLocation) {
@@ -99,14 +141,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 Toast.makeText(v.getContext(), "No location data for this photo", Toast.LENGTH_SHORT).show();
             }
         });
-
-        // Show delete button only if current user is the owner
-        String currentUid = FirebaseAuth.getInstance().getUid();
-        if (currentUid != null && post.uid != null && currentUid.equals(post.uid)) {
-            holder.btnDelete.setVisibility(View.VISIBLE);
-        } else {
-            holder.btnDelete.setVisibility(View.GONE);
-        }
 
         holder.btnDelete.setOnClickListener(v -> {
             if (post.postId == null) return;
