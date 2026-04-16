@@ -28,7 +28,7 @@ public class FeedActivity extends AppCompatActivity {
     private List<Post> postList;
     private PostAdapter adapter;
     private FirebaseFirestore db;
-    private Post logoPost;
+    private List<Post> staticPosts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +40,26 @@ public class FeedActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab_add);
         ImageView profileButton = findViewById(R.id.profile_button);
 
-        // Initialize logo post and keep a persistent reference to it
-        logoPost = new Post("Urban Forestry", R.drawable.logo_title, "Our logo (Click for directions to Lancaster Library!)");
+        // Initialize static posts
+        staticPosts = new ArrayList<>();
+        
+        // 1. Logo Post
+        Post logoPost = new Post("Urban Forestry", R.drawable.logo_title, "Our logo (Click for directions to Lancaster Library!)");
         logoPost.hasLocation = true;
         logoPost.latitude = 40.04005;
         logoPost.longitude = -76.30612;
+        staticPosts.add(logoPost);
+
+        // 2. Grant Knoll Sycamore
+        // Location: 265 Plane Tree Dr, Lancaster, PA 17603 -> Approx: 40.0381, -76.3477
+        Post sycamorePost = new Post("History Hunter", R.drawable.grant_noll_sycamore, "Grant Knoll Sycamore, The Oldest Tree in Lancaster County");
+        sycamorePost.hasLocation = true;
+        sycamorePost.latitude = 40.03814;
+        sycamorePost.longitude = -76.34772;
+        staticPosts.add(sycamorePost);
 
         postList = new ArrayList<>();
-        postList.add(logoPost);
+        postList.addAll(staticPosts);
         
         adapter = new PostAdapter(postList);
 
@@ -85,12 +97,11 @@ public class FeedActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot doc : value) {
                         Post post = doc.toObject(Post.class);
                         
-                        // Map Firestore "caption" to Post "text" if needed
                         if (post.text == null && doc.contains("caption")) {
                             post.text = doc.getString("caption");
                         }
 
-                        // Preserve local state (like heart fill) if the post is already in our list
+                        // Preserve local state
                         for (Post existingPost : postList) {
                             if (existingPost.postId != null && existingPost.postId.equals(post.postId)) {
                                 post.isLikedByMe = existingPost.isLikedByMe;
@@ -101,15 +112,14 @@ public class FeedActivity extends AppCompatActivity {
                         
                         fetchedPosts.add(post);
                         
-                        // If this is the first time we see this post, check if user has liked it in DB
                         if (currentUid != null && !post.isLikedByMe) {
                             checkIfLiked(post);
                         }
                     }
 
-                    // Update the main list while keeping the logo post at index 0
+                    // Refresh list: Static posts first, then newest Firestore posts
                     postList.clear();
-                    postList.add(logoPost);
+                    postList.addAll(staticPosts);
                     postList.addAll(fetchedPosts);
                     adapter.notifyDataSetChanged();
                 });

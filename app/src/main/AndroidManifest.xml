@@ -73,7 +73,8 @@
         <activity
             android:name=".HomePage"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:exported="true" />
+            android:exported="true"
+            android:launchMode="singleTop" />
         <activity
             android:name=".ProfileActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
