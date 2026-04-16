@@ -312,7 +312,14 @@ public class HomePage extends AppCompatActivity {
                 // Rebuild the UI to include the new route and refresh overlays
                 rebuildRouteUI();
 
-                map.zoomToBoundingBox(road.mBoundingBox, true);
+                // FIX: Check if road distance is very short before zooming
+                if (road.mLength > 0.05) { // If distance > 50 meters, zoom to bounding box
+                    map.zoomToBoundingBox(road.mBoundingBox, true);
+                } else {
+                    // Otherwise, just center on destination and keep a reasonable zoom
+                    map.getController().animateTo(destination);
+                    map.getController().setZoom(18.0);
+                }
             } else {
                 Toast.makeText(HomePage.this, "Error getting directions", Toast.LENGTH_SHORT).show();
             }

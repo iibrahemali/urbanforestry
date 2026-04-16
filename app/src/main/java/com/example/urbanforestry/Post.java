@@ -9,6 +9,7 @@ public class Post {
     public String uid;
     public String username;
     public String caption;
+    public String imageUrl; // Added this field
     public int likeCount;
     public int commentCount;
     public Timestamp createdAt;

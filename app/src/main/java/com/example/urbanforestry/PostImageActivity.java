@@ -1,6 +1,8 @@
 package com.example.urbanforestry;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -11,6 +13,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.File;
 
@@ -20,6 +26,7 @@ public class PostImageActivity extends AppCompatActivity {
     private EditText captionEditText;
     private Button postBtn;
     private PostRepository postRepository;
+    private FusedLocationProviderClient fusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +34,8 @@ public class PostImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post_image);
 
         postRepository = new PostRepository();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         imagePath = getIntent().getStringExtra("imagePath");
         ImageView imagePreview = findViewById(R.id.imagePreview);
         captionEditText = findViewById(R.id.captionEditText);
@@ -47,20 +56,36 @@ public class PostImageActivity extends AppCompatActivity {
             postBtn.setEnabled(false);
             postBtn.setText("Posting...");
 
-            // In a real app, you'd get actual lat/lon from a Location provider.
-            // Using 0.0 for now as a placeholder.
-            Uri imageUri = Uri.fromFile(new File(imagePath));
-            postRepository.createImagePost(caption, imageUri, 0.0, 0.0)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Post uploaded!", Toast.LENGTH_SHORT).show();
-                    setResult(RESULT_OK);
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    postBtn.setEnabled(true);
-                    postBtn.setText("Post");
-                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // If no permission, post without location
+                submitPost(caption, null, null);
+                return;
+            }
+
+            fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+                if (location != null) {
+                    submitPost(caption, location.getLatitude(), location.getLongitude());
+                } else {
+                    submitPost(caption, null, null);
+                }
+            }).addOnFailureListener(e -> {
+                submitPost(caption, null, null);
+            });
         });
+    }
+
+    private void submitPost(String caption, Double lat, Double lon) {
+        Uri imageUri = Uri.fromFile(new File(imagePath));
+        postRepository.createImagePost(caption, imageUri, lat, lon)
+            .addOnSuccessListener(aVoid -> {
+                Toast.makeText(this, "Post uploaded!", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK);
+                finish();
+            })
+            .addOnFailureListener(e -> {
+                postBtn.setEnabled(true);
+                postBtn.setText("Post");
+                Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            });
     }
 }

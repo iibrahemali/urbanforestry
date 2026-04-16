@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -30,12 +31,27 @@ public class CreatePostActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
-                    // Photo taken, now go to PostImageActivity to add caption
-                    Intent intent = new Intent(this, PostImageActivity.class);
-                    intent.putExtra("imagePath", photoPath);
-                    launcher.launch(intent);
+                    // Photo taken, ask if they want to share location
+                    new AlertDialog.Builder(this)
+                            .setTitle("Share Location")
+                            .setMessage("Do you want to share the location of this image?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                startPostImageActivity(true);
+                            })
+                            .setNegativeButton("No", (dialog, which) -> {
+                                startPostImageActivity(false);
+                            })
+                            .setCancelable(false)
+                            .show();
                 }
             });
+
+    private void startPostImageActivity(boolean shareLocation) {
+        Intent intent = new Intent(this, PostImageActivity.class);
+        intent.putExtra("imagePath", photoPath);
+        intent.putExtra("shareLocation", shareLocation);
+        launcher.launch(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
