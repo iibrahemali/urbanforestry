@@ -81,13 +81,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.commentsSection.setVisibility(View.GONE);
         holder.noCommentsTv.setVisibility(View.GONE);
 
-        // CLICK LISTENER FOR THE LOGO IMAGE
+        // CLICK LISTENER FOR THE PHOTO IMAGE - FOR DIRECTIONS
         holder.imageView.setOnClickListener(v -> {
             if (post.hasLocation) {
                 Intent intent = new Intent(v.getContext(), HomePage.class);
                 intent.putExtra("destLat", post.latitude);
                 intent.putExtra("destLng", post.longitude);
                 intent.putExtra("getDirections", true);
+                
+                // Add info for the toggle button dialog
+                intent.putExtra("postUser", post.username);
+                String infoText = (post.caption != null && !post.caption.isEmpty()) ? post.caption : post.text;
+                intent.putExtra("postText", infoText);
+
                 v.getContext().startActivity(intent);
             } else {
                 Toast.makeText(v.getContext(), "No location data for this photo", Toast.LENGTH_SHORT).show();

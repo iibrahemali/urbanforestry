@@ -60,6 +60,10 @@ dependencies {
     implementation(libs.osmdroid.android)
     implementation("com.github.MKergall:osmbonuspack:6.9.0")
     implementation("androidx.preference:preference-ktx:1.2.1")
+    
+    // Google Play Services for Location
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
     // Firebase BoM — manages all Firebase library versions
     implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
 

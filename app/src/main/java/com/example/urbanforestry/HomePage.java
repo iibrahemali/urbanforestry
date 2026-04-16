@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,9 +15,11 @@ import android.os.Bundle;
 import androidx.preference.PreferenceManager;
 
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
@@ -40,6 +44,8 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.IMyLocationConsumer;
+import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import org.osmdroid.util.GeoPoint;
@@ -69,8 +75,34 @@ public class HomePage extends AppCompatActivity {
     public static int[] goalsProgress = {0, 0};
     private List<HashSet<String>> visitedTreesBySlot = new ArrayList<>();
 
-    private Polyline roadOverlay;
-    private Marker destinationMarker;
+    private LinearLayout routeControlsContainer;
+    
+    // Store active routes: Key is target lat,lng string
+    private List<ActiveRoute> activeRoutes = new ArrayList<>();
+
+    private static class ActiveRoute {
+        String id;
+        Polyline overlay;
+        Marker marker;
+        MaterialButton toggleButton;
+        int color;
+        boolean isVisible = true;
+        boolean arrivalPromptShown = false;
+        GeoPoint destination;
+        String sourceUser;
+        String sourceText;
+
+        ActiveRoute(String id, Polyline overlay, Marker marker, MaterialButton toggleButton, int color, GeoPoint destination, String sourceUser, String sourceText) {
+            this.id = id;
+            this.overlay = overlay;
+            this.marker = marker;
+            this.toggleButton = toggleButton;
+            this.color = color;
+            this.destination = destination;
+            this.sourceUser = sourceUser;
+            this.sourceText = sourceText;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +117,7 @@ public class HomePage extends AppCompatActivity {
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
+        routeControlsContainer = findViewById(R.id.routeControlsContainer);
 
         visitedTreesBySlot.add(new HashSet<>()); // Slot 0
         visitedTreesBySlot.add(new HashSet<>());
@@ -124,7 +157,18 @@ public class HomePage extends AppCompatActivity {
         if (getIntent().getBooleanExtra("getDirections", false)) {
             double destLat = getIntent().getDoubleExtra("destLat", 0.0);
             double destLng = getIntent().getDoubleExtra("destLng", 0.0);
+            String sourceUser = getIntent().getStringExtra("postUser");
+            String sourceText = getIntent().getStringExtra("postText");
             GeoPoint destination = new GeoPoint(destLat, destLng);
+            String routeId = destLat + "," + destLng;
+
+            // Check if this route is already tracked
+            for (ActiveRoute ar : activeRoutes) {
+                if (ar.id.equals(routeId)) {
+                    Toast.makeText(this, "Already tracking this location!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
 
             if (locationOverlay != null) {
                 locationOverlay.runOnFirstFix(() -> {
@@ -135,19 +179,7 @@ public class HomePage extends AppCompatActivity {
 
                         runOnUiThread(() -> {
                             Toast.makeText(this, "Start: " + startName + "\nTarget: " + destName, Toast.LENGTH_LONG).show();
-
-                            // Mark destination
-                            if (destinationMarker != null) {
-                                map.getOverlays().remove(destinationMarker);
-                            }
-                            destinationMarker = new Marker(map);
-                            destinationMarker.setPosition(destination);
-                            destinationMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                            destinationMarker.setTitle("Target Location");
-                            destinationMarker.setSnippet(destName);
-                            map.getOverlays().add(destinationMarker);
-
-                            getDirections(myLocation, destination);
+                            new UpdateRoadTask(destination, routeId, destName, sourceUser, sourceText).execute(myLocation, destination);
                         });
                     }
                 });
@@ -168,11 +200,21 @@ public class HomePage extends AppCompatActivity {
         return String.format(Locale.US, "%.4f, %.4f", point.getLatitude(), point.getLongitude());
     }
 
-    private void getDirections(GeoPoint startPoint, GeoPoint endPoint) {
-        new UpdateRoadTask().execute(startPoint, endPoint);
-    }
-
     private class UpdateRoadTask extends AsyncTask<GeoPoint, Void, Road> {
+        private GeoPoint destination;
+        private String routeId;
+        private String destName;
+        private String sourceUser;
+        private String sourceText;
+
+        UpdateRoadTask(GeoPoint destination, String routeId, String destName, String sourceUser, String sourceText) {
+            this.destination = destination;
+            this.routeId = routeId;
+            this.destName = destName;
+            this.sourceUser = sourceUser;
+            this.sourceText = sourceText;
+        }
+
         @Override
         protected Road doInBackground(GeoPoint... params) {
             RoadManager roadManager = new OSRMRoadManager(HomePage.this, "Urban Forestry App");
@@ -184,23 +226,114 @@ public class HomePage extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Road road) {
-            if (roadOverlay != null) {
-                map.getOverlays().remove(roadOverlay);
-            }
-
             if (road != null && road.mStatus == Road.STATUS_OK) {
-                roadOverlay = RoadManager.buildRoadOverlay(road);
-                roadOverlay.setColor(Color.BLUE);
-                roadOverlay.setWidth(12.0f);
-                map.getOverlays().add(roadOverlay);
-                map.invalidate();
+                // Generate a random distinct vivid color (avoiding light/yellow colors for visibility)
+                Random rnd = new Random();
+                float[] hsv = new float[3];
+                do {
+                    hsv[0] = rnd.nextInt(360); // Hue [0, 360]
+                } while (hsv[0] > 35 && hsv[0] < 85); // Avoid yellow and orange range (approx 40-80)
+                
+                hsv[1] = 0.8f + rnd.nextFloat() * 0.2f; // High saturation (0.8 - 1.0)
+                hsv[2] = 0.5f + rnd.nextFloat() * 0.3f; // Medium brightness (0.5 - 0.8) to keep it visible
+                int color = Color.HSVToColor(hsv);
 
-                // Zoom to fit the road
+                Polyline overlay = RoadManager.buildRoadOverlay(road);
+                overlay.setColor(color);
+                overlay.setWidth(12.0f);
+                map.getOverlays().add(overlay);
+
+                Marker marker = new Marker(map);
+                marker.setPosition(destination);
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                marker.setTitle("Target Location");
+                marker.setSnippet(destName);
+                map.getOverlays().add(marker);
+
+                // Create the toggle button
+                MaterialButton btn = (MaterialButton) LayoutInflater.from(HomePage.this)
+                        .inflate(R.layout.item_route_toggle, routeControlsContainer, false);
+                btn.setBackgroundTintList(android.content.res.ColorStateList.valueOf(color));
+                routeControlsContainer.addView(btn);
+
+                ActiveRoute newRoute = new ActiveRoute(routeId, overlay, marker, btn, color, destination, sourceUser, sourceText);
+                activeRoutes.add(newRoute);
+
+                btn.setOnClickListener(v -> {
+                    newRoute.isVisible = !newRoute.isVisible;
+                    if (newRoute.isVisible) {
+                        map.getOverlays().add(newRoute.overlay);
+                        map.getOverlays().add(newRoute.marker);
+                        btn.setAlpha(1.0f);
+                    } else {
+                        map.getOverlays().remove(newRoute.overlay);
+                        map.getOverlays().remove(newRoute.marker);
+                        btn.setAlpha(0.4f);
+                    }
+                    map.invalidate();
+                });
+
+                btn.setOnLongClickListener(v -> {
+                    showRouteInfoDialog(newRoute);
+                    return true;
+                });
+
                 map.zoomToBoundingBox(road.mBoundingBox, true);
+                map.invalidate();
             } else {
                 Toast.makeText(HomePage.this, "Error getting directions", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void showRouteInfoDialog(ActiveRoute route) {
+        String info = "From post by: " + (route.sourceUser != null ? route.sourceUser : "Unknown") +
+                      "\nText: " + (route.sourceText != null ? route.sourceText : "No description");
+
+        new AlertDialog.Builder(this)
+                .setTitle("Route Information")
+                .setMessage(info + "\n\nDo you want to delete these directions?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    removeRoute(route);
+                    Toast.makeText(this, "Directions deleted", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Close", null)
+                .show();
+    }
+
+    private void checkArrival(GeoPoint currentLoc) {
+        if (currentLoc == null) return;
+        
+        List<ActiveRoute> toRemove = new ArrayList<>();
+        for (ActiveRoute ar : activeRoutes) {
+            if (ar.arrivalPromptShown) continue;
+
+            double distance = currentLoc.distanceToAsDouble(ar.destination);
+            if (distance < 20.0) { // Within 20 meters
+                ar.arrivalPromptShown = true;
+                showArrivalDialog(ar);
+            }
+        }
+    }
+
+    private void showArrivalDialog(ActiveRoute route) {
+        new AlertDialog.Builder(this)
+                .setTitle("Destination Reached!")
+                .setMessage("You have made it to your destination. Would you like to turn off the directions for this location?")
+                .setPositiveButton("Yes, turn off", (dialog, which) -> {
+                    removeRoute(route);
+                })
+                .setNegativeButton("Keep them on", null)
+                .setCancelable(false)
+                .show();
+    }
+
+    private void removeRoute(ActiveRoute route) {
+        map.getOverlays().remove(route.overlay);
+        map.getOverlays().remove(route.marker);
+        routeControlsContainer.removeView(route.toggleButton);
+        activeRoutes.remove(route);
+        map.invalidate();
     }
 
     @Override
@@ -220,13 +353,23 @@ public class HomePage extends AppCompatActivity {
     }
 
     private void setupLocationTracking() {
-        this.locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this), map);
+        GpsMyLocationProvider provider = new GpsMyLocationProvider(this);
+        this.locationOverlay = new MyLocationNewOverlay(provider, map);
 
         this.locationOverlay.enableMyLocation();
         this.locationOverlay.enableFollowLocation();
 
         map.getOverlays().add(this.locationOverlay);
         map.getController().setZoom(18.0);
+
+        // Listen for location changes to check for arrival
+        provider.startLocationProvider(new IMyLocationConsumer() {
+            @Override
+            public void onLocationChanged(Location location, IMyLocationProvider source) {
+                GeoPoint currentLoc = new GeoPoint(location);
+                runOnUiThread(() -> checkArrival(currentLoc));
+            }
+        });
 
         handleDirectionsIntent();
     }
@@ -482,7 +625,7 @@ public class HomePage extends AppCompatActivity {
                 goalsProgress[ii] = 0;
                 do {
                     currentGoals[ii] = rand.nextInt(gameList.length);
-                } while (currentGoals[ii] == 0 || currentGoals[ii] == currentGoals[ii - 1]); // may need to change to make more robust
+                } while (currentGoals[ii] == 0 || (ii > 0 && currentGoals[ii] == currentGoals[ii - 1])); // may need to change to make more robust
             }
         }
 
