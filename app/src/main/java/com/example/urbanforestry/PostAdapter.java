@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -163,6 +164,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 postRepository.deletePost(post.postId)
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(holder.itemView.getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
+                        posts.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, posts.size());
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(holder.itemView.getContext(), "Delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -178,7 +182,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         if (post.resourceId != -1) {
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageResource(post.resourceId);
+        } else if (post.imageUrl != null && !post.imageUrl.isEmpty()) {
+            // New logic: Load from Firebase Storage URL
+            holder.imageView.setVisibility(View.VISIBLE);
+            Glide.with(holder.itemView.getContext())
+                    .load(post.imageUrl)
+                    .into(holder.imageView);
         } else if (post.imagePath != null && !post.imagePath.isEmpty()) {
+            // Local path (for legacy/development)
             holder.imageView.setVisibility(View.VISIBLE);
             Bitmap bitmap = BitmapFactory.decodeFile(post.imagePath);
             holder.imageView.setImageBitmap(bitmap);

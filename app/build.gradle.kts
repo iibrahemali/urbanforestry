@@ -64,6 +64,10 @@ dependencies {
     // Google Play Services for Location
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
+    // Glide for Image Loading
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
     // Firebase BoM — manages all Firebase library versions
     implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
 
