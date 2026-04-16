@@ -65,5 +65,4 @@ public class achievements extends AppCompatActivity {
 
         return new achievement(name, progressTowardNextLevel, threshold, level);
     }
-    }
 }
