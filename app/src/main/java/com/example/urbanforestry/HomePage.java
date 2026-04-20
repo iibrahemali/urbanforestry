@@ -65,8 +65,10 @@ public class HomePage extends AppCompatActivity {
     private MapView map = null;
     private MyLocationNewOverlay locationOverlay;
 
-    final String[] gameList = {"N/A", "Find non-native tree species", "Find Oaks", "Find Maple Trees"};
-    final int[] scoreList = {0, 6, 8, 4};
+    final String[] gameList = {"N/A", "Find non-native tree species", "Find Oak Trees", "Find Maple Trees", "Find Spruce Trees",
+                                "Find Trees that are Red in the Fall"};
+    final int[] scoreList = {0, 6, 8, 4, 4,
+                              4};
     public static int[] currentGoals = {0, 0};
     public static int[] goalsProgress = {0, 0};
     private List<HashSet<String>> visitedTreesBySlot = new ArrayList<>();
@@ -498,7 +500,7 @@ public class HomePage extends AppCompatActivity {
                         boolean progressMade = false;
 
                         // Trees can only be "discovered" if the user is within 10m
-                        if (distance <= 10.0) {
+                        if (distance <= 10000.0) {
                             // Loop through all active goal slots, to make it more flexible in case later more are desired
                             for (int ii = 0; ii < currentGoals.length; ii++) {
                                 int activeGoalId = currentGoals[ii];
@@ -549,6 +551,8 @@ public class HomePage extends AppCompatActivity {
             case 3:
                 return commonName.contains("maple");
             case 4:
+                return commonName.contains("spruce");
+            case 5:
                 return treeData[33].toLowerCase().contains("red"); // Fall color check
             default:
                 return false;
@@ -649,11 +653,11 @@ public class HomePage extends AppCompatActivity {
     }
 
     public void updateGoals() {
-        Random rand = new Random();
-        if (currentGoals[0] == 0) currentGoals[0] = 1; // will be made random once list is expanded
-        if (currentGoals[1] == 0) currentGoals[1] = 2;
 
         for (int ii = 0; ii < currentGoals.length; ii++) {
+
+            if(currentGoals[ii] == 0) assignNewGoal(ii);
+
             if (goalsProgress[ii] >= scoreList[currentGoals[ii]]) {
                 Toast.makeText(this, "Goal \"" + gameList[currentGoals[ii]] + "\" Complete!", Toast.LENGTH_SHORT).show();
 

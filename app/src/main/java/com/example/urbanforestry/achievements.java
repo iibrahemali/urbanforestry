@@ -33,15 +33,17 @@ public class achievements extends AppCompatActivity {
         int nonNativeGoals = prefs.getInt("goal_count_1", 0);
         int oakGoals = prefs.getInt("goal_count_2", 0);
         int mapleGoals = prefs.getInt("goal_count_3", 0);
+        int spruceGoals = prefs.getInt("goal_count_4", 0);
+        int fallRedGoals = prefs.getInt("goal_count_5", 0);
 
         // 3. Create the list of Achievement objects
         List<achievement> achievementList = new ArrayList<>();
 
-        // We use a threshold of 5 (5 goals to level up).
-        // You can change this number to make leveling harder or easier.
-        achievementList.add(calculateProgress("Invasive Hunter", nonNativeGoals, 5));
+        achievementList.add(calculateProgress("Invasive Hunter", nonNativeGoals, 6));
         achievementList.add(calculateProgress("Oak Specialist", oakGoals, 5));
-        achievementList.add(calculateProgress("Maple Master", mapleGoals, 5));
+        achievementList.add(calculateProgress("Maple Master", mapleGoals, 4));
+        achievementList.add(calculateProgress("Spruce Spring(steen)", spruceGoals, 3));
+        achievementList.add(calculateProgress("Red Rider", fallRedGoals, 4));
 
         // 4. Set the Adapter
         AchievementAdapter adapter = new AchievementAdapter(achievementList);
