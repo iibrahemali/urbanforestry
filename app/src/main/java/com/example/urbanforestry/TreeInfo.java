@@ -89,5 +89,10 @@ public class TreeInfo extends AppCompatActivity {
         } else {
             mortonLink.setVisibility(View.GONE);
         }
+
+        TextView distance = findViewById(R.id.distance);
+        double distanceDouble = i.getDoubleExtra("distance", Double.POSITIVE_INFINITY);
+        if (distanceDouble != Double.POSITIVE_INFINITY)
+            distance.setText("Distance: " + (int) distanceDouble + " m");
     }
 }

@@ -4,18 +4,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class achievements extends AppCompatActivity {
+public class AchievementsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +33,7 @@ public class achievements extends AppCompatActivity {
         int fallRedGoals = prefs.getInt("goal_count_5", 0);
 
         // 3. Create the list of Achievement objects
-        List<achievement> achievementList = new ArrayList<>();
+        List<Achievement> achievementList = new ArrayList<>();
 
         achievementList.add(calculateProgress("Urban Hiker", kilometersWalked, 1000));
         achievementList.add(calculateProgress("Invasive Hunter", nonNativeGoals, 6));
@@ -62,10 +58,10 @@ public class achievements extends AppCompatActivity {
      * CurrentProgress = 7 % 5 = 2
      * Result: Level 2, 2/5 progress
      */
-    private achievement calculateProgress(String name, int totalGoalsFinished, int threshold) {
+    private Achievement calculateProgress(String name, int totalGoalsFinished, int threshold) {
         int level = (totalGoalsFinished / threshold) + 1;
         int progressTowardNextLevel = totalGoalsFinished % threshold;
 
-        return new achievement(name, progressTowardNextLevel, threshold, level);
+        return new Achievement(name, progressTowardNextLevel, threshold, level);
     }
 }

@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.preference.PreferenceManager;
 
 import android.util.Log;
@@ -163,6 +164,13 @@ public class HomePage extends AppCompatActivity {
         rebuildRouteUI();
 
         handleDirectionsIntent(getIntent());
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Don't return to log in screen on back swipe
+            }
+        });
     }
 
     private void rebuildRouteUI() {
@@ -201,24 +209,7 @@ public class HomePage extends AppCompatActivity {
             routeControlsContainer.addView(btn);
             ar.toggleButton = btn;
 
-            btn.setOnClickListener(v -> {
-                ar.isVisible = !ar.isVisible;
-                if (ar.isVisible) {
-                    map.getOverlays().add(ar.overlay);
-                    map.getOverlays().add(ar.marker);
-                    btn.setAlpha(1.0f);
-                } else {
-                    map.getOverlays().remove(ar.overlay);
-                    map.getOverlays().remove(ar.marker);
-                    btn.setAlpha(0.4f);
-                }
-                map.invalidate();
-            });
-
-            btn.setOnLongClickListener(v -> {
-                showRouteInfoDialog(ar);
-                return true;
-            });
+            btn.setOnClickListener(v -> showRouteInfoDialog(ar, btn));
         }
         map.invalidate();
     }
@@ -331,19 +322,36 @@ public class HomePage extends AppCompatActivity {
         }
     }
 
-    private void showRouteInfoDialog(ActiveRoute route) {
+    private void showRouteInfoDialog(ActiveRoute route, MaterialButton btn) {
         String info = "From post by: " + (route.sourceUser != null ? route.sourceUser : "Unknown") +
-                "\nText: " + (route.sourceText != null ? route.sourceText : "No description");
+                "\n\nText: " + (route.sourceText != null ? route.sourceText : "No description");
+        String showHideText = route.isVisible ? "Hide route" : "Show route";
 
         new AlertDialog.Builder(this)
                 .setTitle("Route Information")
-                .setMessage(info + "\n\nDo you want to delete these directions?")
+                .setMessage(info)
                 .setPositiveButton("Delete", (dialog, which) -> {
                     removeRoute(route);
                     Toast.makeText(this, "Directions deleted", Toast.LENGTH_SHORT).show();
                 })
-                .setNegativeButton("Close", null)
+                .setNegativeButton(showHideText, (dialog, which) ->
+                        toggleRouteVisibility(route, btn))
+                .setNeutralButton("Close", null)
                 .show();
+    }
+
+    private void toggleRouteVisibility(ActiveRoute route, MaterialButton btn) {
+        route.isVisible = !route.isVisible;
+        if (route.isVisible) {
+            map.getOverlays().add(route.overlay);
+            map.getOverlays().add(route.marker);
+            btn.setAlpha(1.0f);
+        } else {
+            map.getOverlays().remove(route.overlay);
+            map.getOverlays().remove(route.marker);
+            btn.setAlpha(0.4f);
+        }
+        map.invalidate();
     }
 
     private void checkArrival(GeoPoint currentLoc) {
@@ -539,7 +547,7 @@ public class HomePage extends AppCompatActivity {
                     }
 
                     // Show the tree info
-                    Intent i = getIntent(treeData);
+                    Intent i = getIntent(treeData, m);
                     startActivity(i);
 
                     return true;
@@ -577,7 +585,7 @@ public class HomePage extends AppCompatActivity {
     }
 
     @NonNull
-    private Intent getIntent(String[] treeData) {
+    private Intent getIntent(String[] treeData, Marker m) {
         Intent i = new Intent(getApplicationContext(), TreeInfo.class);
 
         // Send relevant tree data to the info page
@@ -594,6 +602,7 @@ public class HomePage extends AppCompatActivity {
         i.putExtra("height", treeData[27]);
         i.putExtra("description", getDescription(treeData));
         i.putExtra("mortonPage", getMortonPageName(treeData));
+        i.putExtra("distance", getDistance(m));
 
         return i;
     }
@@ -667,6 +676,13 @@ public class HomePage extends AppCompatActivity {
                 // Default format
                 return treeData[1].toLowerCase().replaceAll(" ", "-");
         }
+    }
+
+    private double getDistance(Marker m) {
+        if (locationOverlay.getMyLocation() == null)
+            return Double.POSITIVE_INFINITY;
+        else
+            return locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
     }
 
     public void updateGoals() {

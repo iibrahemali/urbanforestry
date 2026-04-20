@@ -9,12 +9,26 @@
     tools:context=".Menu">
 
     <TextView
+        android:id="@+id/appName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MyCelia"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="@color/letter_color"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
         android:id="@+id/missions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Missions"
         android:textSize="20sp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/white"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/appName"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -22,15 +36,16 @@
         android:id="@+id/goalContainer1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/missions"
-        android:layout_marginTop="10dp">
+        app:layout_constraintTop_toBottomOf="@id/missions">
 
         <TextView
             android:id="@+id/gameGoal1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -38,6 +53,7 @@
             android:id="@+id/goalProgress1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/gameGoal1" />
 
@@ -47,15 +63,16 @@
         android:id="@+id/goalContainer2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/goalContainer1"
-        android:layout_marginTop="10dp">
+        app:layout_constraintTop_toBottomOf="@id/goalContainer1">
 
         <TextView
             android:id="@+id/gameGoal2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -63,24 +80,35 @@
             android:id="@+id/goalProgress2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/gameGoal2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/missionsInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="To &quot;discover&quot; a tree, get within 10 m and tap on its dot."
+        android:textSize="12sp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/goalContainer2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/achievementsButton"
         style="?android:borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="20dp"
-        android:text="Trophies"
+        android:text="View achievements"
         android:textColor="@color/logo_color"
         android:textSize="18sp"
+        android:layout_marginTop="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/goalContainer2"
-        app:layout_constraintRight_toLeftOf="@id/aboutButton" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/missionsInfo" />
 
     <Button
         android:id="@+id/aboutButton"
@@ -90,11 +118,9 @@
         android:text="About"
         android:textColor="@color/logo_color"
         android:textSize="18sp"
-        android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="5dp"
-        app:layout_constraintTop_toBottomOf="@id/goalContainer2"
-        app:layout_constraintLeft_toRightOf="@id/achievementsButton"
-        app:layout_constraintRight_toLeftOf="@id/signOutButton"/>
+        android:layout_marginHorizontal="45dp"
+        app:layout_constraintTop_toBottomOf="@id/achievementsButton"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
         android:id="@+id/signOutButton"
@@ -104,7 +130,7 @@
         android:text="Sign out"
         android:textColor="@color/logo_color"
         android:textSize="18sp"
-        android:layout_marginHorizontal="5dp"
+        android:layout_marginHorizontal="45dp"
         app:layout_constraintTop_toTopOf="@id/aboutButton"
         app:layout_constraintRight_toRightOf="parent" />
 
