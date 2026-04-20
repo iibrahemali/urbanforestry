@@ -29,7 +29,7 @@ public class achievements extends AppCompatActivity {
         // 2. Load the lifetime totals from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("UserStats", MODE_PRIVATE);
 
-        // These keys ("goal_count_X") must match exactly what you wrote in HomePage
+        int kilometersWalked = (int)prefs.getFloat("total_meters_walked", 0  );
         int nonNativeGoals = prefs.getInt("goal_count_1", 0);
         int oakGoals = prefs.getInt("goal_count_2", 0);
         int mapleGoals = prefs.getInt("goal_count_3", 0);
@@ -39,6 +39,7 @@ public class achievements extends AppCompatActivity {
         // 3. Create the list of Achievement objects
         List<achievement> achievementList = new ArrayList<>();
 
+        achievementList.add(calculateProgress("Urban Hiker", kilometersWalked, 1000));
         achievementList.add(calculateProgress("Invasive Hunter", nonNativeGoals, 6));
         achievementList.add(calculateProgress("Oak Specialist", oakGoals, 5));
         achievementList.add(calculateProgress("Maple Master", mapleGoals, 4));

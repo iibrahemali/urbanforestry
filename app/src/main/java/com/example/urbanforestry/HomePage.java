@@ -73,6 +73,9 @@ public class HomePage extends AppCompatActivity {
     public static int[] goalsProgress = {0, 0};
     private List<HashSet<String>> visitedTreesBySlot = new ArrayList<>();
 
+    private Location lastLocation = null;
+    private float sessionDistanceWalked = 0f;
+
     private LinearLayout routeControlsContainer;
 
     // PERSISTENT STATIC LIST - prevents buttons from disappearing when switching activities
@@ -408,6 +411,20 @@ public class HomePage extends AppCompatActivity {
         provider.startLocationProvider(new IMyLocationConsumer() {
             @Override
             public void onLocationChanged(Location location, IMyLocationProvider source) {
+                if (location == null) return;
+
+                // --- DISTANCE TRACKING LOGIC ---
+                if (lastLocation != null) {
+                    // Calculate distance from previous point to current point
+                    float distanceIncrement = lastLocation.distanceTo(location);
+
+                    // Filter out GPS "jitter" (e.g., ignore movements < 1 meter or > 50 meters between updates)
+                    if (distanceIncrement > 1.0 && distanceIncrement < 50.0) {
+                        updateTotalDistance(distanceIncrement);
+                    }
+                }
+                lastLocation = location;
+                // -------------------------------
                 GeoPoint currentLoc = new GeoPoint(location);
                 runOnUiThread(() -> checkArrival(currentLoc));
             }
@@ -500,7 +517,7 @@ public class HomePage extends AppCompatActivity {
                         boolean progressMade = false;
 
                         // Trees can only be "discovered" if the user is within 10m
-                        if (distance <= 10000.0) {
+                        if (distance <= 10.0) {
                             // Loop through all active goal slots, to make it more flexible in case later more are desired
                             for (int ii = 0; ii < currentGoals.length; ii++) {
                                 int activeGoalId = currentGoals[ii];
@@ -758,5 +775,24 @@ public class HomePage extends AppCompatActivity {
 
         // Use apply() to save in the background
         editor.apply();
+    }
+
+    private void updateTotalDistance(float meters) {
+        android.content.SharedPreferences prefs = getSharedPreferences("UserStats", MODE_PRIVATE);
+        float totalMeters = prefs.getFloat("total_meters_walked", 0f);
+
+        float newTotal = totalMeters + meters;
+
+        android.content.SharedPreferences.Editor editor = prefs.edit();
+        editor.putFloat("total_meters_walked", newTotal);
+        editor.apply();
+
+        // Achievement Notification: Check if we just crossed a whole kilometer mark
+        if ((int)(newTotal / 1000) > (int)(totalMeters / 1000)) {
+            int km = (int)(newTotal / 1000);
+            runOnUiThread(() ->
+                    Toast.makeText(this, "Achievement: Walked " + km + "km!", Toast.LENGTH_LONG).show()
+            );
+        }
     }
 }
