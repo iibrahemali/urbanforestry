@@ -34,7 +34,6 @@
         android:scaleType="centerCrop"
         android:clickable="true"
         android:focusable="true"
-        app:tint="?attr/logo_color"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.UrbanForestry.Circle"
         app:strokeColor="?attr/logo_color"
         app:strokeWidth="2dp"
