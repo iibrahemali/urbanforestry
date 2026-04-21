@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,11 +14,11 @@
         android:text="Add Caption"
         android:textSize="26sp"
         android:textStyle="bold"
-        android:textColor="?attr/logo_color"
+        android:textColor="?attr/accent_color"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp" />
 
     <!-- Image Preview -->
     <com.google.android.material.card.MaterialCardView
@@ -56,7 +55,7 @@
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toTopOf="@id/btn_post"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Post Button -->
     <com.google.android.material.button.MaterialButton
@@ -68,9 +67,9 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="?attr/background_color"
-        android:backgroundTint="?attr/logo_color"
+        android:backgroundTint="?attr/accent_color"
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="24dp"/>
+        android:layout_marginBottom="24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

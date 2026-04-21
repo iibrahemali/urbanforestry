@@ -18,13 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="?attr/homeAsUpIndicator"
-            app:navigationIconTint="?attr/logo_color">
+            app:navigationIconTint="?attr/accent_color">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Profile"
-                android:textColor="?attr/logo_color"
+                android:textColor="?attr/accent_color"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -50,7 +50,7 @@
                 android:layout_height="120dp"
                 app:cardCornerRadius="60dp"
                 app:cardElevation="8dp"
-                app:strokeColor="?attr/logo_color"
+                app:strokeColor="?attr/accent_color"
                 app:strokeWidth="2dp">
 
                 <ImageView
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 tools:text="@username"
-                android:textColor="?attr/logo_color"
+                android:textColor="?attr/accent_color"
                 android:textSize="16sp" />
 
             <!-- Stats Section -->
@@ -89,8 +89,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                app:cardBackgroundColor="?attr/logo_color"
-                app:strokeColor="?attr/logo_color"
+                app:cardBackgroundColor="?attr/accent_color"
+                app:strokeColor="?attr/accent_color"
                 app:strokeWidth="1dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
@@ -171,7 +171,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 tools:text="User biography goes here..."
-                android:textColor="@color/letter_color"
+                android:textColor="?attr/alt_color"
                 android:textSize="14sp"
                 android:gravity="center"
                 android:lineSpacingExtra="4dp" />
@@ -184,8 +184,8 @@
                 android:layout_marginTop="32dp"
                 android:text="Edit Profile"
                 android:textSize="18sp"
-                android:textColor="?attr/logo_color"
-                app:strokeColor="?attr/logo_color"
+                android:textColor="?attr/accent_color"
+                app:strokeColor="?attr/accent_color"
                 app:cornerRadius="12dp" />
 
             <com.google.android.material.button.MaterialButton
@@ -196,7 +196,7 @@
                 android:layout_marginTop="12dp"
                 android:text="Back"
                 android:textSize="18sp"
-                android:backgroundTint="?attr/logo_color"
+                android:backgroundTint="?attr/accent_color"
                 android:textColor="?attr/background_color"
                 app:cornerRadius="12dp" />
 

@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:text="Could not get distance"
-                android:textColor="?attr/logo_color"
+                android:textColor="?attr/accent_color"
                 android:layout_marginTop="10dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

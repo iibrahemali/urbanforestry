@@ -373,9 +373,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     } else {
                         holder.noCommentsTv.setVisibility(View.GONE);
 
-                        // Resolve the seasonal logo_color attribute programmatically
+                        // Resolve the seasonal accent_color attribute programmatically
                         TypedValue typedValue = new TypedValue();
-                        holder.itemView.getContext().getTheme().resolveAttribute(R.attr.logo_color, typedValue, true);
+                        holder.itemView.getContext().getTheme().resolveAttribute(R.attr.accent_color, typedValue, true);
                         int seasonalLogoColor = typedValue.data;
 
                         for (Comment comment : comments) {

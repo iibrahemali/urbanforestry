@@ -16,10 +16,10 @@
         android:textSize="26sp"
         android:textStyle="bold"
         android:layout_marginTop="35dp"
-        android:textColor="?attr/logo_color"
+        android:textColor="?attr/accent_color"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/achievementRecyclerView"
@@ -42,7 +42,7 @@
         android:textStyle="bold"
         app:cornerRadius="12dp"
         android:textColor="?attr/background_color"
-        android:backgroundTint="?attr/logo_color"
+        android:backgroundTint="?attr/accent_color"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 

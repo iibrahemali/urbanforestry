@@ -16,6 +16,6 @@
     app:iconSize="24dp"
     app:iconGravity="textStart"
     app:iconPadding="0dp"
-    app:backgroundTint="@color/logo_color"
+    app:backgroundTint="?attr/accent_color"
     app:strokeColor="@android:color/black"
     app:strokeWidth="2dp" />

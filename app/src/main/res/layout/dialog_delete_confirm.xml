@@ -68,8 +68,8 @@
         android:layout_height="52dp"
         android:textSize="16sp"
         android:text="Cancel"
-        android:textColor="?attr/logo_color"
-        app:strokeColor="?attr/logo_color"
+        android:textColor="?attr/accent_color"
+        app:strokeColor="?attr/accent_color"
         app:strokeWidth="1.5dp"
         app:cornerRadius="10dp" />
 

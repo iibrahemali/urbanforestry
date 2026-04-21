@@ -14,7 +14,7 @@
         android:text="Write a Post"
         android:textSize="26sp"
         android:textStyle="bold"
-        android:textColor="?attr/logo_color"
+        android:textColor="?attr/accent_color"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +48,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="?attr/background_color"
-        android:backgroundTint="?attr/logo_color"
+        android:backgroundTint="?attr/accent_color"
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="48dp" />
