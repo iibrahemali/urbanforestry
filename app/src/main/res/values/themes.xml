@@ -5,6 +5,7 @@
         <item name="background_color">@color/summer_background_color</item>
         <item name="logo_color">@color/summer_logo_color</item>
         <item name="android:windowBackground">?attr/background_color</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="Theme.UrbanForestry" parent="Base.Theme.UrbanForestry" />

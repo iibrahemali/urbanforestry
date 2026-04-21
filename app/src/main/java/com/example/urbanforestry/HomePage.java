@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.preference.PreferenceManager;
 
 import android.util.Log;
@@ -65,11 +66,16 @@ public class HomePage extends AppCompatActivity {
     private MapView map = null;
     private MyLocationNewOverlay locationOverlay;
 
-    final String[] gameList = {"N/A", "Find non-native tree species", "Find Oaks", "Find Maple Trees"};
-    final int[] scoreList = {0, 6, 8, 4};
+    final String[] gameList = {"N/A", "Find non-native tree species", "Find Oak Trees", "Find Maple Trees", "Find Spruce Trees",
+                                "Find Trees that are Red in the Fall"};
+    final int[] scoreList = {0, 6, 8, 4, 4,
+                              4};
     public static int[] currentGoals = {0, 0};
     public static int[] goalsProgress = {0, 0};
     private List<HashSet<String>> visitedTreesBySlot = new ArrayList<>();
+
+    private Location lastLocation = null;
+    private float sessionDistanceWalked = 0f;
 
     private LinearLayout routeControlsContainer;
 
@@ -161,6 +167,13 @@ public class HomePage extends AppCompatActivity {
         rebuildRouteUI();
 
         handleDirectionsIntent(getIntent());
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Don't return to log in screen on back swipe
+            }
+        });
     }
 
     private void rebuildRouteUI() {
@@ -199,24 +212,7 @@ public class HomePage extends AppCompatActivity {
             routeControlsContainer.addView(btn);
             ar.toggleButton = btn;
 
-            btn.setOnClickListener(v -> {
-                ar.isVisible = !ar.isVisible;
-                if (ar.isVisible) {
-                    map.getOverlays().add(ar.overlay);
-                    map.getOverlays().add(ar.marker);
-                    btn.setAlpha(1.0f);
-                } else {
-                    map.getOverlays().remove(ar.overlay);
-                    map.getOverlays().remove(ar.marker);
-                    btn.setAlpha(0.4f);
-                }
-                map.invalidate();
-            });
-
-            btn.setOnLongClickListener(v -> {
-                showRouteInfoDialog(ar);
-                return true;
-            });
+            btn.setOnClickListener(v -> showRouteInfoDialog(ar, btn));
         }
         map.invalidate();
     }
@@ -329,19 +325,36 @@ public class HomePage extends AppCompatActivity {
         }
     }
 
-    private void showRouteInfoDialog(ActiveRoute route) {
+    private void showRouteInfoDialog(ActiveRoute route, MaterialButton btn) {
         String info = "From post by: " + (route.sourceUser != null ? route.sourceUser : "Unknown") +
-                "\nText: " + (route.sourceText != null ? route.sourceText : "No description");
+                "\n\nText: " + (route.sourceText != null ? route.sourceText : "No description");
+        String showHideText = route.isVisible ? "Hide route" : "Show route";
 
         new AlertDialog.Builder(this)
                 .setTitle("Route Information")
-                .setMessage(info + "\n\nDo you want to delete these directions?")
+                .setMessage(info)
                 .setPositiveButton("Delete", (dialog, which) -> {
                     removeRoute(route);
                     Toast.makeText(this, "Directions deleted", Toast.LENGTH_SHORT).show();
                 })
-                .setNegativeButton("Close", null)
+                .setNegativeButton(showHideText, (dialog, which) ->
+                        toggleRouteVisibility(route, btn))
+                .setNeutralButton("Close", null)
                 .show();
+    }
+
+    private void toggleRouteVisibility(ActiveRoute route, MaterialButton btn) {
+        route.isVisible = !route.isVisible;
+        if (route.isVisible) {
+            map.getOverlays().add(route.overlay);
+            map.getOverlays().add(route.marker);
+            btn.setAlpha(1.0f);
+        } else {
+            map.getOverlays().remove(route.overlay);
+            map.getOverlays().remove(route.marker);
+            btn.setAlpha(0.4f);
+        }
+        map.invalidate();
     }
 
     private void checkArrival(GeoPoint currentLoc) {
@@ -409,6 +422,20 @@ public class HomePage extends AppCompatActivity {
         provider.startLocationProvider(new IMyLocationConsumer() {
             @Override
             public void onLocationChanged(Location location, IMyLocationProvider source) {
+                if (location == null) return;
+
+                // --- DISTANCE TRACKING LOGIC ---
+                if (lastLocation != null) {
+                    // Calculate distance from previous point to current point
+                    float distanceIncrement = lastLocation.distanceTo(location);
+
+                    // Filter out GPS "jitter" (e.g., ignore movements < 1 meter or > 50 meters between updates)
+                    if (distanceIncrement > 1.0 && distanceIncrement < 50.0) {
+                        updateTotalDistance(distanceIncrement);
+                    }
+                }
+                lastLocation = location;
+                // -------------------------------
                 GeoPoint currentLoc = new GeoPoint(location);
                 runOnUiThread(() -> checkArrival(currentLoc));
             }
@@ -523,7 +550,7 @@ public class HomePage extends AppCompatActivity {
                     }
 
                     // Show the tree info
-                    Intent i = getIntent(treeData);
+                    Intent i = getIntent(treeData, m);
                     startActivity(i);
 
                     return true;
@@ -552,6 +579,8 @@ public class HomePage extends AppCompatActivity {
             case 3:
                 return commonName.contains("maple");
             case 4:
+                return commonName.contains("spruce");
+            case 5:
                 return treeData[33].toLowerCase().contains("red"); // Fall color check
             default:
                 return false;
@@ -559,7 +588,7 @@ public class HomePage extends AppCompatActivity {
     }
 
     @NonNull
-    private Intent getIntent(String[] treeData) {
+    private Intent getIntent(String[] treeData, Marker m) {
         Intent i = new Intent(getApplicationContext(), TreeInfo.class);
 
         // Send relevant tree data to the info page
@@ -576,6 +605,7 @@ public class HomePage extends AppCompatActivity {
         i.putExtra("height", treeData[27]);
         i.putExtra("description", getDescription(treeData));
         i.putExtra("mortonPage", getMortonPageName(treeData));
+        i.putExtra("distance", getDistance(m));
 
         return i;
     }
@@ -651,12 +681,19 @@ public class HomePage extends AppCompatActivity {
         }
     }
 
+    private double getDistance(Marker m) {
+        if (locationOverlay.getMyLocation() == null)
+            return Double.POSITIVE_INFINITY;
+        else
+            return locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
+    }
+
     public void updateGoals() {
-        Random rand = new Random();
-        if (currentGoals[0] == 0) currentGoals[0] = 1; // will be made random once list is expanded
-        if (currentGoals[1] == 0) currentGoals[1] = 2;
 
         for (int ii = 0; ii < currentGoals.length; ii++) {
+
+            if(currentGoals[ii] == 0) assignNewGoal(ii);
+
             if (goalsProgress[ii] >= scoreList[currentGoals[ii]]) {
                 Toast.makeText(this, "Goal \"" + gameList[currentGoals[ii]] + "\" Complete!", Toast.LENGTH_SHORT).show();
 
@@ -757,5 +794,24 @@ public class HomePage extends AppCompatActivity {
 
         // Use apply() to save in the background
         editor.apply();
+    }
+
+    private void updateTotalDistance(float meters) {
+        android.content.SharedPreferences prefs = getSharedPreferences("UserStats", MODE_PRIVATE);
+        float totalMeters = prefs.getFloat("total_meters_walked", 0f);
+
+        float newTotal = totalMeters + meters;
+
+        android.content.SharedPreferences.Editor editor = prefs.edit();
+        editor.putFloat("total_meters_walked", newTotal);
+        editor.apply();
+
+        // Achievement Notification: Check if we just crossed a whole kilometer mark
+        if ((int)(newTotal / 1000) > (int)(totalMeters / 1000)) {
+            int km = (int)(newTotal / 1000);
+            runOnUiThread(() ->
+                    Toast.makeText(this, "Achievement: Walked " + km + "km!", Toast.LENGTH_LONG).show()
+            );
+        }
     }
 }

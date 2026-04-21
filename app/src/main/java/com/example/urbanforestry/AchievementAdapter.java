@@ -5,15 +5,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.AchievementViewHolder> {
 
-    private List<achievement> achievementList;
+    private List<Achievement> achievementList;
 
-    public AchievementAdapter(List<achievement> achievementList) {
+    public AchievementAdapter(List<Achievement> achievementList) {
         this.achievementList = achievementList;
     }
 
@@ -26,7 +28,7 @@ public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull AchievementViewHolder holder, int position) {
-        achievement achievement = achievementList.get(position);
+        Achievement achievement = achievementList.get(position);
 
         holder.tvName.setText(achievement.getName());
 

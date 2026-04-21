@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:background="?attr/background_color">
+    android:layout_marginBottom="30dp">
 
     <TextView
         android:id="@+id/achievementName"
@@ -12,11 +13,12 @@
         android:textColor="?attr/logo_color"
         android:layout_height="wrap_content"
         android:text="Tree Finder"
-        android:textStyle="bold" />
+        android:textSize="18sp" />
 
     <ProgressBar
         android:id="@+id/achievementProgress"
         style="?android:attr/progressBarStyleHorizontal"
+        android:textColor="@color/logo_color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:max="100" />
@@ -27,6 +29,5 @@
         android:textColor="?attr/logo_color"
         android:layout_height="wrap_content"
         android:text="Level 2: 1/5 to next level"
-        android:textSize="12sp"
-        android:alpha="0.8" />
+        android:textSize="14sp" />
 </LinearLayout>

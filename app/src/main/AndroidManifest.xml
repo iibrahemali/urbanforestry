@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UrbanForestry">
         <activity
-            android:name=".achievements"
+            android:name=".AchievementsActivity"
             android:exported="false" />
         <activity
             android:name=".PostImageActivity"

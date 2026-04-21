@@ -4,18 +4,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class achievements extends AppCompatActivity {
+public class AchievementsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,19 +28,22 @@ public class achievements extends AppCompatActivity {
         // 2. Load the lifetime totals from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("UserStats", MODE_PRIVATE);
 
-        // These keys ("goal_count_X") must match exactly what you wrote in HomePage
+        int kilometersWalked = (int)prefs.getFloat("total_meters_walked", 0  );
         int nonNativeGoals = prefs.getInt("goal_count_1", 0);
         int oakGoals = prefs.getInt("goal_count_2", 0);
         int mapleGoals = prefs.getInt("goal_count_3", 0);
+        int spruceGoals = prefs.getInt("goal_count_4", 0);
+        int fallRedGoals = prefs.getInt("goal_count_5", 0);
 
         // 3. Create the list of Achievement objects
-        List<achievement> achievementList = new ArrayList<>();
+        List<Achievement> achievementList = new ArrayList<>();
 
-        // We use a threshold of 5 (5 goals to level up).
-        // You can change this number to make leveling harder or easier.
-        achievementList.add(calculateProgress("Invasive Hunter", nonNativeGoals, 5));
+        achievementList.add(calculateProgress("Urban Hiker", kilometersWalked, 1000));
+        achievementList.add(calculateProgress("Invasive Hunter", nonNativeGoals, 6));
         achievementList.add(calculateProgress("Oak Specialist", oakGoals, 5));
-        achievementList.add(calculateProgress("Maple Master", mapleGoals, 5));
+        achievementList.add(calculateProgress("Maple Master", mapleGoals, 4));
+        achievementList.add(calculateProgress("Spruce Spring(steen)", spruceGoals, 3));
+        achievementList.add(calculateProgress("Red Rider", fallRedGoals, 4));
 
         // 4. Set the Adapter
         AchievementAdapter adapter = new AchievementAdapter(achievementList);
@@ -62,10 +61,10 @@ public class achievements extends AppCompatActivity {
      * CurrentProgress = 7 % 5 = 2
      * Result: Level 2, 2/5 progress
      */
-    private achievement calculateProgress(String name, int totalGoalsFinished, int threshold) {
+    private Achievement calculateProgress(String name, int totalGoalsFinished, int threshold) {
         int level = (totalGoalsFinished / threshold) + 1;
         int progressTowardNextLevel = totalGoalsFinished % threshold;
 
-        return new achievement(name, progressTowardNextLevel, threshold, level);
+        return new Achievement(name, progressTowardNextLevel, threshold, level);
     }
 }

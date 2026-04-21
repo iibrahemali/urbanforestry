@@ -17,8 +17,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.Random;
-
 public class Menu extends AppCompatActivity {
     String[] gameList;
     int[] scoreList;
@@ -85,7 +83,7 @@ public class Menu extends AppCompatActivity {
         achievementButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent trophyIntent = new Intent(getApplicationContext(), achievements.class);
+                Intent trophyIntent = new Intent(getApplicationContext(), AchievementsActivity.class);
                 startActivity(trophyIntent);
             }
         });
