@@ -4,13 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/background_color">
 
     <TextView
         android:id="@+id/titleHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Achievement Hall of Fame"
+        android:textColor="?attr/logo_color"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -28,6 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Back to Map"
+        android:textColor="?attr/background_color"
+        android:backgroundTint="?attr/logo_color"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 

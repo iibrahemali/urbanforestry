@@ -3,6 +3,7 @@ package com.example.urbanforestry;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -339,11 +340,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     holder.noCommentsTv.setVisibility(View.VISIBLE);
                 } else {
                     holder.noCommentsTv.setVisibility(View.GONE);
+
+                    // Resolve the seasonal logo_color attribute programmatically
+                    TypedValue typedValue = new TypedValue();
+                    holder.itemView.getContext().getTheme().resolveAttribute(R.attr.logo_color, typedValue, true);
+                    int seasonalLogoColor = typedValue.data;
+
                     for (Comment comment : comments) {
                         TextView ct = new TextView(holder.itemView.getContext());
                         ct.setText(comment.username + ": " + comment.text);
                         ct.setPadding(8, 4, 8, 4);
-                        ct.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.logo_color));
+                        ct.setTextColor(seasonalLogoColor);
                         holder.commentsList.addView(ct);
                     }
                 }

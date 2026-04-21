@@ -8,7 +8,7 @@
     android:layout_marginBottom="16dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp"
-    app:cardBackgroundColor="@color/background_color">
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                 android:text="Username"
                 android:textStyle="bold"
                 android:textSize="16sp"
-                android:textColor="@color/logo_color"
+                android:textColor="?attr/background_color"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"/>
 
@@ -49,7 +49,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="8dp"
                     android:visibility="gone"
-                    app:tint="@color/logo_color"
+                    app:tint="?attr/background_color"
                     android:contentDescription="Edit Post" />
 
                 <!-- Report Button -->
@@ -60,7 +60,7 @@
                     android:src="@drawable/ic_report_outline"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="8dp"
-                    app:tint="@color/logo_color"
+                    app:tint="?attr/background_color"
                     android:contentDescription="Report Post" />
 
                 <!-- Delete Button -->
@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:text="Sample text post"
             android:textSize="16sp"
-            android:textColor="@color/logo_color"
+            android:textColor="?attr/background_color"
             android:layout_marginBottom="8dp"
             android:visibility="gone"/>
 
@@ -114,9 +114,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0"
-                android:textColor="@color/logo_color"
+                android:textColor="?attr/background_color"
                 app:icon="@drawable/ic_heart_outline"
-                app:iconTint="@color/logo_color"
+                app:iconTint="?attr/background_color"
                 app:iconGravity="textStart"/>
 
             <com.google.android.material.button.MaterialButton
@@ -126,9 +126,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0"
-                android:textColor="@color/logo_color"
+                android:textColor="?attr/background_color"
                 app:icon="@drawable/ic_comment_outline"
-                app:iconTint="@color/logo_color"
+                app:iconTint="?attr/background_color"
                 app:iconGravity="textStart"/>
 
         </LinearLayout>
@@ -153,7 +153,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="No comments yet"
-                android:textColor="@color/logo_color"
+                android:textColor="?attr/background_color"
                 android:alpha="0.7"
                 android:padding="8dp"
                 android:visibility="gone"/>
@@ -171,8 +171,8 @@
                     android:layout_weight="1"
                     android:hint="Write a comment..."
                     android:textSize="14sp"
-                    android:textColor="@color/logo_color"
-                    android:textColorHint="@color/logo_color"/>
+                    android:textColor="?attr/background_color"
+                    android:textColorHint="?attr/background_color"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_send_comment"
@@ -180,7 +180,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Post"
-                    android:textColor="@color/logo_color"/>
+                    android:textColor="?attr/background_color"/>
             </LinearLayout>
         </LinearLayout>
 

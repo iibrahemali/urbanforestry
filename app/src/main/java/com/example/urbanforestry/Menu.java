@@ -26,6 +26,9 @@ public class Menu extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Use seasonal DIALOG theme instead of full-screen theme
+        setTheme(SeasonManager.getSeasonDialogTheme(SeasonManager.getCurrentSeason()));
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_menu);

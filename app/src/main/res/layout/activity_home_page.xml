@@ -21,6 +21,7 @@
         android:src="@drawable/ic_menu"
         android:scaleType="fitCenter"
         android:padding="10dp"
+        app:tint="?attr/background_color"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,6 +34,7 @@
         android:src="@drawable/ic_social"
         android:scaleType="fitCenter"
         android:padding="10dp"
+        app:tint="?attr/background_color"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

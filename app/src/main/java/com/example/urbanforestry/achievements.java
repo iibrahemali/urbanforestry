@@ -19,6 +19,9 @@ public class achievements extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Set seasonal theme before onCreate
+        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getCurrentSeason()));
+        
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievements);
 

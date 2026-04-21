@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
+    android:background="?attr/background_color"
     android:padding="24dp"
     tools:context=".SignUpActivity">
 
@@ -41,8 +41,8 @@
         android:layout_marginTop="32dp"
         android:hint="Full Name"
         android:textColorHint="@color/white"
-        app:boxStrokeColor="@color/logo_color"
-        app:hintTextColor="@color/logo_color"
+        app:boxStrokeColor="?attr/logo_color"
+        app:hintTextColor="?attr/logo_color"
         app:layout_constraintTop_toBottomOf="@id/signUpSubtitle">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -64,8 +64,8 @@
         android:layout_marginTop="16dp"
         android:hint="Username"
         android:textColorHint="@color/white"
-        app:boxStrokeColor="@color/logo_color"
-        app:hintTextColor="@color/logo_color"
+        app:boxStrokeColor="?attr/logo_color"
+        app:hintTextColor="?attr/logo_color"
         app:layout_constraintTop_toBottomOf="@id/nameInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -87,8 +87,8 @@
         android:layout_marginTop="16dp"
         android:hint="Email"
         android:textColorHint="@color/white"
-        app:boxStrokeColor="@color/logo_color"
-        app:hintTextColor="@color/logo_color"
+        app:boxStrokeColor="?attr/logo_color"
+        app:hintTextColor="?attr/logo_color"
         app:layout_constraintTop_toBottomOf="@id/usernameInputLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -102,7 +102,7 @@
             android:paddingEnd="16dp"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
-            android:popupBackground="@color/background_color" />
+            android:popupBackground="?attr/background_color" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -113,8 +113,8 @@
         android:layout_marginTop="16dp"
         android:hint="Password"
         android:textColorHint="@color/white"
-        app:boxStrokeColor="@color/logo_color"
-        app:hintTextColor="@color/logo_color"
+        app:boxStrokeColor="?attr/logo_color"
+        app:hintTextColor="?attr/logo_color"
         app:layout_constraintTop_toBottomOf="@id/emailInputLayout"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/white">
@@ -135,9 +135,9 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="24dp"
-        android:backgroundTint="@color/logo_color"
+        android:backgroundTint="?attr/logo_color"
         android:text="Sign Up"
-        android:textColor="@color/background_color"
+        android:textColor="?attr/background_color"
         android:textSize="18sp"
         android:textStyle="bold"
         app:cornerRadius="12dp"

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="32dp"
     android:gravity="center"
-    android:background="@color/background_color">
+    android:background="?attr/background_color">
 
     <!-- Red circle icon container -->
     <FrameLayout
@@ -68,9 +68,9 @@
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:text="Cancel"
-        android:textColor="@color/logo_color"
+        android:textColor="?attr/logo_color"
         android:textSize="16sp"
-        app:strokeColor="@color/logo_color"
+        app:strokeColor="?attr/logo_color"
         app:strokeWidth="1.5dp"
         app:cornerRadius="14dp"/>
 

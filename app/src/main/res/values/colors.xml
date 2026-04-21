@@ -2,8 +2,24 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="background_color">#062414</color>
-    <color name="logo_color">#20b055</color>
+
+    <color name="summer_background_color">#062414</color>
+    <color name="summer_logo_color">#20b055</color>
+
+    <color name="winter_background_color">#082547</color>
+    <color name="winter_logo_color">#afe8eb</color>
+
+    <color name="autumn_background_color">#4C1D02</color>
+    <color name="autumn_logo_color">#F3F5C2</color>
+
+    <color name="spring_background_color">#c4667f</color>
+    <color name="spring_logo_color">#FAFCFA</color>
+    <color name="spring_splash_background">#DA8E92</color>
+
     <color name="logo_color_dark">#188440</color>
     <color name="letter_color">#ddac8a</color>
+
+    <!-- The actual values for these will be resolved via the ?attr/ syntax in layouts -->
+    <color name="background_color">#062414</color>
+    <color name="logo_color">#20b055</color>
 </resources>

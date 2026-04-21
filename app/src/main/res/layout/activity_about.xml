@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@color/background_color"
+    android:background="?attr/background_color"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AboutActivity">
@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Urban Forestry"
-            android:textColor="@color/logo_color"
+            android:textColor="?attr/logo_color"
             android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Contacts"
-            android:textColor="@color/logo_color"
+            android:textColor="?attr/logo_color"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginTop="32dp"
@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(717) 517-0864"
-            android:textColor="@color/logo_color"
+            android:textColor="?attr/logo_color"
             android:textSize="16sp"
             android:clickable="true"
             android:focusable="true"
@@ -90,7 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="mmeyer@cityoflancasterpa.gov"
-            android:textColor="@color/logo_color"
+            android:textColor="?attr/logo_color"
             android:textSize="16sp"
             android:clickable="true"
             android:focusable="true"
@@ -125,7 +125,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(717) 291-4846"
-            android:textColor="@color/logo_color"
+            android:textColor="?attr/logo_color"
             android:textSize="16sp"
             android:clickable="true"
             android:focusable="true"
@@ -137,7 +137,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="randerer@cityoflancasterpa.gov"
-            android:textColor="@color/logo_color"
+            android:textColor="?attr/logo_color"
             android:textSize="16sp"
             android:clickable="true"
             android:focusable="true"
@@ -149,7 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Follow Us"
-            android:textColor="@color/logo_color"
+            android:textColor="?attr/logo_color"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginTop="32dp"
@@ -172,7 +172,7 @@
                 android:layout_height="48dp"
                 android:src="@drawable/ic_linkedin"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/logo_color"
+                app:tint="?attr/logo_color"
                 android:contentDescription="LinkedIn" />
 
             <ImageButton
@@ -181,7 +181,7 @@
                 android:layout_height="48dp"
                 android:src="@drawable/ic_youtube"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/logo_color"
+                app:tint="?attr/logo_color"
                 android:layout_marginStart="16dp"
                 android:contentDescription="YouTube" />
 
@@ -191,7 +191,7 @@
                 android:layout_height="48dp"
                 android:src="@drawable/ic_instagram"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/logo_color"
+                app:tint="?attr/logo_color"
                 android:layout_marginStart="16dp"
                 android:contentDescription="Instagram" />
 
@@ -201,7 +201,7 @@
                 android:layout_height="48dp"
                 android:src="@drawable/ic_facebook"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/logo_color"
+                app:tint="?attr/logo_color"
                 android:layout_marginStart="16dp"
                 android:contentDescription="Facebook" />
         </LinearLayout>
