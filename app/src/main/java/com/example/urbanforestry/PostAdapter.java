@@ -67,7 +67,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             commentsList = view.findViewById(R.id.comments_list);
             noCommentsTv = view.findViewById(R.id.no_comments_tv);
             etComment = view.findViewById(R.id.et_comment);
-            btnSendComment = view.findViewById(R.id.btn_send_comment);
+            btnSendComment = (MaterialButton) view.findViewById(R.id.btn_send_comment);
         }
     }
 
@@ -104,30 +104,44 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.btnReport.setVisibility(View.VISIBLE);
         }
 
+        // UPDATE REPORT BUTTON UI (FILLED OR HOLLOW)
+        if (post.isReportedByMe) {
+            holder.btnReport.setImageResource(R.drawable.ic_report_filled);
+        } else {
+            holder.btnReport.setImageResource(R.drawable.ic_report_outline);
+        }
+
         // REPORT BUTTON LOGIC
         holder.btnReport.setOnClickListener(v -> {
             if (post.postId == null) return;
 
-            new AlertDialog.Builder(holder.itemView.getContext())
-                    .setMessage("Are you sure you want to report this post for inappropriate content?")
-                    .setPositiveButton("Report", (dialog, which) -> {
-                        postRepository.reportPost(post.postId)
-                                .addOnSuccessListener(deleted -> {
-                                    if (deleted) {
-                                        Toast.makeText(holder.itemView.getContext(), "Post removed due to multiple reports.", Toast.LENGTH_LONG).show();
-                                        posts.remove(position);
-                                        notifyItemRemoved(position);
-                                        notifyItemRangeChanged(position, posts.size());
-                                    } else {
-                                        Toast.makeText(holder.itemView.getContext(), "Post reported.", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(holder.itemView.getContext(), "Report failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                });
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+            if (post.isReportedByMe) {
+                showAlreadyReportedDialog(holder, post, position);
+            } else {
+                new AlertDialog.Builder(holder.itemView.getContext())
+                        .setMessage("Are you sure you want to report this post for inappropriate content?")
+                        .setPositiveButton("Report", (dialog, which) -> {
+                            postRepository.reportPost(post.postId)
+                                    .addOnSuccessListener(deleted -> {
+                                        if (deleted) {
+                                            posts.remove(position);
+                                            notifyItemRemoved(position);
+                                            notifyItemRangeChanged(position, posts.size());
+                                        } else {
+                                            post.isReportedByMe = true;
+                                            post.reportCount++;
+                                            notifyItemChanged(position);
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        if (e.getMessage() != null && e.getMessage().contains("ALREADY_REPORTED")) {
+                                            showAlreadyReportedDialog(holder, post, position);
+                                        }
+                                    });
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
         });
 
         // EDIT BUTTON LOGIC
@@ -148,7 +162,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                             post.caption = newCaption;
                             post.text = newCaption;
                             notifyItemChanged(position);
-                            Toast.makeText(holder.itemView.getContext(), "Post updated", Toast.LENGTH_SHORT).show();
                         })
                         .addOnFailureListener(e -> {
                             Toast.makeText(holder.itemView.getContext(), "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -190,11 +203,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }
 
+            dialogView.getRootView().setBackground(
+                holder.itemView.getContext().getDrawable(R.drawable.bottom_sheet_bg)
+            );
+
             dialogView.findViewById(R.id.btn_confirm_delete).setOnClickListener(confirmView -> {
                 dialog.dismiss();
                 postRepository.deletePost(post.postId)
                         .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(holder.itemView.getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
                             posts.remove(position);
                             notifyItemRemoved(position);
                             notifyItemRangeChanged(position, posts.size());
@@ -332,6 +348,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                         Toast.makeText(holder.itemView.getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         });
+    }
+
+    private void showAlreadyReportedDialog(ViewHolder holder, Post post, int position) {
+        new AlertDialog.Builder(holder.itemView.getContext())
+                .setMessage("You have already reported this post.")
+                .setPositiveButton("Continue", null)
+                .setNegativeButton("Withdraw", (dialog, which) -> {
+                    postRepository.unreportPost(post.postId)
+                            .addOnSuccessListener(aVoid -> {
+                                post.isReportedByMe = false;
+                                post.reportCount--;
+                                notifyItemChanged(position);
+                            });
+                })
+                .show();
     }
 
     private void loadComments(ViewHolder holder, Post post) {

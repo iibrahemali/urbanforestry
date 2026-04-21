@@ -12,11 +12,12 @@ public class Post {
     public String imageUrl; 
     public int likeCount;
     public int commentCount;
-    public int reportCount; // Added this field
+    public int reportCount; 
     public Timestamp createdAt;
     
     // UI state
     public boolean isLikedByMe;
+    public boolean isReportedByMe; // Added this field
     public String userEmoji; // The emoji the user reacted with if any
     
     // Location fields

@@ -144,20 +144,47 @@ public class PostRepository {
         });
     }
 
-    public Task<Boolean> reportPost(String postId) {
+    public Task<Void> unreportPost(String postId) {
+        String uid = mAuth.getCurrentUser().getUid();
         DocumentReference postRef = mFirestore.collection("posts").document(postId);
+        DocumentReference reportRef = postRef.collection("reports").document(uid);
 
         return mFirestore.runTransaction(transaction -> {
-            DocumentSnapshot snapshot = transaction.get(postRef);
-            long currentReports = snapshot.getLong("reportCount") != null ? snapshot.getLong("reportCount") : 0;
+            DocumentSnapshot reportSnapshot = transaction.get(reportRef);
+            if (!reportSnapshot.exists()) return null;
+
+            transaction.delete(reportRef);
+            transaction.update(postRef, "reportCount", FieldValue.increment(-1));
+            return null;
+        });
+    }
+
+    public Task<Boolean> reportPost(String postId) {
+        String uid = mAuth.getCurrentUser().getUid();
+        DocumentReference postRef = mFirestore.collection("posts").document(postId);
+        DocumentReference reportRef = postRef.collection("reports").document(uid);
+
+        return mFirestore.runTransaction(transaction -> {
+            DocumentSnapshot reportSnapshot = transaction.get(reportRef);
+            
+            if (reportSnapshot.exists()) {
+                throw new RuntimeException("ALREADY_REPORTED");
+            }
+
+            DocumentSnapshot postSnapshot = transaction.get(postRef);
+            long currentReports = postSnapshot.getLong("reportCount") != null ? postSnapshot.getLong("reportCount") : 0;
             long newReportCount = currentReports + 1;
 
+            // Track that this user has reported
+            Map<String, Object> reportData = new HashMap<>();
+            reportData.put("timestamp", FieldValue.serverTimestamp());
+            transaction.set(reportRef, reportData);
+
             if (newReportCount > 5) {
-                // Delete logic moved inside transaction to be atomic
-                String uid = snapshot.getString("uid");
+                String postOwnerUid = postSnapshot.getString("uid");
                 transaction.delete(postRef);
-                if (uid != null) {
-                    DocumentReference userRef = mFirestore.collection("users").document(uid);
+                if (postOwnerUid != null) {
+                    DocumentReference userRef = mFirestore.collection("users").document(postOwnerUid);
                     transaction.update(userRef, "postCount", FieldValue.increment(-1));
                 }
                 return true; // Deleted

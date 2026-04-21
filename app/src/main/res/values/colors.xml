@@ -21,8 +21,4 @@
     <color name="logo_color">#20b055</color>
     <color name="logo_color_dark">#188440</color>
     <color name="letter_color">#ddac8a</color>
-
-    <!-- The actual values for these will be resolved via the ?attr/ syntax in layouts -->
-    <color name="background_color">#062414</color>
-    <color name="logo_color">#20b055</color>
 </resources>

@@ -49,7 +49,7 @@
         android:clipToPadding="false"
         android:padding="16dp"
         android:layout_marginTop="20dp"
-        android:background="@color/background_color"
+        android:background="?attr/background_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +59,7 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/logo_color"
+        android:background="?attr/logo_color"
         app:layout_constraintTop_toTopOf="@id/recyclerView" />
 
     <!-- Floating Action Button (Create Post) -->

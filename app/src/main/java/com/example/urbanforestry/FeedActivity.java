@@ -151,10 +151,11 @@ public class FeedActivity extends AppCompatActivity {
                             post.text = doc.getString("caption");
                         }
 
-                        // Preserve local state
+                        // Preserve local state (INCLUDING reported status)
                         for (Post existingPost : postList) {
                             if (existingPost.postId != null && existingPost.postId.equals(post.postId)) {
                                 post.isLikedByMe = existingPost.isLikedByMe;
+                                post.isReportedByMe = existingPost.isReportedByMe;
                                 post.isCommentsVisible = existingPost.isCommentsVisible;
                                 break;
                             }
@@ -162,8 +163,9 @@ public class FeedActivity extends AppCompatActivity {
 
                         fetchedPosts.add(post);
 
-                        if (currentUid != null && !post.isLikedByMe) {
-                            checkIfLiked(post);
+                        if (currentUid != null) {
+                            if (!post.isLikedByMe) checkIfLiked(post);
+                            if (!post.isReportedByMe) checkIfReported(post);
                         }
                     }
 
@@ -184,6 +186,20 @@ public class FeedActivity extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         post.isLikedByMe = true;
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+    }
+
+    private void checkIfReported(Post post) {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null || post.postId == null) return;
+
+        db.collection("posts").document(post.postId)
+                .collection("reports").document(uid).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        post.isReportedByMe = true;
                         adapter.notifyDataSetChanged();
                     }
                 });
