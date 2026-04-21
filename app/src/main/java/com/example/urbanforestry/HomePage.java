@@ -1,6 +1,7 @@
 package com.example.urbanforestry;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,6 +14,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.preference.PreferenceManager;
 
 import android.util.Log;
@@ -32,6 +35,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
@@ -67,9 +71,9 @@ public class HomePage extends AppCompatActivity {
     private MyLocationNewOverlay locationOverlay;
 
     final String[] gameList = {"N/A", "Find non-native tree species", "Find Oak Trees", "Find Maple Trees", "Find Spruce Trees",
-                                "Find Trees that are Red in the Fall"};
+            "Find Trees that are Red in the Fall"};
     final int[] scoreList = {0, 6, 8, 4, 4,
-                              4};
+            4};
     public static int[] currentGoals = {0, 0};
     public static int[] goalsProgress = {0, 0};
     private List<HashSet<String>> visitedTreesBySlot = new ArrayList<>();
@@ -108,6 +112,22 @@ public class HomePage extends AppCompatActivity {
             this.sourceText = sourceText;
         }
     }
+
+    // If the user taps the "Sign out" button in the menu, return to this activity and ask for confirmation
+    private final ActivityResultLauncher<Intent> arl = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == -1)
+                    new AlertDialog.Builder(this)
+                            .setMessage("Are you sure you want to sign out?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                FirebaseAuth.getInstance().signOut();
+                                startActivity(new Intent(this, WelcomePage.class));
+                                finish();
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,7 +171,8 @@ public class HomePage extends AppCompatActivity {
             i.putExtra("scoreList", scoreList);
             i.putExtra("currentGoals", currentGoals);
             i.putExtra("goalsProgress", goalsProgress);
-            startActivity(i);
+
+            arl.launch(i);
         });
 
         ImageButton feedButton = findViewById(R.id.feedButton);
@@ -692,7 +713,7 @@ public class HomePage extends AppCompatActivity {
 
         for (int ii = 0; ii < currentGoals.length; ii++) {
 
-            if(currentGoals[ii] == 0) assignNewGoal(ii);
+            if (currentGoals[ii] == 0) assignNewGoal(ii);
 
             if (goalsProgress[ii] >= scoreList[currentGoals[ii]]) {
                 Toast.makeText(this, "Goal \"" + gameList[currentGoals[ii]] + "\" Complete!", Toast.LENGTH_SHORT).show();
@@ -764,7 +785,7 @@ public class HomePage extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
                     builder.setTitle(binName);
                     builder.setMessage("Composting is the process of recycling organic waste, like food scraps and leaves, into nutrient-rich soil.");
-                    builder.setPositiveButton("Visit Link", (dialog, which) -> {
+                    builder.setPositiveButton("Visit link", (dialog, which) -> {
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
                         startActivity(browserIntent);
                     });
@@ -807,8 +828,8 @@ public class HomePage extends AppCompatActivity {
         editor.apply();
 
         // Achievement Notification: Check if we just crossed a whole kilometer mark
-        if ((int)(newTotal / 1000) > (int)(totalMeters / 1000)) {
-            int km = (int)(newTotal / 1000);
+        if ((int) (newTotal / 1000) > (int) (totalMeters / 1000)) {
+            int km = (int) (newTotal / 1000);
             runOnUiThread(() ->
                     Toast.makeText(this, "Achievement: Walked " + km + "km!", Toast.LENGTH_LONG).show()
             );

@@ -38,12 +38,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         ImageView imageView;
         TextView username;
         TextView textView;
+        MaterialButton btnGetRoute;
         MaterialButton btnHeart;
         MaterialButton btnComment;
         ImageButton btnDelete;
         ImageButton btnEdit;
         ImageButton btnReport;
-        
+
         View commentsSection;
         LinearLayout commentsList;
         TextView noCommentsTv;
@@ -55,17 +56,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             imageView = view.findViewById(R.id.post_image);
             username = view.findViewById(R.id.post_username);
             textView = view.findViewById(R.id.post_text);
-            btnHeart = (MaterialButton) view.findViewById(R.id.btn_heart);
-            btnComment = (MaterialButton) view.findViewById(R.id.btn_comment);
+            btnGetRoute = view.findViewById(R.id.btn_get_route);
+            btnHeart = view.findViewById(R.id.btn_heart);
+            btnComment = view.findViewById(R.id.btn_comment);
             btnDelete = view.findViewById(R.id.btn_delete);
             btnEdit = view.findViewById(R.id.btn_edit);
             btnReport = view.findViewById(R.id.btn_report);
-            
+
             commentsSection = view.findViewById(R.id.comments_section);
             commentsList = view.findViewById(R.id.comments_list);
             noCommentsTv = view.findViewById(R.id.no_comments_tv);
             etComment = view.findViewById(R.id.et_comment);
-            btnSendComment = (MaterialButton) view.findViewById(R.id.btn_send_comment);
+            btnSendComment = view.findViewById(R.id.btn_send_comment);
         }
     }
 
@@ -91,7 +93,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         // Show edit and delete buttons only if current user is the owner
         String currentUid = FirebaseAuth.getInstance().getUid();
         boolean isOwner = currentUid != null && post.uid != null && currentUid.equals(post.uid);
-        
+
         if (isOwner) {
             holder.btnDelete.setVisibility(View.VISIBLE);
             holder.btnEdit.setVisibility(View.VISIBLE);
@@ -107,7 +109,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             if (post.postId == null) return;
 
             new AlertDialog.Builder(holder.itemView.getContext())
-                    .setTitle("Report Post")
                     .setMessage("Are you sure you want to report this post for inappropriate content?")
                     .setPositiveButton("Report", (dialog, which) -> {
                         postRepository.reportPost(post.postId)
@@ -143,29 +144,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             builder.setPositiveButton("Save", (dialog, which) -> {
                 String newCaption = input.getText().toString().trim();
                 postRepository.updatePost(post.postId, newCaption)
-                    .addOnSuccessListener(aVoid -> {
-                        post.caption = newCaption;
-                        post.text = newCaption;
-                        notifyItemChanged(position);
-                        Toast.makeText(holder.itemView.getContext(), "Post updated", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(holder.itemView.getContext(), "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                        .addOnSuccessListener(aVoid -> {
+                            post.caption = newCaption;
+                            post.text = newCaption;
+                            notifyItemChanged(position);
+                            Toast.makeText(holder.itemView.getContext(), "Post updated", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(holder.itemView.getContext(), "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
             });
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
             builder.show();
         });
 
-        // CLICK LISTENER FOR THE PHOTO IMAGE - FOR DIRECTIONS
-        holder.imageView.setOnClickListener(v -> {
+        // GET DIRECTIONS TO PHOTO LOCATION
+        holder.btnGetRoute.setOnClickListener(v -> {
             if (post.hasLocation) {
                 Intent intent = new Intent(v.getContext(), HomePage.class);
                 intent.putExtra("destLat", post.latitude);
                 intent.putExtra("destLng", post.longitude);
                 intent.putExtra("getDirections", true);
-                
+
                 // Add info for the toggle button dialog
                 intent.putExtra("postUser", post.username);
                 String infoText = (post.caption != null && !post.caption.isEmpty()) ? post.caption : post.text;
@@ -189,22 +190,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }
 
-            dialogView.getRootView().setBackground(
-                holder.itemView.getContext().getDrawable(R.drawable.bottom_sheet_bg)
-            );
-
             dialogView.findViewById(R.id.btn_confirm_delete).setOnClickListener(confirmView -> {
                 dialog.dismiss();
                 postRepository.deletePost(post.postId)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(holder.itemView.getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
-                        posts.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, posts.size());
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(holder.itemView.getContext(), "Delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(holder.itemView.getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
+                            posts.remove(position);
+                            notifyItemRemoved(position);
+                            notifyItemRangeChanged(position, posts.size());
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(holder.itemView.getContext(), "Delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
             });
 
             dialogView.findViewById(R.id.btn_cancel_delete).setOnClickListener(cancelView -> dialog.dismiss());
@@ -215,16 +212,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         // Handle Image
         if (post.resourceId != -1) {
             holder.imageView.setVisibility(View.VISIBLE);
+            holder.btnGetRoute.setVisibility(View.VISIBLE);
             holder.imageView.setImageResource(post.resourceId);
         } else if (post.imageUrl != null && !post.imageUrl.isEmpty()) {
             // New logic: Load from Firebase Storage URL
             holder.imageView.setVisibility(View.VISIBLE);
+            holder.btnGetRoute.setVisibility(View.VISIBLE);
             Glide.with(holder.itemView.getContext())
                     .load(post.imageUrl)
                     .into(holder.imageView);
         } else if (post.imagePath != null && !post.imagePath.isEmpty()) {
             // Local path (for legacy/development)
             holder.imageView.setVisibility(View.VISIBLE);
+            holder.btnGetRoute.setVisibility(View.VISIBLE);
             Bitmap bitmap = BitmapFactory.decodeFile(post.imagePath);
             holder.imageView.setImageBitmap(bitmap);
         }
@@ -239,7 +239,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         // Handle Like/Heart Button UI
         int currentLikes = (post.postId != null) ? post.likeCount : post.heartCount;
         boolean isLiked = (post.postId != null) ? post.isLikedByMe : post.isHeartedByMe;
-        
+
         holder.btnHeart.setText(String.valueOf(currentLikes));
         if (isLiked) {
             holder.btnHeart.setIconResource(R.drawable.ic_heart_filled);
@@ -257,29 +257,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         // Like Click Listener
         holder.btnHeart.setOnClickListener(v -> {
             if (post.postId == null) {
-                if (post.isHeartedByMe) { post.heartCount--; post.isHeartedByMe = false; }
-                else { post.heartCount++; post.isHeartedByMe = true; }
+                if (post.isHeartedByMe) {
+                    post.heartCount--;
+                    post.isHeartedByMe = false;
+                } else {
+                    post.heartCount++;
+                    post.isHeartedByMe = true;
+                }
                 notifyItemChanged(position);
                 return;
             }
 
             String reactionEmoji = "❤️";
             postRepository.toggleLike(post.postId, reactionEmoji)
-                .addOnSuccessListener(aVoid -> {
-                    if (post.isLikedByMe) {
-                        post.likeCount--;
-                        post.isLikedByMe = false;
-                        post.userEmoji = null;
-                    } else {
-                        post.likeCount++;
-                        post.isLikedByMe = true;
-                        post.userEmoji = reactionEmoji;
-                    }
-                    notifyItemChanged(position);
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(holder.itemView.getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                    .addOnSuccessListener(aVoid -> {
+                        if (post.isLikedByMe) {
+                            post.likeCount--;
+                            post.isLikedByMe = false;
+                            post.userEmoji = null;
+                        } else {
+                            post.likeCount++;
+                            post.isLikedByMe = true;
+                            post.userEmoji = reactionEmoji;
+                        }
+                        notifyItemChanged(position);
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(holder.itemView.getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
         });
 
         // Toggle Comments & Load them
@@ -315,23 +320,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
             holder.btnSendComment.setEnabled(false);
             postRepository.addComment(post.postId, commentText)
-                .addOnSuccessListener(aVoid -> {
-                    holder.etComment.setText("");
-                    holder.btnSendComment.setEnabled(true);
-                    post.commentCount++;
-                    loadComments(holder, post); // Refresh
-                    notifyItemChanged(position);
-                })
-                .addOnFailureListener(e -> {
-                    holder.btnSendComment.setEnabled(true);
-                    Toast.makeText(holder.itemView.getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                    .addOnSuccessListener(aVoid -> {
+                        holder.etComment.setText("");
+                        holder.btnSendComment.setEnabled(true);
+                        post.commentCount++;
+                        loadComments(holder, post); // Refresh
+                        notifyItemChanged(position);
+                    })
+                    .addOnFailureListener(e -> {
+                        holder.btnSendComment.setEnabled(true);
+                        Toast.makeText(holder.itemView.getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
         });
     }
 
     private void loadComments(ViewHolder holder, Post post) {
         if (post.postId == null) return;
-        
+
         postRepository.getComments(post.postId)
             .addOnSuccessListener(queryDocumentSnapshots -> {
                 holder.commentsList.removeAllViews();

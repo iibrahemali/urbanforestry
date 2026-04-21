@@ -17,7 +17,7 @@
             android:id="@+id/about_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Urban Forestry"
+            android:text="MyCelia"
             android:textColor="?attr/logo_color"
             android:textSize="32sp"
             android:textStyle="bold"

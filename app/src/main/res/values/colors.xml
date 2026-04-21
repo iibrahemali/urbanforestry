@@ -16,6 +16,9 @@
     <color name="spring_logo_color">#FAFCFA</color>
     <color name="spring_splash_background">#DA8E92</color>
 
+    <color name="background_color">#062414</color>
+    <color name="background_color_darker">#03120A</color>
+    <color name="logo_color">#20b055</color>
     <color name="logo_color_dark">#188440</color>
     <color name="letter_color">#ddac8a</color>
 
