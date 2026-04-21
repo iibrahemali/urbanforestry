@@ -352,7 +352,6 @@ public class HomePage extends AppCompatActivity {
         String showHideText = route.isVisible ? "Hide route" : "Show route";
 
         new AlertDialog.Builder(this)
-                .setTitle("Route Information")
                 .setMessage(info)
                 .setPositiveButton("Delete", (dialog, which) -> {
                     removeRoute(route);

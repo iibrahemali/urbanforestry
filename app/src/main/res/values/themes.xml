@@ -15,6 +15,7 @@
     <style name="Theme.UrbanForestry.Summer" parent="Theme.UrbanForestry">
         <item name="background_color">@color/summer_background_color</item>
         <item name="logo_color">@color/summer_logo_color</item>
+        <item name="logo_color_dark">@color/logo_color_dark</item>
     </style>
 
     <style name="Theme.UrbanForestry.Winter" parent="Theme.UrbanForestry">

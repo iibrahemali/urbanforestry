@@ -96,7 +96,6 @@
         android:layout_height="wrap_content"
         android:text="To &quot;discover&quot; a tree, get within 10 m and tap on its dot."
         android:textSize="12sp"
-        android:textColor="?attr/logo_color"
         android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@id/goalContainer2"
         app:layout_constraintLeft_toLeftOf="parent"

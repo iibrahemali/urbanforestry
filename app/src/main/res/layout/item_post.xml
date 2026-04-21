@@ -105,11 +105,11 @@
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/logo_color"
+            android:backgroundTint="?attr/logo_color"
             app:icon="@drawable/ic_route"
-            app:iconTint="@color/background_color"
+            app:iconTint="?attr/background_color"
             android:text="Get directions"
-            android:textColor="@color/background_color"
+            android:textColor="?attr/background_color"
             android:visibility="gone"
             app:cornerRadius="12dp" />
 
@@ -129,7 +129,7 @@
                 android:textColor="?attr/background_color"
                 app:icon="@drawable/ic_heart_outline"
                 app:iconTint="?attr/background_color"
-                app:iconGravity="textStart"/>
+                app:iconGravity="textStart" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_comment"
@@ -141,7 +141,7 @@
                 android:textColor="?attr/background_color"
                 app:icon="@drawable/ic_comment_outline"
                 app:iconTint="?attr/background_color"
-                app:iconGravity="textStart"/>
+                app:iconGravity="textStart" />
 
         </LinearLayout>
 
@@ -184,7 +184,7 @@
                     android:hint="Write a comment..."
                     android:textSize="14sp"
                     android:textColor="?attr/background_color"
-                    android:textColorHint="?attr/background_color"/>
+                    android:textColorHint="?attr/background_color" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_send_comment"
@@ -192,7 +192,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Post"
-                    android:textColor="?attr/background_color"/>
+                    android:textColor="?attr/background_color" />
             </LinearLayout>
         </LinearLayout>
 
