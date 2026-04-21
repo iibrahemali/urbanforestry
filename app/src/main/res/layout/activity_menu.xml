@@ -16,7 +16,7 @@
         android:text="MyCelia"
         android:textSize="26sp"
         android:textStyle="bold"
-        android:textColor="@color/letter_color"
+        android:textColor="?attr/alt_color"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
@@ -28,7 +28,7 @@
         android:text="Missions"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="?attr/logo_color"
+        android:textColor="?attr/accent_color"
         android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@id/appName"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -47,7 +47,7 @@
             android:id="@+id/gameGoal1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="?attr/logo_color"
+            android:textColor="?attr/accent_color"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -55,7 +55,7 @@
             android:id="@+id/goalProgress1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="?attr/logo_color"
+            android:textColor="?attr/accent_color"
             android:layout_marginStart="4dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/gameGoal1" />
@@ -75,7 +75,7 @@
             android:id="@+id/gameGoal2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="?attr/logo_color"
+            android:textColor="?attr/accent_color"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -83,7 +83,7 @@
             android:id="@+id/goalProgress2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="?attr/logo_color"
+            android:textColor="?attr/accent_color"
             android:layout_marginStart="4dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/gameGoal2" />
@@ -96,7 +96,6 @@
         android:layout_height="wrap_content"
         android:text="To &quot;discover&quot; a tree, get within 10 m and tap on its dot."
         android:textSize="12sp"
-        android:textColor="?attr/logo_color"
         android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@id/goalContainer2"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -108,7 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View achievements"
-        android:textColor="?attr/logo_color"
+        android:textColor="?attr/accent_color"
         android:textSize="18sp"
         android:layout_marginTop="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -121,7 +120,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="About"
-        android:textColor="?attr/logo_color"
+        android:textColor="?attr/accent_color"
         android:textSize="18sp"
         android:layout_marginHorizontal="45dp"
         app:layout_constraintTop_toBottomOf="@id/achievementsButton"
@@ -133,7 +132,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sign out"
-        android:textColor="?attr/logo_color"
+        android:textColor="?attr/accent_color"
         android:textSize="18sp"
         android:layout_marginHorizontal="45dp"
         app:layout_constraintTop_toTopOf="@id/aboutButton"

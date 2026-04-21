@@ -203,10 +203,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }
 
-            dialogView.getRootView().setBackground(
-                holder.itemView.getContext().getDrawable(R.drawable.bottom_sheet_bg)
-            );
-
             dialogView.findViewById(R.id.btn_confirm_delete).setOnClickListener(confirmView -> {
                 dialog.dismiss();
                 postRepository.deletePost(post.postId)
@@ -369,28 +365,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         if (post.postId == null) return;
 
         postRepository.getComments(post.postId)
-            .addOnSuccessListener(queryDocumentSnapshots -> {
-                holder.commentsList.removeAllViews();
-                List<Comment> comments = queryDocumentSnapshots.toObjects(Comment.class);
-                if (comments.isEmpty()) {
-                    holder.noCommentsTv.setVisibility(View.VISIBLE);
-                } else {
-                    holder.noCommentsTv.setVisibility(View.GONE);
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    holder.commentsList.removeAllViews();
+                    List<Comment> comments = queryDocumentSnapshots.toObjects(Comment.class);
+                    if (comments.isEmpty()) {
+                        holder.noCommentsTv.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.noCommentsTv.setVisibility(View.GONE);
 
-                    // Resolve the seasonal logo_color attribute programmatically
-                    TypedValue typedValue = new TypedValue();
-                    holder.itemView.getContext().getTheme().resolveAttribute(R.attr.logo_color, typedValue, true);
-                    int seasonalLogoColor = typedValue.data;
+                        // Resolve the seasonal accent_color attribute programmatically
+                        TypedValue typedValue = new TypedValue();
+                        holder.itemView.getContext().getTheme().resolveAttribute(R.attr.accent_color, typedValue, true);
+                        int seasonalLogoColor = typedValue.data;
 
-                    for (Comment comment : comments) {
-                        TextView ct = new TextView(holder.itemView.getContext());
-                        ct.setText(comment.username + ": " + comment.text);
-                        ct.setPadding(8, 4, 8, 4);
-                        ct.setTextColor(seasonalLogoColor);
-                        holder.commentsList.addView(ct);
+                        for (Comment comment : comments) {
+                            TextView ct = new TextView(holder.itemView.getContext());
+                            ct.setText(comment.username + ": " + comment.text);
+                            ct.setPadding(8, 4, 8, 4);
+                            ct.setTextColor(seasonalLogoColor);
+                            holder.commentsList.addView(ct);
+                        }
                     }
-                }
-            });
+                });
     }
 
     @Override

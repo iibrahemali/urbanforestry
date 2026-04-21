@@ -4,22 +4,33 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="summer_background_color">#062414</color>
-    <color name="summer_logo_color">#20b055</color>
+    <color name="summer_background_color_darker">#03120A</color>
+    <color name="summer_accent_color">#20b055</color>
+    <color name="summer_accent_color_dark">#188440</color>
+    <color name="summer_alt_color">#F7BE99</color>
 
     <color name="winter_background_color">#082547</color>
-    <color name="winter_logo_color">#afe8eb</color>
+    <color name="winter_background_color_darker">#041324</color>
+    <color name="winter_accent_color">#AFE8EB</color>
+    <color name="winter_accent_color_dark">#83AEB0</color>
+    <color name="winter_alt_color">#67ABDF</color>
 
     <color name="autumn_background_color">#4C1D02</color>
-    <color name="autumn_logo_color">#F3F5C2</color>
+    <color name="autumn_background_color_darker">#041324</color>
+    <color name="autumn_accent_color">#F3F5C2</color>
+    <color name="autumn_accent_color_dark">#B6B892</color>
+    <color name="autumn_alt_color">#D27202</color>
 
-    <color name="spring_background_color">#c4667f</color>
-    <color name="spring_logo_color">#FAFCFA</color>
+    <color name="spring_background_color">#C4667F</color>
+    <color name="spring_accent_color">#FAFCFA</color>
+    <color name="spring_accent_color_dark">#BCBCBC</color>
     <color name="spring_splash_background">#DA8E92</color>
+    <color name="spring_alt_color">#93CF6B</color>
 
     <!-- The actual values for these will be resolved via the ?attr/ syntax in layouts -->
     <color name="background_color">#062414</color>
     <color name="background_color_darker">#03120A</color>
-    <color name="logo_color">#20b055</color>
-    <color name="logo_color_dark">#188440</color>
-    <color name="letter_color">#f7be99</color>
+    <color name="accent_color">#20B055</color>
+    <color name="accent_color_dark">#188440</color>
+    <color name="alt_color">#F7BE99</color>
 </resources>

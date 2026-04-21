@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="?attr/logo_color"
+            android:backgroundTint="?attr/accent_color"
             android:text="Map"
             android:textColor="?attr/background_color"
             android:textSize="18sp"
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="?attr/logo_color"
+            android:backgroundTint="?attr/accent_color"
             android:text="Log in"
             android:textColor="?attr/background_color"
             android:textSize="18sp"
@@ -68,11 +68,11 @@
             android:layout_height="60dp"
             android:layout_marginBottom="24dp"
             android:text="Sign Up"
-            android:textColor="?attr/logo_color"
+            android:textColor="?attr/accent_color"
             android:textSize="18sp"
             android:textStyle="bold"
             app:cornerRadius="12dp"
-            app:strokeColor="?attr/logo_color" />
+            app:strokeColor="?attr/accent_color" />
 
     </LinearLayout>
 

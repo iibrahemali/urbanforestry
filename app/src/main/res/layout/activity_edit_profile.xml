@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Edit Profile"
-        android:textColor="?attr/logo_color"
+        android:textColor="?attr/accent_color"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,8 +29,8 @@
         android:layout_marginTop="32dp"
         android:hint="Full Name"
         android:textColorHint="@color/white"
-        app:boxStrokeColor="?attr/logo_color"
-        app:hintTextColor="?attr/logo_color"
+        app:boxStrokeColor="?attr/accent_color"
+        app:hintTextColor="?attr/accent_color"
         app:layout_constraintTop_toBottomOf="@id/editProfileTitle">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -49,8 +49,8 @@
         android:layout_marginTop="16dp"
         android:hint="Username"
         android:textColorHint="@color/white"
-        app:boxStrokeColor="?attr/logo_color"
-        app:hintTextColor="?attr/logo_color"
+        app:boxStrokeColor="?attr/accent_color"
+        app:hintTextColor="?attr/accent_color"
         app:layout_constraintTop_toBottomOf="@id/editNameInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -69,8 +69,8 @@
         android:layout_marginTop="16dp"
         android:hint="Bio"
         android:textColorHint="@color/white"
-        app:boxStrokeColor="?attr/logo_color"
-        app:hintTextColor="?attr/logo_color"
+        app:boxStrokeColor="?attr/accent_color"
+        app:hintTextColor="?attr/accent_color"
         app:layout_constraintTop_toBottomOf="@id/editUsernameInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -88,7 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_marginTop="32dp"
-        android:backgroundTint="?attr/logo_color"
+        android:backgroundTint="?attr/accent_color"
         android:text="Save Changes"
         android:textColor="?attr/background_color"
         android:textSize="18sp"
@@ -104,7 +104,7 @@
         android:layout_marginTop="8dp"
         android:text="Cancel"
         android:textSize="16sp"
-        android:textColor="?attr/logo_color"
+        android:textColor="?attr/accent_color"
         app:cornerRadius="10dp"
         app:layout_constraintTop_toBottomOf="@id/saveProfileButton" />
 

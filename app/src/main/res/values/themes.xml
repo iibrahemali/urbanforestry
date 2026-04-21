@@ -3,7 +3,7 @@
     <style name="Base.Theme.UrbanForestry" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Default attribute values to prevent crashes if a specific theme is missing them -->
         <item name="background_color">@color/summer_background_color</item>
-        <item name="logo_color">@color/summer_logo_color</item>
+        <item name="accent_color">@color/summer_accent_color</item>
         <item name="android:windowBackground">?attr/background_color</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:windowLightStatusBar">false</item>
@@ -14,22 +14,34 @@
     <!-- Seasonal Themes -->
     <style name="Theme.UrbanForestry.Summer" parent="Theme.UrbanForestry">
         <item name="background_color">@color/summer_background_color</item>
-        <item name="logo_color">@color/summer_logo_color</item>
+        <item name="background_color_emphasis">@color/summer_background_color_darker</item>
+        <item name="accent_color">@color/summer_accent_color</item>
+        <item name="accent_color_dark">@color/summer_accent_color_dark</item>
+        <item name="alt_color">@color/summer_alt_color</item>
     </style>
 
     <style name="Theme.UrbanForestry.Winter" parent="Theme.UrbanForestry">
         <item name="background_color">@color/winter_background_color</item>
-        <item name="logo_color">@color/winter_logo_color</item>
+        <item name="background_color_emphasis">@color/winter_background_color_darker</item>
+        <item name="accent_color">@color/winter_accent_color</item>
+        <item name="accent_color_dark">@color/winter_accent_color_dark</item>
+        <item name="alt_color">@color/winter_alt_color</item>
     </style>
 
     <style name="Theme.UrbanForestry.Autumn" parent="Theme.UrbanForestry">
         <item name="background_color">@color/autumn_background_color</item>
-        <item name="logo_color">@color/autumn_logo_color</item>
+        <item name="background_color_emphasis">@color/autumn_background_color_darker</item>
+        <item name="accent_color">@color/autumn_accent_color</item>
+        <item name="accent_color_dark">@color/autumn_accent_color_dark</item>
+        <item name="alt_color">@color/autumn_alt_color</item>
     </style>
 
     <style name="Theme.UrbanForestry.Spring" parent="Theme.UrbanForestry">
         <item name="background_color">@color/spring_background_color</item>
-        <item name="logo_color">@color/spring_logo_color</item>
+        <item name="background_color_emphasis">@color/spring_splash_background</item>
+        <item name="accent_color">@color/spring_accent_color</item>
+        <item name="accent_color_dark">@color/spring_accent_color_dark</item>
+        <item name="alt_color">@color/spring_alt_color</item>
     </style>
 
     <!-- Dialog Themes -->
@@ -38,29 +50,41 @@
         <item name="windowNoTitle">true</item>
         <!-- Ensure dialogs also have these attributes defined -->
         <item name="background_color">@color/summer_background_color</item>
-        <item name="logo_color">@color/summer_logo_color</item>
+        <item name="accent_color">@color/summer_accent_color</item>
         <item name="android:windowBackground">?attr/background_color</item>
     </style>
 
     <!-- Seasonal Dialog Themes -->
     <style name="Theme.UrbanForestry.Dialog.Summer" parent="Theme.Dialog">
         <item name="background_color">@color/summer_background_color</item>
-        <item name="logo_color">@color/summer_logo_color</item>
+        <item name="background_color_emphasis">@color/summer_background_color_darker</item>
+        <item name="accent_color">@color/summer_accent_color</item>
+        <item name="accent_color_dark">@color/summer_accent_color_dark</item>
+        <item name="alt_color">@color/summer_alt_color</item>
     </style>
 
     <style name="Theme.UrbanForestry.Dialog.Winter" parent="Theme.Dialog">
         <item name="background_color">@color/winter_background_color</item>
-        <item name="logo_color">@color/winter_logo_color</item>
+        <item name="background_color_emphasis">@color/winter_background_color_darker</item>
+        <item name="accent_color">@color/winter_accent_color</item>
+        <item name="accent_color_dark">@color/winter_accent_color_dark</item>
+        <item name="alt_color">@color/winter_alt_color</item>
     </style>
 
     <style name="Theme.UrbanForestry.Dialog.Autumn" parent="Theme.Dialog">
         <item name="background_color">@color/autumn_background_color</item>
-        <item name="logo_color">@color/autumn_logo_color</item>
+        <item name="background_color_emphasis">@color/autumn_background_color_darker</item>
+        <item name="accent_color">@color/autumn_accent_color</item>
+        <item name="accent_color_dark">@color/autumn_accent_color_dark</item>
+        <item name="alt_color">@color/autumn_alt_color</item>
     </style>
 
     <style name="Theme.UrbanForestry.Dialog.Spring" parent="Theme.Dialog">
         <item name="background_color">@color/spring_background_color</item>
-        <item name="logo_color">@color/spring_logo_color</item>
+        <item name="background_color_emphasis">@color/spring_splash_background</item>
+        <item name="accent_color">@color/spring_accent_color</item>
+        <item name="accent_color_dark">@color/spring_accent_color_dark</item>
+        <item name="alt_color">@color/spring_alt_color</item>
     </style>
 
     <style name="ShapeAppearance.UrbanForestry.Circle" parent="">

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
         android:text="Welcome Back"
-        android:textColor="?attr/logo_color"
+        android:textColor="?attr/accent_color"
         android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,8 +41,8 @@
         android:layout_marginTop="48dp"
         android:hint="Email"
         android:textColorHint="@color/white"
-        app:boxStrokeColor="?attr/logo_color"
-        app:hintTextColor="?attr/logo_color"
+        app:boxStrokeColor="?attr/accent_color"
+        app:hintTextColor="?attr/accent_color"
         app:layout_constraintTop_toBottomOf="@id/loginSubtitle">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -61,8 +61,8 @@
         android:layout_marginTop="16dp"
         android:hint="Password"
         android:textColorHint="@color/white"
-        app:boxStrokeColor="?attr/logo_color"
-        app:hintTextColor="?attr/logo_color"
+        app:boxStrokeColor="?attr/accent_color"
+        app:hintTextColor="?attr/accent_color"
         app:layout_constraintTop_toBottomOf="@id/emailInputLayout"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/white">
@@ -80,7 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="32dp"
-        android:backgroundTint="?attr/logo_color"
+        android:backgroundTint="?attr/accent_color"
         android:text="Log In"
         android:textColor="?attr/background_color"
         android:textSize="18sp"
@@ -94,7 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Don't have an account? Sign Up"
-        android:textColor="?attr/logo_color"
+        android:textColor="?attr/accent_color"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

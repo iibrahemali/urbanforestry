@@ -33,7 +33,6 @@ public class CreatePostActivity extends AppCompatActivity {
                 if (result.getResultCode() == RESULT_OK) {
                     // Photo taken, ask if they want to share location
                     new AlertDialog.Builder(this)
-                            .setTitle("Share Location")
                             .setMessage("Do you want to share the location of this image?")
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 startPostImageActivity(true);

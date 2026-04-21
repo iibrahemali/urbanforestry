@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="MyCelia"
-            android:textColor="?attr/logo_color"
+            android:textColor="?attr/accent_color"
             android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Contacts"
-            android:textColor="?attr/logo_color"
+            android:textColor="?attr/accent_color"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginTop="32dp"
@@ -81,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Urban Forester"
-            android:textColor="@color/letter_color"
+            android:textColor="?attr/alt_color"
             android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@id/name_michael"
             app:layout_constraintStart_toStartOf="parent" />
@@ -91,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(717) 517-0864"
-            android:textColor="?attr/logo_color"
+            android:textColor="?attr/accent_color"
             android:textSize="16sp"
             android:clickable="true"
             android:focusable="true"
@@ -103,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="mmeyer@cityoflancasterpa.gov"
-            android:textColor="?attr/logo_color"
+            android:textColor="?attr/accent_color"
             android:textSize="16sp"
             android:clickable="true"
             android:focusable="true"
@@ -128,7 +128,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="City Arborist"
-            android:textColor="@color/letter_color"
+            android:textColor="?attr/alt_color"
             android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@id/name_rick"
             app:layout_constraintStart_toStartOf="parent" />
@@ -138,7 +138,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(717) 291-4846"
-            android:textColor="?attr/logo_color"
+            android:textColor="?attr/accent_color"
             android:textSize="16sp"
             android:clickable="true"
             android:focusable="true"
@@ -150,7 +150,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="randerer@cityoflancasterpa.gov"
-            android:textColor="?attr/logo_color"
+            android:textColor="?attr/accent_color"
             android:textSize="16sp"
             android:clickable="true"
             android:focusable="true"
@@ -162,7 +162,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Follow Us"
-            android:textColor="?attr/logo_color"
+            android:textColor="?attr/accent_color"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginTop="32dp"
@@ -187,7 +187,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitCenter"
                 android:padding="8dp"
-                app:tint="?attr/logo_color"
+                app:tint="?attr/accent_color"
                 android:contentDescription="LinkedIn" />
 
             <ImageButton
@@ -198,7 +198,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitCenter"
                 android:padding="8dp"
-                app:tint="?attr/logo_color"
+                app:tint="?attr/accent_color"
                 android:layout_marginStart="16dp"
                 android:contentDescription="YouTube" />
 
@@ -210,7 +210,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitCenter"
                 android:padding="8dp"
-                app:tint="?attr/logo_color"
+                app:tint="?attr/accent_color"
                 android:layout_marginStart="16dp"
                 android:contentDescription="Instagram" />
 
@@ -222,7 +222,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitCenter"
                 android:padding="8dp"
-                app:tint="?attr/logo_color"
+                app:tint="?attr/accent_color"
                 android:layout_marginStart="16dp"
                 android:contentDescription="Facebook" />
         </LinearLayout>
