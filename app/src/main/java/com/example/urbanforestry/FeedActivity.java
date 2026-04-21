@@ -3,17 +3,26 @@ package com.example.urbanforestry;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -23,7 +32,6 @@ import java.util.List;
 
 public class FeedActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
     private FloatingActionButton fab;
     private List<Post> postList;
     private PostAdapter adapter;
@@ -36,13 +44,13 @@ public class FeedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_feed);
 
         db = FirebaseFirestore.getInstance();
-        recyclerView = findViewById(R.id.recyclerView);
         fab = findViewById(R.id.fab_add);
         ImageView profileButton = findViewById(R.id.profile_button);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
         // Initialize static posts
         staticPosts = new ArrayList<>();
-        
+
         // 1. Logo Post
         Post logoPost = new Post("Urban Forestry", R.drawable.logo_title, "Our logo (Click for directions to Lancaster Library!)");
         logoPost.hasLocation = true;
@@ -60,7 +68,7 @@ public class FeedActivity extends AppCompatActivity {
 
         postList = new ArrayList<>();
         postList.addAll(staticPosts);
-        
+
         adapter = new PostAdapter(postList);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -78,11 +86,48 @@ public class FeedActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
         });
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        // Load the user's profile picture
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+
+            mDatabase.child("users").child(userId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String picUrl = snapshot.child("profilePicUrl").getValue(String.class);
+                        if (picUrl != null)
+                            Glide.with(FeedActivity.this).load(picUrl).into(profileButton);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        }
+
+        // Make the "+" button transparent when scrolled to the bottom
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (!recyclerView.canScrollVertically(1))
+                    fab.setAlpha(0.25f);
+                else
+                    fab.setAlpha(1f);
+            }
+        });
     }
 
     private void fetchPostsFromFirestore() {
         String currentUid = FirebaseAuth.getInstance().getUid();
-        
+
         db.collection("posts")
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .addSnapshotListener((value, error) -> {
@@ -96,7 +141,7 @@ public class FeedActivity extends AppCompatActivity {
                     List<Post> fetchedPosts = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : value) {
                         Post post = doc.toObject(Post.class);
-                        
+
                         if (post.text == null && doc.contains("caption")) {
                             post.text = doc.getString("caption");
                         }
@@ -109,9 +154,9 @@ public class FeedActivity extends AppCompatActivity {
                                 break;
                             }
                         }
-                        
+
                         fetchedPosts.add(post);
-                        
+
                         if (currentUid != null && !post.isLikedByMe) {
                             checkIfLiked(post);
                         }

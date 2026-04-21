@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -31,7 +30,7 @@
                 android:textSize="16sp"
                 android:textColor="@color/logo_color"
                 android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -69,7 +68,7 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:src="@drawable/ic_delete_outline"
-                    android:background="@drawable/delete_btn_bg"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="8dp"
                     android:layout_marginStart="8dp"
                     android:visibility="gone"
@@ -88,7 +87,7 @@
             android:textSize="16sp"
             android:textColor="@color/logo_color"
             android:layout_marginBottom="8dp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <!-- Image Post -->
         <ImageView
@@ -99,7 +98,20 @@
             android:adjustViewBounds="true"
             android:visibility="gone"
             android:contentDescription="Post Image"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_get_route"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/logo_color"
+            app:icon="@drawable/ic_route"
+            app:iconTint="@color/background_color"
+            android:text="Get directions"
+            android:textColor="@color/background_color"
+            android:visibility="gone"
+            app:cornerRadius="12dp" />
 
         <!-- Interaction Buttons -->
         <LinearLayout
@@ -117,7 +129,7 @@
                 android:textColor="@color/logo_color"
                 app:icon="@drawable/ic_heart_outline"
                 app:iconTint="@color/logo_color"
-                app:iconGravity="textStart"/>
+                app:iconGravity="textStart" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_comment"
@@ -129,7 +141,7 @@
                 android:textColor="@color/logo_color"
                 app:icon="@drawable/ic_comment_outline"
                 app:iconTint="@color/logo_color"
-                app:iconGravity="textStart"/>
+                app:iconGravity="textStart" />
 
         </LinearLayout>
 
@@ -156,7 +168,7 @@
                 android:textColor="@color/logo_color"
                 android:alpha="0.7"
                 android:padding="8dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -172,7 +184,7 @@
                     android:hint="Write a comment..."
                     android:textSize="14sp"
                     android:textColor="@color/logo_color"
-                    android:textColorHint="@color/logo_color"/>
+                    android:textColorHint="@color/logo_color" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_send_comment"
@@ -180,7 +192,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Post"
-                    android:textColor="@color/logo_color"/>
+                    android:textColor="@color/logo_color" />
             </LinearLayout>
         </LinearLayout>
 

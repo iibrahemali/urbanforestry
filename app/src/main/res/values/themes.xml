@@ -3,6 +3,7 @@
     <style name="Base.Theme.UrbanForestry" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/background_color</item>
         <item name="android:textColor">@color/white</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.UrbanForestry" parent="Base.Theme.UrbanForestry" />
@@ -16,13 +17,13 @@
         <item name="cornerSize">50%</item>
     </style>
 
-    <style name="DeleteBottomSheetStyle" parent="Theme.Design.Light.BottomSheetDialog">
+    <style name="DeleteBottomSheetStyle" parent="Theme.Material3.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="bottomSheetStyle">@style/DeleteBottomSheet</item>
     </style>
 
-    <style name="DeleteBottomSheet" parent="Widget.Design.BottomSheet.Modal">
+    <style name="DeleteBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
         <item name="android:background">@drawable/bottom_sheet_bg</item>
     </style>
 

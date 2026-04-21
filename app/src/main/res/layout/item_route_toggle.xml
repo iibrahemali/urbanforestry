@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.button.MaterialButton
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/btn_toggle_route"
     android:layout_width="50dp"
@@ -12,10 +11,11 @@
     android:insetBottom="0dp"
     app:cornerRadius="25dp"
     android:padding="0dp"
-    app:icon="@drawable/share_icon"
+    app:icon="@drawable/ic_route"
+    app:iconTint="@color/white"
     app:iconSize="24dp"
     app:iconGravity="textStart"
     app:iconPadding="0dp"
     app:backgroundTint="@color/logo_color"
     app:strokeColor="@android:color/black"
-    app:strokeWidth="2dp"/>
+    app:strokeWidth="2dp" />

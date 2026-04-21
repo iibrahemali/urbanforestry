@@ -40,16 +40,9 @@ public class Menu extends AppCompatActivity {
 
         Button signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(v -> {
-            new AlertDialog.Builder(this)
-                    .setTitle("Sign Out")
-                    .setMessage("Are you sure you want to sign out?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                        FirebaseAuth.getInstance().signOut();
-                        startActivity(new Intent(this, WelcomePage.class));
-                        finish();
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
+            // Go back to the main activity to confirm
+            setResult(-1);
+            finish();
         });
 
         TextView goal1 = findViewById(R.id.gameGoal1);

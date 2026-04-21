@@ -1,6 +1,7 @@
 package com.example.urbanforestry;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -62,14 +63,18 @@ public class PostTextActivity extends AppCompatActivity {
 
     private void submitPost(String caption, Double lat, double lng) {
         postRepository.createPost(caption, lat, lng)
-            .addOnSuccessListener(aVoid -> {
-                Toast.makeText(this, "Post created!", Toast.LENGTH_SHORT).show();
-                finish();
-            })
-            .addOnFailureListener(e -> {
-                postBtn.setEnabled(true);
-                postBtn.setText("Post");
-                Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            });
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Post created!", Toast.LENGTH_SHORT).show();
+                    // Return to the feed
+                    Intent i = new Intent(PostTextActivity.this, FeedActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    postBtn.setEnabled(true);
+                    postBtn.setText("Post");
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
     }
 }

@@ -77,15 +77,19 @@ public class PostImageActivity extends AppCompatActivity {
     private void submitPost(String caption, Double lat, Double lon) {
         Uri imageUri = Uri.fromFile(new File(imagePath));
         postRepository.createImagePost(caption, imageUri, lat, lon)
-            .addOnSuccessListener(aVoid -> {
-                Toast.makeText(this, "Post uploaded!", Toast.LENGTH_SHORT).show();
-                setResult(RESULT_OK);
-                finish();
-            })
-            .addOnFailureListener(e -> {
-                postBtn.setEnabled(true);
-                postBtn.setText("Post");
-                Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            });
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Post uploaded!", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
+                    // Return to the feed
+                    Intent i = new Intent(PostImageActivity.this, FeedActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    postBtn.setEnabled(true);
+                    postBtn.setText("Post");
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
     }
 }
