@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.splashscreen.SplashScreen;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,15 +24,26 @@ public class WelcomePage extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Tells the system that the app uses "dark mode"
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
         // Determine season and set the appropriate starting theme for the splash screen
-        SeasonManager.Season currentSeason = SeasonManager.getCurrentSeason();
+        SeasonManager.Season currentSeason = SeasonManager.getSeasonPref(this);
         int startingTheme;
         switch (currentSeason) {
-            case SPRING: startingTheme = R.style.Theme_App_Starting_Spring; break;
-            case AUTUMN: startingTheme = R.style.Theme_App_Starting_Autumn; break;
-            case WINTER: startingTheme = R.style.Theme_App_Starting_Winter; break;
+            case SPRING:
+                startingTheme = R.style.Theme_App_Starting_Spring;
+                break;
+            case AUTUMN:
+                startingTheme = R.style.Theme_App_Starting_Autumn;
+                break;
+            case WINTER:
+                startingTheme = R.style.Theme_App_Starting_Winter;
+                break;
             case SUMMER:
-            default: startingTheme = R.style.Theme_App_Starting_Summer; break;
+            default:
+                startingTheme = R.style.Theme_App_Starting_Summer;
+                break;
         }
         setTheme(startingTheme);
 
@@ -56,7 +68,7 @@ public class WelcomePage extends AppCompatActivity {
 
         View mainLayout = findViewById(R.id.mainLayout);
         View buttonContainer = findViewById(R.id.buttonContainer);
-        
+
         // Initially hide the login/signup buttons
         if (buttonContainer != null) {
             buttonContainer.setVisibility(View.INVISIBLE);
@@ -77,15 +89,9 @@ public class WelcomePage extends AppCompatActivity {
 
         // Determine navigation path
         if (mAuth.getCurrentUser() != null) {
-            // If user is already logged in, wait for the splash duration then go to HomePage
-            long timeElapsed = System.currentTimeMillis() - startTime;
-            long delay = Math.max(0, splashDuration - timeElapsed);
-
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                Intent intent = new Intent(WelcomePage.this, HomePage.class);
-                startActivity(intent);
-                finish();
-            }, delay);
+            Intent intent = new Intent(WelcomePage.this, HomePage.class);
+            startActivity(intent);
+            finish();
         } else {
             // If not logged in, wait for the splash duration then reveal the login buttons
             new Handler(Looper.getMainLooper()).postDelayed(() -> {

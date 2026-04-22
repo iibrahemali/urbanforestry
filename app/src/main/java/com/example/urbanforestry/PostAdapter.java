@@ -1,5 +1,7 @@
 package com.example.urbanforestry;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -28,10 +31,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     private List<Post> posts;
     private PostRepository postRepository;
+    private Context ctx;
 
-    public PostAdapter(List<Post> posts) {
+    public PostAdapter(List<Post> posts, Context ctx) {
         this.posts = posts;
         this.postRepository = new PostRepository();
+        this.ctx = ctx;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -220,6 +225,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
             dialog.show();
         });
+
+        // If using the spring theme, make the button green instead of white
+        TypedValue tv = new TypedValue();
+        ctx.getTheme().resolveAttribute(R.attr.accent_color, tv, true);
+        if (tv.resourceId == R.color.spring_accent_color) {
+            int altColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.spring_alt_color);
+            holder.btnGetRoute.setBackgroundColor(altColor);
+        }
 
         // Handle Image
         if (post.resourceId != -1) {

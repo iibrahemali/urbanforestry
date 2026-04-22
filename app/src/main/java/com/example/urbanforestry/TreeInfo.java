@@ -18,7 +18,7 @@ public class TreeInfo extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Set seasonal dialog theme before onCreate to maintain dialog behavior
-        setTheme(SeasonManager.getSeasonDialogTheme(SeasonManager.getCurrentSeason()));
+        setTheme(SeasonManager.getSeasonDialogTheme(SeasonManager.getSeasonPref(this)));
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);

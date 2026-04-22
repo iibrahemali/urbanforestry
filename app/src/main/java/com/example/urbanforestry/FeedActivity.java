@@ -41,8 +41,7 @@ public class FeedActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Set seasonal theme before onCreate
-        SeasonManager.Season currentSeason = SeasonManager.getCurrentSeason();
-        setTheme(SeasonManager.getSeasonTheme(currentSeason));
+        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getSeasonPref(this)));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
@@ -54,9 +53,9 @@ public class FeedActivity extends AppCompatActivity {
 
         // Initialize static posts
         staticPosts = new ArrayList<>();
-        
+
         // 1. Seasonal Logo Post
-        int seasonLogo = SeasonManager.getSeasonLogo(currentSeason);
+        int seasonLogo = SeasonManager.getSeasonLogo(SeasonManager.getSeasonPref(this));
         Post logoPost = new Post("Urban Forestry", seasonLogo, "Our logo (Click for directions to Lancaster Library!)");
         logoPost.hasLocation = true;
         logoPost.latitude = 40.04005;
@@ -74,7 +73,7 @@ public class FeedActivity extends AppCompatActivity {
         postList = new ArrayList<>();
         postList.addAll(staticPosts);
 
-        adapter = new PostAdapter(postList);
+        adapter = new PostAdapter(postList, this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

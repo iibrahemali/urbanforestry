@@ -2,10 +2,15 @@ package com.example.urbanforestry;
 
 import static com.example.urbanforestry.HomePage.goalsProgress;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -25,7 +30,7 @@ public class Menu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Use seasonal DIALOG theme instead of full-screen theme
-        setTheme(SeasonManager.getSeasonDialogTheme(SeasonManager.getCurrentSeason()));
+        setTheme(SeasonManager.getSeasonDialogTheme(SeasonManager.getSeasonPref(this)));
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -55,29 +60,56 @@ public class Menu extends AppCompatActivity {
 
         int currentGoal1 = currentGoals[0];
         goal1.setText(gameList[currentGoal1]);
-        String goalP1 = ": " + String.valueOf(goalsProgress[0]) + "/" + scoreList[currentGoal1];
+        String goalP1 = ": " + goalsProgress[0] + "/" + scoreList[currentGoal1];
         goalProgress1.setText(goalP1);
 
         int currentGoal2 = currentGoals[1];
         goal2.setText(gameList[currentGoal2]);
-        String goalP2 = ": " + String.valueOf(goalsProgress[1]) + "/" + scoreList[currentGoal2];
+        String goalP2 = ": " + goalsProgress[1] + "/" + scoreList[currentGoal2];
         goalProgress2.setText(goalP2);
 
         Button aboutButton = findViewById(R.id.aboutButton);
-        aboutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i3 = new Intent(getApplicationContext(), AboutActivity.class);
-                startActivity(i3);
-            }
+        aboutButton.setOnClickListener(v -> {
+            Intent i3 = new Intent(getApplicationContext(), AboutActivity.class);
+            startActivity(i3);
         });
 
         Button achievementButton = findViewById(R.id.achievementsButton);
-        achievementButton.setOnClickListener(new View.OnClickListener() {
+        achievementButton.setOnClickListener(v -> {
+            Intent trophyIntent = new Intent(getApplicationContext(), AchievementsActivity.class);
+            startActivity(trophyIntent);
+        });
+
+        // Dropdown to choose seasonal theme
+        SharedPreferences sp = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"Default", "Summer", "Autumn", "Winter", "Spring"}
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner themeSpinner = findViewById(R.id.themeSpinner);
+        themeSpinner.setAdapter(adapter);
+        // Set the dropdown's value to the current theme preference
+        String currentTheme = sp.getString("theme", "Default");
+        themeSpinner.setSelection(adapter.getPosition(currentTheme));
+        // When a new theme is selected, store it in SharedPreferences
+        themeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                Intent trophyIntent = new Intent(getApplicationContext(), AchievementsActivity.class);
-                startActivity(trophyIntent);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String newTheme = parent.getItemAtPosition(position).toString();
+                // If the theme is changed, save the new theme in SharedPreferences
+                if (!newTheme.equals(currentTheme)) {
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("theme", newTheme);
+                    editor.apply();
+                    // Reload the menu with the new theme
+                    recreate();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
     }

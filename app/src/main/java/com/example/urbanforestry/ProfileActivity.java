@@ -49,8 +49,8 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Set seasonal theme before onCreate
-        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getCurrentSeason()));
-        
+        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getSeasonPref(this)));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
@@ -156,7 +156,7 @@ public class ProfileActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
-            
+
             mDatabase.child("users").child(userId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -174,20 +174,21 @@ public class ProfileActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {}
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
             });
 
             userRepository.getUserFirestoreData(userId).addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
                     String bio = documentSnapshot.getString("bio");
                     Long pCount = documentSnapshot.getLong("postCount");
-                    
+
                     if (bio != null && !bio.isEmpty()) {
                         profileBio.setText(bio);
                     } else {
                         profileBio.setText("No bio yet.");
                     }
-                    
+
                     if (pCount != null) {
                         postsCount.setText(String.valueOf(pCount));
                     }

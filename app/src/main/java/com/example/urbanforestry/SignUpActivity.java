@@ -35,7 +35,7 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Set seasonal theme before onCreate
-        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getCurrentSeason()));
+        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getSeasonPref(this)));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
@@ -45,17 +45,17 @@ public class SignUpActivity extends AppCompatActivity {
 
         nameEditText = findViewById(R.id.nameEditText);
         usernameEditText = findViewById(R.id.usernameEditText);
-        emailEditText    = findViewById(R.id.emailEditText);
+        emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
-        signUpButton     = findViewById(R.id.signUpButton);
-        goToLogin        = findViewById(R.id.goToLogin);
+        signUpButton = findViewById(R.id.signUpButton);
+        goToLogin = findViewById(R.id.goToLogin);
 
         setupEmailAutocomplete();
 
         signUpButton.setOnClickListener(v -> {
             String name = nameEditText.getText().toString().trim();
             String username = usernameEditText.getText().toString().trim();
-            String email    = emailEditText.getText().toString().trim();
+            String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
 
             if (name.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()) {
@@ -68,16 +68,16 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
             mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null) {
-                            saveUserToDatabase(user.getUid(), name, username, email);
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                saveUserToDatabase(user.getUid(), name, username, email);
+                            }
+                        } else {
+                            Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
-                    } else {
-                        Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                    });
         });
 
         goToLogin.setOnClickListener(v -> {
@@ -88,20 +88,21 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void saveUserToDatabase(String userId, String name, String username, String email) {
         userRepository.createUserProfile(userId, name, username, email)
-            .addOnSuccessListener(aVoid -> {
-                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, HomePage.class));
-                finish();
-            })
-            .addOnFailureListener(e -> {
-                Toast.makeText(this, "Database Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            });
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this, HomePage.class));
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Database Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
     }
 
     private void setupEmailAutocomplete() {
         emailEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -109,7 +110,7 @@ public class SignUpActivity extends AppCompatActivity {
                 if (filter.contains("@")) {
                     String prefix = filter.substring(0, filter.indexOf("@") + 1);
                     String suffix = filter.substring(filter.indexOf("@") + 1);
-                    
+
                     List<String> suggestions = new ArrayList<>();
                     for (String domain : EMAIL_DOMAINS) {
                         if (domain.startsWith(suffix)) {
@@ -124,7 +125,7 @@ public class SignUpActivity extends AppCompatActivity {
                     );
                     emailEditText.setAdapter(adapter);
                     if (!suggestions.isEmpty() && !suffix.equals(suggestions.get(0).substring(prefix.length()))) {
-                         emailEditText.showDropDown();
+                        emailEditText.showDropDown();
                     }
                 } else {
                     emailEditText.setAdapter(null);
@@ -132,9 +133,10 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
-        
+
         emailEditText.setThreshold(1);
     }
 }

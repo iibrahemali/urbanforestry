@@ -55,7 +55,7 @@ public class CreatePostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Set seasonal theme before onCreate
-        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getCurrentSeason()));
+        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getSeasonPref(this)));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);

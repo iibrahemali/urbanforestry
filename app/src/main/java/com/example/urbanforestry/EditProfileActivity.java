@@ -20,8 +20,8 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Set seasonal theme before onCreate
-        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getCurrentSeason()));
-        
+        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getSeasonPref(this)));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
@@ -57,15 +57,15 @@ public class EditProfileActivity extends AppCompatActivity {
             saveProfileButton.setText("Saving...");
 
             userRepository.updateProfile(currentUid, name, username, bio)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Profile updated!", Toast.LENGTH_SHORT).show();
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    saveProfileButton.setEnabled(true);
-                    saveProfileButton.setText("Save Changes");
-                    Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(this, "Profile updated!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        saveProfileButton.setEnabled(true);
+                        saveProfileButton.setText("Save Changes");
+                        Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
         });
     }
 
@@ -81,7 +81,7 @@ public class EditProfileActivity extends AppCompatActivity {
         // but typically you'd pass them via Intent to make it instant.
         String existingName = getIntent().getStringExtra("currentName");
         String existingUsername = getIntent().getStringExtra("currentUsername");
-        
+
         if (existingName != null) editNameEditText.setText(existingName);
         if (existingUsername != null) editUsernameEditText.setText(existingUsername);
     }

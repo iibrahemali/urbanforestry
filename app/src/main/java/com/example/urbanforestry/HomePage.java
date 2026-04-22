@@ -70,6 +70,8 @@ public class HomePage extends AppCompatActivity {
     private MapView map = null;
     private MyLocationNewOverlay locationOverlay;
 
+    private SeasonManager.Season themeSeason;
+
     final String[] gameList = {"N/A", "Find non-native tree species", "Find Oak Trees", "Find Maple Trees", "Find Spruce Trees",
             "Find Trees that are Red in the Fall"};
     final int[] scoreList = {0, 6, 8, 4, 4,
@@ -132,7 +134,8 @@ public class HomePage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Set seasonal theme before onCreate
-        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getCurrentSeason()));
+        themeSeason = SeasonManager.getSeasonPref(this);
+        setTheme(SeasonManager.getSeasonTheme(themeSeason));
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -415,6 +418,11 @@ public class HomePage extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        // Reload if the theme was updated from the menu
+        if (SeasonManager.getSeasonPref(this) != themeSeason)
+            recreate();
+
         map.onResume(); // an overridden method so the map doesn't have to be destroyed and recreated
         if (locationOverlay != null)
             locationOverlay.enableMyLocation();

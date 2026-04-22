@@ -16,8 +16,8 @@ public class AchievementsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Set seasonal theme before onCreate
-        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getCurrentSeason()));
-        
+        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getSeasonPref(this)));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievements);
 
@@ -28,7 +28,7 @@ public class AchievementsActivity extends AppCompatActivity {
         // 2. Load the lifetime totals from SharedPreferences
         SharedPreferences prefs = getSharedPreferences("UserStats", MODE_PRIVATE);
 
-        int kilometersWalked = (int)prefs.getFloat("total_meters_walked", 0  );
+        int kilometersWalked = (int) prefs.getFloat("total_meters_walked", 0);
         int nonNativeGoals = prefs.getInt("goal_count_1", 0);
         int oakGoals = prefs.getInt("goal_count_2", 0);
         int mapleGoals = prefs.getInt("goal_count_3", 0);

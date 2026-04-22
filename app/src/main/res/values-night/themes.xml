@@ -5,9 +5,4 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
-
-    <style name="Theme.Dialog" parent="Theme.AppCompat.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="windowNoTitle">true</item>
-    </style>
 </resources>

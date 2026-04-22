@@ -21,20 +21,20 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Set seasonal theme before onCreate
-        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getCurrentSeason()));
-        
+        setTheme(SeasonManager.getSeasonTheme(SeasonManager.getSeasonPref(this)));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
 
-        emailEditText    = findViewById(R.id.emailEditText);
+        emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
-        loginButton      = findViewById(R.id.loginButton);
-        goToSignUp       = findViewById(R.id.goToSignUp);
+        loginButton = findViewById(R.id.loginButton);
+        goToSignUp = findViewById(R.id.goToSignUp);
 
         loginButton.setOnClickListener(v -> {
-            String email    = emailEditText.getText().toString().trim();
+            String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
 
             if (email.isEmpty() || password.isEmpty()) {
@@ -43,14 +43,14 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        startActivity(new Intent(this, HomePage.class));
-                        finish();
-                    } else {
-                        Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            startActivity(new Intent(this, HomePage.class));
+                            finish();
+                        } else {
+                            Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
         });
 
         goToSignUp.setOnClickListener(v -> {
