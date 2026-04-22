@@ -1,6 +1,5 @@
 package com.example.urbanforestry;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -180,7 +179,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         // GET DIRECTIONS TO PHOTO LOCATION
         holder.btnGetRoute.setOnClickListener(v -> {
             if (post.hasLocation) {
-                Intent intent = new Intent(v.getContext(), HomePage.class);
+                Intent intent = new Intent(v.getContext(), MainActivity.class);
                 intent.putExtra("destLat", post.latitude);
                 intent.putExtra("destLng", post.longitude);
                 intent.putExtra("getDirections", true);

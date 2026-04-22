@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 
-public class HomePage extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
     public static MapView map = null;
@@ -61,7 +61,7 @@ public class HomePage extends AppCompatActivity {
                             .setMessage("Are you sure you want to sign out?")
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 FirebaseAuth.getInstance().signOut();
-                                startActivity(new Intent(this, WelcomePage.class));
+                                startActivity(new Intent(this, WelcomeActivity.class));
                                 finish();
                             })
                             .setNegativeButton("No", null)
@@ -77,7 +77,7 @@ public class HomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
-        setContentView(R.layout.activity_home_page);
+        setContentView(R.layout.activity_main);
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -107,7 +107,7 @@ public class HomePage extends AppCompatActivity {
 
         ImageButton menuButton = findViewById(R.id.menuButton);
         menuButton.setOnClickListener(v -> {
-            Intent i = new Intent(getApplicationContext(), Menu.class);
+            Intent i = new Intent(getApplicationContext(), MenuActivity.class);
             i.putExtra("gameList", Missions.gameList);
             i.putExtra("scoreList", Missions.scoreList);
             i.putExtra("currentGoals", Missions.currentGoals);

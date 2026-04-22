@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,7 +16,7 @@ import androidx.core.splashscreen.SplashScreen;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class WelcomePage extends AppCompatActivity {
+public class WelcomeActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private Button btnLogin, btnSignUp;
@@ -60,7 +59,7 @@ public class WelcomePage extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_welcome_page);
+        setContentView(R.layout.activity_welcome);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -89,7 +88,7 @@ public class WelcomePage extends AppCompatActivity {
 
         // Determine navigation path
         if (mAuth.getCurrentUser() != null) {
-            Intent intent = new Intent(WelcomePage.this, HomePage.class);
+            Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         } else {

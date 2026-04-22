@@ -59,7 +59,7 @@ public class MapMarkers {
 
                 GeoPoint point = new GeoPoint(lat, lng);
 
-                Marker marker = new Marker(HomePage.map);
+                Marker marker = new Marker(MainActivity.map);
                 marker.setPosition(point);
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
 
@@ -74,8 +74,8 @@ public class MapMarkers {
                     String treeId = m.getPosition().getLatitude() + "," + m.getPosition().getLongitude();
 
                     // Update goal progress
-                    if (HomePage.locationOverlay.getMyLocation() != null) {
-                        double distance = HomePage.locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
+                    if (MainActivity.locationOverlay.getMyLocation() != null) {
+                        double distance = MainActivity.locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
                         // Trees can only be "discovered" if the user is within 10m
                         if (distance <= 10.0)
                             // Check if discovering the tree makes progress toward any goals
@@ -89,7 +89,7 @@ public class MapMarkers {
                     return true;
                 });
 
-                HomePage.map.getOverlays().add(marker);
+                MainActivity.map.getOverlays().add(marker);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,7 +98,7 @@ public class MapMarkers {
 
     @NonNull
     private Intent getTreeInfoIntent(String[] treeData, Marker m) {
-        Intent i = new Intent(ctx.getApplicationContext(), TreeInfo.class);
+        Intent i = new Intent(ctx.getApplicationContext(), TreeInfoActivity.class);
 
         // Send relevant tree data to the info page
         i.putExtra("commonName", treeData[1]);
@@ -191,10 +191,10 @@ public class MapMarkers {
     }
 
     private double getDistanceToTree(Marker m) {
-        if (HomePage.locationOverlay.getMyLocation() == null)
+        if (MainActivity.locationOverlay.getMyLocation() == null)
             return Double.POSITIVE_INFINITY;
         else
-            return HomePage.locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
+            return MainActivity.locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
     }
 
     public void showCompostBinMarkers() {
@@ -223,7 +223,7 @@ public class MapMarkers {
                 double lng = Double.parseDouble(latLng[1].trim());
 
                 GeoPoint point = new GeoPoint(lat, lng);
-                Marker marker = new Marker(HomePage.map);
+                Marker marker = new Marker(MainActivity.map);
                 marker.setPosition(point);
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
                 marker.setIcon(ContextCompat.getDrawable(ctx, R.drawable.brown_dot));
@@ -242,7 +242,7 @@ public class MapMarkers {
                     return true;
                 });
 
-                HomePage.map.getOverlays().add(marker);
+                MainActivity.map.getOverlays().add(marker);
             }
         } catch (Exception e) {
             e.printStackTrace();

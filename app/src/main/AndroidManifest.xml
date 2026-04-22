@@ -23,23 +23,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UrbanForestry">
         <activity
+            android:name=".AboutActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false" />
+        <activity
             android:name=".AchievementsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PostImageActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PostTextActivity"
             android:exported="false" />
         <activity
             android:name=".CreatePostActivity"
             android:exported="false" />
         <activity
-            android:name=".Menu"
-            android:exported="false"
-            android:theme="@style/Theme.Dialog" />
-        <activity
-            android:name=".AboutActivity"
+            android:name=".EditProfileActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false" />
         <activity
@@ -47,12 +41,39 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false" />
         <activity
-            android:name=".TreeInfo"
+            android:name=".LoginActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="true"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".MenuActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Dialog" />
+        <activity
+            android:name=".PostImageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PostTextActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProfileActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false" />
+        <activity
+            android:name=".SignUpActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false" />
+        <activity
+            android:name=".TreeInfoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false"
             android:theme="@style/Theme.Dialog" />
         <activity
-            android:name=".WelcomePage"
+            android:name=".WelcomeActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true"
             android:theme="@style/Theme.App.Starting">
@@ -61,27 +82,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".LoginActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:exported="false" />
-        <activity
-            android:name=".SignUpActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:exported="false" />
-        <activity
-            android:name=".HomePage"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:exported="true"
-            android:launchMode="singleTop" />
-        <activity
-            android:name=".ProfileActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:exported="false" />
-        <activity
-            android:name=".EditProfileActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

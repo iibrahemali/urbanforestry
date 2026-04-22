@@ -68,12 +68,12 @@ public class Routes {
     }
 
     public void rebuildRouteUI() {
-        if (HomePage.map == null || routeControlsContainer == null) return;
+        if (MainActivity.map == null || routeControlsContainer == null) return;
 
         // REMOVE existing overlays to prevent duplicates that can't be toggled off
         for (ActiveRoute ar : activeRoutes) {
-            if (ar.overlay != null) HomePage.map.getOverlays().remove(ar.overlay);
-            if (ar.marker != null) HomePage.map.getOverlays().remove(ar.marker);
+            if (ar.overlay != null) MainActivity.map.getOverlays().remove(ar.overlay);
+            if (ar.marker != null) MainActivity.map.getOverlays().remove(ar.marker);
         }
 
         routeControlsContainer.removeAllViews();
@@ -84,15 +84,15 @@ public class Routes {
             ar.overlay.setColor(ar.color);
             ar.overlay.setWidth(12.0f);
 
-            ar.marker = new Marker(HomePage.map);
+            ar.marker = new Marker(MainActivity.map);
             ar.marker.setPosition(ar.destination);
             ar.marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             ar.marker.setTitle("Target Location");
             ar.marker.setSnippet(ar.destName);
 
             if (ar.isVisible) {
-                HomePage.map.getOverlays().add(ar.overlay);
-                HomePage.map.getOverlays().add(ar.marker);
+                MainActivity.map.getOverlays().add(ar.overlay);
+                MainActivity.map.getOverlays().add(ar.marker);
             }
 
             // Create new button for the current activity instance
@@ -105,7 +105,7 @@ public class Routes {
 
             btn.setOnClickListener(v -> showRouteInfoDialog(ar, btn));
         }
-        HomePage.map.invalidate();
+        MainActivity.map.invalidate();
     }
 
     public void handleDirectionsIntent(Intent intent) {
@@ -125,9 +125,9 @@ public class Routes {
                 }
             }
 
-            if (HomePage.locationOverlay != null) {
-                HomePage.locationOverlay.runOnFirstFix(() -> {
-                    GeoPoint myLocation = HomePage.locationOverlay.getMyLocation();
+            if (MainActivity.locationOverlay != null) {
+                MainActivity.locationOverlay.runOnFirstFix(() -> {
+                    GeoPoint myLocation = MainActivity.locationOverlay.getMyLocation();
                     if (myLocation != null) {
                         String destName = getAddressName(destination);
                         a.runOnUiThread(() -> new UpdateRoadTask(destination, routeId, destName, sourceUser, sourceText).execute(myLocation, destination));
@@ -145,7 +145,7 @@ public class Routes {
                 return addresses.get(0).getAddressLine(0);
             }
         } catch (IOException e) {
-            Log.e("HomePage", "Geocoding failed", e);
+            Log.e("MainActivity", "Geocoding failed", e);
         }
         return String.format(Locale.US, "%.4f, %.4f", point.getLatitude(), point.getLongitude());
     }
@@ -196,11 +196,11 @@ public class Routes {
 
                 // FIX: Check if road distance is very short before zooming
                 if (road.mLength > 0.05) { // If distance > 50 meters, zoom to bounding box
-                    HomePage.map.zoomToBoundingBox(road.mBoundingBox, true);
+                    MainActivity.map.zoomToBoundingBox(road.mBoundingBox, true);
                 } else {
                     // Otherwise, just center on destination and keep a reasonable zoom
-                    HomePage.map.getController().animateTo(destination);
-                    HomePage.map.getController().setZoom(18.0);
+                    MainActivity.map.getController().animateTo(destination);
+                    MainActivity.map.getController().setZoom(18.0);
                 }
             } else {
                 Toast.makeText(a, "Error getting directions", Toast.LENGTH_SHORT).show();
@@ -228,15 +228,15 @@ public class Routes {
     private void toggleRouteVisibility(ActiveRoute route, MaterialButton btn) {
         route.isVisible = !route.isVisible;
         if (route.isVisible) {
-            HomePage.map.getOverlays().add(route.overlay);
-            HomePage.map.getOverlays().add(route.marker);
+            MainActivity.map.getOverlays().add(route.overlay);
+            MainActivity.map.getOverlays().add(route.marker);
             btn.setAlpha(1.0f);
         } else {
-            HomePage.map.getOverlays().remove(route.overlay);
-            HomePage.map.getOverlays().remove(route.marker);
+            MainActivity.map.getOverlays().remove(route.overlay);
+            MainActivity.map.getOverlays().remove(route.marker);
             btn.setAlpha(0.4f);
         }
-        HomePage.map.invalidate();
+        MainActivity.map.invalidate();
     }
 
     public void checkArrival(GeoPoint currentLoc) {
@@ -267,10 +267,10 @@ public class Routes {
     }
 
     private void removeRoute(ActiveRoute route) {
-        if (route.overlay != null) HomePage.map.getOverlays().remove(route.overlay);
-        if (route.marker != null) HomePage.map.getOverlays().remove(route.marker);
+        if (route.overlay != null) MainActivity.map.getOverlays().remove(route.overlay);
+        if (route.marker != null) MainActivity.map.getOverlays().remove(route.marker);
         if (route.toggleButton != null) routeControlsContainer.removeView(route.toggleButton);
         activeRoutes.remove(route);
-        HomePage.map.invalidate();
+        MainActivity.map.invalidate();
     }
 }

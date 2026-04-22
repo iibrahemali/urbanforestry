@@ -90,7 +90,7 @@ public class SignUpActivity extends AppCompatActivity {
         userRepository.createUserProfile(userId, name, username, email)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(this, HomePage.class));
+                    startActivity(new Intent(this, MainActivity.class));
                     finish();
                 })
                 .addOnFailureListener(e -> {
