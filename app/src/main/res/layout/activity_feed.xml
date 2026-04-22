@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="Add Post"
         android:src="@drawable/ic_add"
-        android:tint="?attr/background_color"
+        app:tint="?attr/background_color"
         app:backgroundTint="?attr/accent_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
