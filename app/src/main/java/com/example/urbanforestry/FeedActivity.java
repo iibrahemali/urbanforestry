@@ -102,10 +102,12 @@ public class FeedActivity extends AppCompatActivity {
             mDatabase.child("users").child(userId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
+                    if (snapshot.exists() && !isDestroyed() && !isFinishing()) {
                         String picUrl = snapshot.child("profilePicUrl").getValue(String.class);
                         if (picUrl != null)
                             Glide.with(FeedActivity.this).load(picUrl).into(profileButton);
+                        else
+                            Glide.with(FeedActivity.this).load(R.mipmap.default_pfp).circleCrop().into(profileButton);
                     }
                 }
 

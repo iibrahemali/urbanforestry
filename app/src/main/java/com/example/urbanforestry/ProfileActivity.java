@@ -45,6 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private UserRepository userRepository;
     private Uri photoUri;
+    private String profilePicUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,14 +92,20 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void showImageSourceDialog() {
-        String[] options = {"Gallery", "Camera"};
+        String[] options;
+        if (profilePicUrl == null)
+            options = new String[]{"Gallery", "Camera"};
+        else
+            options = new String[]{"Gallery", "Camera", "Remove"};
         new AlertDialog.Builder(this)
                 .setTitle("Select Profile Picture")
                 .setItems(options, (dialog, which) -> {
                     if (which == 0) {
                         galleryLauncher.launch("image/*");
-                    } else {
+                    } else if (which == 1) {
                         openCamera();
+                    } else {
+                        removeProfilePic();
                     }
                 })
                 .show();
@@ -146,10 +153,23 @@ public class ProfileActivity extends AppCompatActivity {
         String userId = mAuth.getCurrentUser().getUid();
         userRepository.uploadProfilePicture(userId, uri)
                 .addOnSuccessListener(downloadUrl -> {
-                    Glide.with(this).load(downloadUrl).circleCrop().into(profileImage);
-                    Toast.makeText(this, "Profile picture updated!", Toast.LENGTH_SHORT).show();
+                    if (!isDestroyed() && !isFinishing()) {
+                        Glide.with(this).load(downloadUrl).circleCrop().into(profileImage);
+                        Toast.makeText(this, "Profile picture updated!", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void removeProfilePic() {
+        String userId = mAuth.getCurrentUser().getUid();
+        mDatabase.child("users").child(userId).child("profilePicUrl").setValue(null)
+                .addOnSuccessListener(downloadUrl -> {
+                    if (!isDestroyed() && !isFinishing()) {
+                        Glide.with(this).load(R.mipmap.default_pfp).circleCrop().into(profileImage);
+                        Toast.makeText(this, "Profile picture removed", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void loadUserProfile() {
@@ -164,10 +184,11 @@ public class ProfileActivity extends AppCompatActivity {
                         String name = snapshot.child("name").getValue(String.class);
                         String username = snapshot.child("username").getValue(String.class);
                         String picUrl = snapshot.child("profilePicUrl").getValue(String.class);
+                        profilePicUrl = picUrl;
 
                         if (name != null) accountName.setText(name);
                         if (username != null) usernameText.setText("@" + username);
-                        if (picUrl != null) {
+                        if (picUrl != null && !isDestroyed() && !isFinishing()) {
                             Glide.with(ProfileActivity.this).load(picUrl).circleCrop().into(profileImage);
                         }
                     }
