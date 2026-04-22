@@ -45,7 +45,7 @@
     </style>
 
     <!-- Dialog Themes -->
-    <style name="Theme.Dialog" parent="Theme.AppCompat.Dialog">
+    <style name="Theme.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog.Bridge">
         <item name="android:windowNoTitle">true</item>
         <item name="windowNoTitle">true</item>
         <!-- Ensure dialogs also have these attributes defined -->

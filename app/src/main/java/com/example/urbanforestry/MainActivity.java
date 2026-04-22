@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         MapMarkers mapMarkers = new MapMarkers(this);
         mapMarkers.showTreeMarkers();
         mapMarkers.showCompostBinMarkers();
+        mapMarkers.showPhotoMarkers();
         map.invalidate();
 
         Missions.visitedTreesBySlot.add(new HashSet<>());

@@ -87,8 +87,8 @@ public class Routes {
             ar.marker = new Marker(MainActivity.map);
             ar.marker.setPosition(ar.destination);
             ar.marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            ar.marker.setTitle("Target Location");
-            ar.marker.setSnippet(ar.destName);
+            // Marker should do nothing when tapped
+            ar.marker.setOnMarkerClickListener((marker, mapView) -> false);
 
             if (ar.isVisible) {
                 MainActivity.map.getOverlays().add(ar.overlay);

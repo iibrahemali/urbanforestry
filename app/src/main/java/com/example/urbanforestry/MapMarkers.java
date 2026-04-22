@@ -3,10 +3,16 @@ package com.example.urbanforestry;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.Marker;
@@ -14,6 +20,8 @@ import org.osmdroid.views.overlay.Marker;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapMarkers {
     private final Context ctx;
@@ -244,6 +252,48 @@ public class MapMarkers {
 
                 MainActivity.map.getOverlays().add(marker);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Show images from user photos as blue dots
+    public void showPhotoMarkers() {
+        try {
+            FirebaseFirestore.getInstance().collection("posts")
+                    .addSnapshotListener((value, error) -> {
+                        if (error != null) {
+                            Log.w("MapMarkers", "Listen failed.", error);
+                            return;
+                        }
+
+                        if (value == null) return;
+
+                        for (QueryDocumentSnapshot doc : value) {
+                            Post post = doc.toObject(Post.class);
+                            if (post.hasLocation) {
+                                GeoPoint point = new GeoPoint(post.latitude, post.longitude);
+                                Marker marker = new Marker(MainActivity.map);
+                                marker.setPosition(point);
+                                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                                marker.setIcon(ContextCompat.getDrawable(ctx, R.drawable.blue_dot));
+
+                                marker.setOnMarkerClickListener((m, mapView) -> {
+                                    Intent i = new Intent(ctx.getApplicationContext(), PhotoPopupActivity.class);
+                                    i.putExtra("username", post.username);
+                                    i.putExtra("caption", post.caption);
+                                    i.putExtra("imageUrl", post.imageUrl);
+                                    i.putExtra("latitude", post.latitude);
+                                    i.putExtra("longitude", post.longitude);
+                                    ctx.startActivity(i);
+
+                                    return true;
+                                });
+
+                                MainActivity.map.getOverlays().add(marker);
+                            }
+                        }
+                    });
         } catch (Exception e) {
             e.printStackTrace();
         }
