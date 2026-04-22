@@ -1,7 +1,5 @@
 package com.example.urbanforestry;
 
-import static com.example.urbanforestry.HomePage.goalsProgress;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,18 +12,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 public class Menu extends AppCompatActivity {
-    String[] gameList;
-    int[] scoreList;
-    int[] currentGoals;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +33,6 @@ public class Menu extends AppCompatActivity {
             return insets;
         });
 
-        Intent i = getIntent();
-        gameList = i.getStringArrayExtra("gameList");
-        scoreList = i.getIntArrayExtra("scoreList");
-        currentGoals = i.getIntArrayExtra("currentGoals");
-
         Button signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(v -> {
             // Go back to the main activity to confirm
@@ -58,14 +45,14 @@ public class Menu extends AppCompatActivity {
         TextView goal2 = findViewById(R.id.gameGoal2);
         TextView goalProgress2 = findViewById(R.id.goalProgress2);
 
-        int currentGoal1 = currentGoals[0];
-        goal1.setText(gameList[currentGoal1]);
-        String goalP1 = ": " + goalsProgress[0] + "/" + scoreList[currentGoal1];
+        int currentGoal1 = Missions.currentGoals[0];
+        goal1.setText(Missions.gameList[currentGoal1] + ":");
+        String goalP1 = Missions.goalsProgress[0] + "/" + Missions.scoreList[currentGoal1];
         goalProgress1.setText(goalP1);
 
-        int currentGoal2 = currentGoals[1];
-        goal2.setText(gameList[currentGoal2]);
-        String goalP2 = ": " + goalsProgress[1] + "/" + scoreList[currentGoal2];
+        int currentGoal2 = Missions.currentGoals[1];
+        goal2.setText(Missions.gameList[currentGoal2] + ":");
+        String goalP2 = Missions.goalsProgress[1] + "/" + Missions.scoreList[currentGoal2];
         goalProgress2.setText(goalP2);
 
         Button aboutButton = findViewById(R.id.aboutButton);
