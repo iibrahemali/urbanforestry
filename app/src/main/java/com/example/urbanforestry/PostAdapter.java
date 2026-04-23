@@ -387,14 +387,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
                         // Resolve the seasonal accent_color attribute programmatically
                         TypedValue typedValue = new TypedValue();
-                        holder.itemView.getContext().getTheme().resolveAttribute(R.attr.accent_color, typedValue, true);
-                        int seasonalLogoColor = typedValue.data;
+                        holder.itemView.getContext().getTheme().resolveAttribute(R.attr.background_color, typedValue, true);
+                        int seasonalColor = typedValue.data;
 
                         for (Comment comment : comments) {
                             TextView ct = new TextView(holder.itemView.getContext());
                             ct.setText(comment.username + ": " + comment.text);
                             ct.setPadding(8, 4, 8, 4);
-                            ct.setTextColor(seasonalLogoColor);
+                            ct.setTextColor(seasonalColor);
                             holder.commentsList.addView(ct);
                         }
                     }
