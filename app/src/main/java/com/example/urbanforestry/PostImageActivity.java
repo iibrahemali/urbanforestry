@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
@@ -44,10 +45,8 @@ public class PostImageActivity extends AppCompatActivity {
         captionEditText = findViewById(R.id.captionEditText);
         postBtn = findViewById(R.id.btn_post);
 
-        if (imagePath != null) {
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-            imagePreview.setImageBitmap(bitmap);
-        }
+        if (imagePath != null)
+            Glide.with(this).load(imagePath).into(imagePreview);
 
         postBtn.setOnClickListener(v -> {
             String caption = captionEditText.getText().toString().trim();
