@@ -78,4 +78,18 @@ public class SeasonManager {
                 return R.drawable.logo_title;
         }
     }
+
+    public static int getSeasonLogoHorizontal(Season season) {
+        switch (season) {
+            case SPRING:
+                return R.drawable.hori_spring_logo;
+            case AUTUMN:
+                return R.drawable.hori_autumn_logo;
+            case WINTER:
+                return R.drawable.hori_winter_logo;
+            case SUMMER:
+            default:
+                return R.drawable.hori_summer_logo;
+        }
+    }
 }

@@ -3,11 +3,13 @@ package com.example.urbanforestry;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -32,6 +34,13 @@ public class MenuActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Use lighter background for spring to match logo background
+        if (SeasonManager.getSeasonPref(this) == SeasonManager.Season.SPRING)
+            findViewById(R.id.main).setBackgroundColor(Color.parseColor("#DA8E92"));
+
+        ImageView logo = findViewById(R.id.logo);
+        logo.setImageResource(SeasonManager.getSeasonLogoHorizontal(SeasonManager.getSeasonPref(this)));
 
         Button signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(v -> {
