@@ -214,6 +214,7 @@ public class Routes {
         String showHideText = route.isVisible ? "Hide route" : "Show route";
 
         new AlertDialog.Builder(a)
+                .setTitle("Route information")
                 .setMessage(info)
                 .setPositiveButton("Delete", (dialog, which) -> {
                     removeRoute(route);
