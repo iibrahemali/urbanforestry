@@ -60,6 +60,9 @@ public class CreatePostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
 
+        if (savedInstanceState != null)
+            photoPath = savedInstanceState.getString("photoPath");
+
         findViewById(R.id.btn_camera).setOnClickListener(v -> {
             try {
                 String fileName = "pic_" + System.currentTimeMillis();
@@ -80,5 +83,11 @@ public class CreatePostActivity extends AppCompatActivity {
         findViewById(R.id.btn_text).setOnClickListener(v -> {
             launcher.launch(new Intent(this, PostTextActivity.class));
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("photoPath", photoPath);
     }
 }

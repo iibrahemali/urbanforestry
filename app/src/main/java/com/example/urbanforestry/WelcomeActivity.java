@@ -23,9 +23,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Tells the system that the app uses "dark mode"
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
         // Determine season and set the appropriate starting theme for the splash screen
         SeasonManager.Season currentSeason = SeasonManager.getSeasonPref(this);
         int startingTheme;

@@ -41,6 +41,12 @@ public class PostImageActivity extends AppCompatActivity {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         imagePath = getIntent().getStringExtra("imagePath");
+        if (imagePath == null) {
+            Toast.makeText(this, "Error loading image. Please try again.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         ImageView imagePreview = findViewById(R.id.imagePreview);
         captionEditText = findViewById(R.id.captionEditText);
         postBtn = findViewById(R.id.btn_post);
