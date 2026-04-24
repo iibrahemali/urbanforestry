@@ -1,4 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    dialog_delete_confirm.xml
+    Defines the confirmation bottom sheet shown before a post is permanently deleted.
+    PostAdapter inflates this layout inside a BottomSheetDialog so it slides up from
+    the bottom — a deliberate UX choice that makes the destructive action feel
+    intentional rather than accidental.
+
+    Root LinearLayout:
+      orientation="vertical" — stacks icon → title → subtitle → delete → cancel, top-to-bottom.
+      padding="32dp" — generous padding gives the content breathing room inside the sheet.
+      gravity="center" — centers all children horizontally so the layout forms a clean column.
+      background="?attr/background_color" — matches the seasonal dark theme.
+
+    FrameLayout (icon container, 80×80dp):
+      Layers a red circle background (delete_icon_bg drawable) beneath a 38dp delete outline icon.
+      The FrameLayout approach allows two Views to overlap at the same position without nested layouts.
+      80dp is large enough for the icon to be immediately recognisable as a destructive-action indicator.
+      layout_marginBottom="24dp" — separates the icon visually from the title below it.
+
+    "Delete Post?" TextView:
+      textSize="22sp" bold — large and prominent as the clear focal point of the sheet.
+      textColor="#FFFFFF" — pure white for maximum contrast against the dark background.
+
+    Warning subtitle TextView:
+      textColor="#99FFFFFF" — 60% opacity white creates a secondary/muted visual weight.
+      gravity="center" — both lines of text are centered under the title.
+      layout_marginBottom="32dp" — separates the description block from the action buttons.
+
+    btn_confirm_delete (MaterialButton):
+      backgroundTint="#E53935" — Material Red 600, the standard destructive-action color.
+      layout_marginBottom="8dp" — small gap between the Delete and Cancel buttons.
+
+    btn_cancel_delete (MaterialButton):
+      style=TextButton + strokeColor=accent_color — outlined style signals a safe secondary action,
+      the visual opposite of the solid-red Delete button directly above it.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -8,26 +45,29 @@
     android:gravity="center"
     android:background="?attr/background_color">
 
-    <!-- Red circle icon container -->
+    <!-- Red circle + delete icon: FrameLayout layers the two Views so the icon floats centered over the background circle -->
     <FrameLayout
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginBottom="24dp">
 
+        <!-- Solid red circular background — immediately signals a destructive action before the user reads the title -->
         <View
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:background="@drawable/delete_icon_bg" />
 
+        <!-- Outline delete icon centered on the red circle — outline style stays readable on the solid background -->
         <ImageView
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_delete_outline"
             android:contentDescription="Delete" />
+
     </FrameLayout>
 
-    <!-- Title -->
+    <!-- Bold question title — phrased as a question so the user must consciously confirm their choice -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,7 +77,7 @@
         android:textStyle="bold"
         android:layout_marginBottom="10dp" />
 
-    <!-- Subtitle -->
+    <!-- Warning subtitle explaining the action is irreversible — two lines kept short for quick scanning -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,7 +87,7 @@
         android:gravity="center"
         android:layout_marginBottom="32dp" />
 
-    <!-- Delete Button -->
+    <!-- Confirm delete button — red fill makes this the visually dominant (and dangerous) choice -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_confirm_delete"
         android:layout_width="match_parent"
@@ -60,7 +100,7 @@
         app:cornerRadius="10dp"
         android:layout_marginBottom="8dp" />
 
-    <!-- Cancel Button -->
+    <!-- Cancel button — outlined/text style is the visual "safe exit" opposite the red delete button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_cancel_delete"
         style="@style/Widget.MaterialComponents.Button.TextButton"

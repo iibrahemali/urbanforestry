@@ -1,4 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    activity_main.xml
+    Defines the main map screen. The osmdroid MapView fills the entire screen behind
+    all other Views. Two circular ImageButtons float over the map corners for navigation:
+      - menuButton (top-left): opens MenuActivity via the result launcher
+      - feedButton (top-right): opens FeedActivity
+    A ScrollView on the right edge holds route toggle buttons that Routes.java adds
+    programmatically — it scrolls vertically when many routes are active so buttons
+    never run off-screen or overlap the navigation controls.
+
+    No background is set on the root ConstraintLayout because the MapView covers the
+    entire screen (match_parent on both axes).
+
+    android:id="@+id/main" — referenced by MainActivity's WindowInsetsCompat listener
+    to apply status bar and navigation bar padding so buttons aren't hidden behind system UI.
+
+    menuButton / feedButton:
+      background="@drawable/round_button" — circular filled shape drawn in accent_color.
+      app:tint="?attr/background_color" — icon tinted to background_color for contrast
+      against the lighter accent circle.
+      layout_margin="16dp" — keeps buttons away from corners where accidental taps occur.
+
+    routeScrollView:
+      height=0dp with constraints — fills the column between the Feed button and the screen bottom.
+      scrollbars="none" — hides the scrollbar since the narrow column would look cluttered.
+
+    routeControlsContainer (LinearLayout):
+      Routes.java finds this by ID and adds/removes one item_route_toggle button per active route.
+      orientation="vertical" stacks buttons from top to bottom as routes are added.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,11 +38,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!-- Full-screen osmdroid map tile view — positioned first so it renders beneath all overlay buttons -->
     <org.osmdroid.views.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!-- Menu button — circular, top-left corner, launches MenuActivity with mission data via result launcher -->
     <ImageButton
         android:id="@+id/menuButton"
         android:layout_width="50dp"
@@ -25,6 +58,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Feed button — circular, top-right corner, opens FeedActivity to show community posts -->
     <ImageButton
         android:id="@+id/feedButton"
         android:layout_width="50dp"
@@ -38,7 +72,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Scrollable container for route toggle buttons -->
+    <!-- Right-side scrollable column for route toggle buttons added dynamically by Routes.java.
+         scrollbars="none" keeps the narrow column uncluttered when many routes are active. -->
     <ScrollView
         android:id="@+id/routeScrollView"
         android:layout_width="wrap_content"
@@ -51,11 +86,13 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/feedButton">
 
+        <!-- Routes.java finds routeControlsContainer by ID and inflates one item_route_toggle per active route -->
         <LinearLayout
             android:id="@+id/routeControlsContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

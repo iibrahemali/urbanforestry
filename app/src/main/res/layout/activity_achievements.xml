@@ -1,13 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    activity_achievements.xml
+    Defines the achievements screen: a title header, a scrollable RecyclerView that fills
+    the middle space, and a "Back to Map" button pinned to the bottom.
+    AchievementsActivity populates the RecyclerView with Achievement objects using
+    AchievementAdapter; each row is inflated from activity_trophy_list.xml.
+
+    titleHeader:
+      textSize="26sp" bold, accent_color — consistent header style used across the app.
+      layout_marginTop="35dp" — slightly larger than the standard 24dp to give it room below the status bar.
+
+    achievementRecyclerView:
+      0dp width+height with four constraints — fills all the space between the title and the Back button.
+      AchievementsActivity attaches a LinearLayoutManager and the AchievementAdapter to this view.
+
+    backButton:
+      Pinned to the bottom of the screen with layout_marginBottom=16dp.
+      backgroundTint="?attr/accent_color" — filled primary style, the main exit action on this screen.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".AchievementsActivity"
-    android:background="?attr/background_color">
+    android:background="?attr/background_color"
+    tools:context=".AchievementsActivity">
 
+    <!-- "My Achievements" title — centered, 26sp bold accent color, 35dp from the top -->
     <TextView
         android:id="@+id/titleHeader"
         android:layout_width="wrap_content"
@@ -21,6 +42,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Scrollable achievement list — fills the space between the title and the Back button.
+         AchievementsActivity attaches a LinearLayoutManager and AchievementAdapter at runtime. -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/achievementRecyclerView"
         android:layout_width="0dp"
@@ -31,6 +54,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- "Back to Map" button — filled accent, pinned to the screen bottom, exits to MainActivity -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/backButton"
         style="@style/Widget.MaterialComponents.Button"
@@ -44,6 +68,5 @@
         android:textColor="?attr/background_color"
         android:backgroundTint="?attr/accent_color"
         app:layout_constraintBottom_toBottomOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

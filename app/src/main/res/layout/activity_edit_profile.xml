@@ -1,4 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    activity_edit_profile.xml
+    Defines the edit profile screen: a title, three OutlinedBox input fields (Full Name,
+    Username, bio), a Save Changes button, and a Cancel button.
+    EditProfileActivity pre-fills the name and username from Intent extras passed by
+    ProfileActivity, and loads the bio from Firestore.
+
+    android:background="?attr/background_color" — seasonal theme background.
+    android:padding="24dp" — 24dp content inset on all sides.
+
+    editProfileTitle:
+      textColor="?attr/accent_color" — consistent with other screen headers.
+      textSize="28sp" bold — slightly smaller than the 32sp login title since this is a sub-screen.
+
+    editNameInputLayout: inputType="textPersonName" — capitalizes each word automatically.
+    editUsernameInputLayout: inputType="text" — no auto-capitalize for case-sensitive usernames.
+
+    editBioInputLayout:
+      inputType="textMultiLine" — allows newlines in the bio text.
+      minLines="3" — ensures the field is at least 3 lines tall so users see it as a text area.
+      gravity="top" — text starts from the top-left corner of the multi-line field.
+
+    saveProfileButton:
+      backgroundTint="?attr/accent_color" — filled primary action button.
+      textColor="?attr/background_color" — dark text on colored fill for contrast.
+
+    cancelEditButton:
+      style=TextButton — no fill, no stroke, just text — the least visually heavy option
+      since Cancel is a frequent and safe action that shouldn't compete with Save.
+      textColor="?attr/accent_color" — same color as the field borders to feel consistent.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,6 +40,7 @@
     android:padding="24dp"
     tools:context=".EditProfileActivity">
 
+    <!-- "Edit Profile" heading — 28sp bold accent color, 32dp from the top of the screen -->
     <TextView
         android:id="@+id/editProfileTitle"
         android:layout_width="wrap_content"
@@ -21,6 +54,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Full Name field — pre-filled by EditProfileActivity from Intent extras passed by ProfileActivity -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editNameInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -33,14 +67,17 @@
         app:hintTextColor="?attr/accent_color"
         app:layout_constraintTop_toBottomOf="@id/editProfileTitle">
 
+        <!-- inputType="textPersonName" capitalizes first letter of each word automatically -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:textColor="@color/white" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Username field — pre-filled from Intent extras; inputType="text" preserves case -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editUsernameInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -59,8 +96,10 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:textColor="@color/white" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Bio field — multi-line text area; EditProfileActivity loads the current bio from Firestore -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editBioInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -73,6 +112,8 @@
         app:hintTextColor="?attr/accent_color"
         app:layout_constraintTop_toBottomOf="@id/editUsernameInputLayout">
 
+        <!-- textMultiLine allows newlines; minLines=3 ensures the field looks like a text area;
+             gravity="top" starts text at the top-left rather than vertically centering it -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editBioEditText"
             android:layout_width="match_parent"
@@ -81,8 +122,10 @@
             android:minLines="3"
             android:gravity="top"
             android:textColor="@color/white" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- "Save Changes" button — filled accent background is the primary action on this screen -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/saveProfileButton"
         android:layout_width="match_parent"
@@ -96,6 +139,8 @@
         app:cornerRadius="10dp"
         app:layout_constraintTop_toBottomOf="@id/editBioInputLayout" />
 
+    <!-- "Cancel" button — TextButton style (no fill, no stroke) keeps it visually lightweight
+         since Cancel is a frequent and safe action that shouldn't compete with Save Changes -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cancelEditButton"
         style="@style/Widget.MaterialComponents.Button.TextButton"

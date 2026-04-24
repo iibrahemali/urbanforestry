@@ -1,33 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    activity_trophy_list.xml
+    Defines a single row in the achievements RecyclerView shown by AchievementsActivity.
+    AchievementAdapter inflates one of these for each Achievement object and populates
+    achievementName, achievementProgress, and achievementLevelText at runtime.
+
+    Root LinearLayout:
+      orientation="vertical" — stacks name → progress bar → level text top-to-bottom.
+      padding="16dp" — gives each row comfortable breathing room so text doesn't touch the edges.
+      background="?attr/background_color" — uses the seasonal theme so rows match the screen.
+
+    achievementName (TextView):
+      textColor="?attr/accent_color" — accent color makes the title stand out as the primary label.
+      textSize="18sp" — large enough to read at a glance without dominating the row.
+
+    achievementProgress (ProgressBar):
+      style="?android:attr/progressBarStyleHorizontal" — renders as a filled bar, not a spinner.
+      android:max="100" — the adapter sets progress as a percentage so no scaling is needed.
+      layout_width="match_parent" — full-width bar makes progress differences easy to compare.
+
+    achievementLevelText (TextView):
+      textSize="14sp" — slightly smaller than the 18sp title, creating a visual hierarchy.
+      textColor="?attr/accent_color" — matches the title color, forming a cohesive styled pair.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="?attr/background_color">
-    android:layout_marginBottom="30dp">
 
+    <!-- Achievement title — e.g. "Tree Finder" or "Distance Walker" -->
     <TextView
         android:id="@+id/achievementName"
         android:layout_width="wrap_content"
-        android:textColor="?attr/accent_color"
         android:layout_height="wrap_content"
         android:text="Tree Finder"
+        android:textColor="?attr/accent_color"
         android:textSize="18sp" />
 
+    <!-- Horizontal progress bar showing progress toward the next achievement level (0–100%) -->
     <ProgressBar
         android:id="@+id/achievementProgress"
         style="?android:attr/progressBarStyleHorizontal"
-        android:textColor="?attr/accent_color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:max="100" />
 
+    <!-- Level and progress label — e.g. "Level 2: 1/5 to next level" — set by the adapter -->
     <TextView
         android:id="@+id/achievementLevelText"
         android:layout_width="wrap_content"
-        android:textColor="?attr/accent_color"
         android:layout_height="wrap_content"
         android:text="Level 2: 1/5 to next level"
+        android:textColor="?attr/accent_color"
         android:textSize="14sp" />
+
 </LinearLayout>

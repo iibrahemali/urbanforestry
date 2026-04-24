@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    dropdown_item.xml
+    Defines a single row in the email domain autocomplete dropdown shown during sign-up.
+    Using a standalone TextView (no layout wrapper) keeps it lightweight — the
+    AutoCompleteTextView only needs text rendering, not a full container hierarchy.
+
+    android:id="@android:id/text1" — the system-reserved ID that Android's ArrayAdapter
+    uses to identify which view to populate with the suggestion string.
+
+    android:layout_width="match_parent" — full-width row so the tap target spans the
+    entire dropdown width, making domain suggestions easy to select.
+
+    android:padding="16dp" — matches Material Design touch-target guidelines; combined
+    with wrap_content height, this produces the ~48dp effective tap area.
+
+    android:textColor="@android:color/white" — white text is readable against the dark
+    background set on the AutoCompleteTextView's popupBackground in activity_sign_up.xml.
+
+    android:textSize="16sp" — standard body-text size, consistent with the input fields
+    in the sign-up form so the dropdown doesn't feel visually jarring.
+-->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     android:layout_width="match_parent"

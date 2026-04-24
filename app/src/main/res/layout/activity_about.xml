@@ -1,4 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    activity_about.xml
+    Defines the About screen: app title, description, Lancaster logo, contact cards for
+    two staff members (each with name, title, phone, email), a "Follow Us" section with
+    four social media ImageButtons.
+
+    Root NestedScrollView:
+      Wraps all content in a scrollable view so the contacts and social icons remain
+      accessible on small screens or when the system font is large.
+      background="?attr/background_color" — seasonal theme background.
+
+    Inner ConstraintLayout (padding=24dp):
+      Chains all views top-to-bottom. Each view is constrained to the bottom of the one above it.
+
+    about_logo (ImageView):
+      adjustViewBounds=true + scaleType="fitCenter" — preserves the Lancaster logo's aspect ratio.
+      height=120dp — fixed height gives the logo a consistent size across devices.
+
+    Contacts (Michael Meyer, Rick Anderer):
+      phone/email TextViews have android:clickable=true and android:focusable=true so
+      AboutActivity can attach Intent.ACTION_DIAL and Intent.ACTION_SENDTO click listeners.
+      textColor="?attr/accent_color" on phone/email signals they are tappable links.
+      textColor="?attr/alt_color" on job titles uses a secondary accent.
+
+    social_icons (LinearLayout, horizontal):
+      Four 64×64dp ImageButtons with 8dp padding each.
+      selectableItemBackgroundBorderless produces circular ripple on tap.
+      layout_marginStart="16dp" on the last three buttons spaces them evenly.
+      app:tint="?attr/accent_color" tints all four icons with the seasonal accent color.
+-->
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,11 +39,13 @@
     android:layout_height="match_parent"
     tools:context=".AboutActivity">
 
+    <!-- ConstraintLayout inside the NestedScrollView — wraps content height and chains all views top-to-bottom -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="24dp">
 
+        <!-- App title "MyCelia" — 32sp bold accent color at the very top of the screen -->
         <TextView
             android:id="@+id/about_title"
             android:layout_width="wrap_content"
@@ -25,6 +58,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- One-line description of the app and its department — 18sp centered white text -->
         <TextView
             android:id="@+id/about_desc"
             android:layout_width="0dp"
@@ -38,6 +72,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- Lancaster city logo — fixed 120dp height; adjustViewBounds preserves aspect ratio -->
         <ImageView
             android:id="@+id/about_logo"
             android:layout_width="wrap_content"
@@ -51,6 +86,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- "Contacts" section header — 24sp bold accent color, left-aligned -->
         <TextView
             android:id="@+id/contacts_header"
             android:layout_width="wrap_content"
@@ -63,7 +99,7 @@
             app:layout_constraintTop_toBottomOf="@id/about_logo"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- Michael Meyer -->
+        <!-- Michael Meyer's full name — 20sp bold white -->
         <TextView
             android:id="@+id/name_michael"
             android:layout_width="wrap_content"
@@ -76,6 +112,7 @@
             app:layout_constraintTop_toBottomOf="@id/contacts_header"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <!-- Michael's job title — 16sp alt_color (secondary accent, slightly muted) -->
         <TextView
             android:id="@+id/title_michael"
             android:layout_width="wrap_content"
@@ -86,6 +123,7 @@
             app:layout_constraintTop_toBottomOf="@id/name_michael"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <!-- Michael's phone number — accent_color + clickable=true so AboutActivity can attach ACTION_DIAL -->
         <TextView
             android:id="@+id/phone_michael"
             android:layout_width="wrap_content"
@@ -98,6 +136,7 @@
             app:layout_constraintTop_toBottomOf="@id/title_michael"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <!-- Michael's email — accent_color + clickable=true so AboutActivity can attach ACTION_SENDTO -->
         <TextView
             android:id="@+id/email_michael"
             android:layout_width="wrap_content"
@@ -110,7 +149,7 @@
             app:layout_constraintTop_toBottomOf="@id/phone_michael"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- Rick Anderer -->
+        <!-- Rick Anderer's full name — same style as Michael's, 24dp below Michael's email -->
         <TextView
             android:id="@+id/name_rick"
             android:layout_width="wrap_content"
@@ -123,6 +162,7 @@
             app:layout_constraintTop_toBottomOf="@id/email_michael"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <!-- Rick's job title — same secondary style as Michael's -->
         <TextView
             android:id="@+id/title_rick"
             android:layout_width="wrap_content"
@@ -133,6 +173,7 @@
             app:layout_constraintTop_toBottomOf="@id/name_rick"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <!-- Rick's phone number — tappable accent link, same as Michael's -->
         <TextView
             android:id="@+id/phone_rick"
             android:layout_width="wrap_content"
@@ -145,6 +186,7 @@
             app:layout_constraintTop_toBottomOf="@id/title_rick"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <!-- Rick's email — tappable accent link, same as Michael's -->
         <TextView
             android:id="@+id/email_rick"
             android:layout_width="wrap_content"
@@ -157,6 +199,7 @@
             app:layout_constraintTop_toBottomOf="@id/phone_rick"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <!-- "Follow Us" section header — same style as "Contacts", 32dp below Rick's email -->
         <TextView
             android:id="@+id/social_header"
             android:layout_width="wrap_content"
@@ -169,6 +212,7 @@
             app:layout_constraintTop_toBottomOf="@id/email_rick"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <!-- Row of four social media ImageButtons — horizontal LinearLayout centered below the header -->
         <LinearLayout
             android:id="@+id/social_icons"
             android:layout_width="wrap_content"
@@ -179,6 +223,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
+            <!-- LinkedIn button — opens LinkedIn in a browser; tinted with the seasonal accent color -->
             <ImageButton
                 android:id="@+id/btn_linkedin"
                 android:layout_width="64dp"
@@ -190,6 +235,7 @@
                 app:tint="?attr/accent_color"
                 android:contentDescription="LinkedIn" />
 
+            <!-- YouTube button — 16dp start margin separates it from LinkedIn -->
             <ImageButton
                 android:id="@+id/btn_youtube"
                 android:layout_width="64dp"
@@ -202,6 +248,7 @@
                 android:layout_marginStart="16dp"
                 android:contentDescription="YouTube" />
 
+            <!-- Instagram button — same spacing and style as YouTube -->
             <ImageButton
                 android:id="@+id/btn_instagram"
                 android:layout_width="64dp"
@@ -214,6 +261,7 @@
                 android:layout_marginStart="16dp"
                 android:contentDescription="Instagram" />
 
+            <!-- Facebook button — same spacing and style as Instagram -->
             <ImageButton
                 android:id="@+id/btn_facebook"
                 android:layout_width="64dp"
@@ -225,8 +273,8 @@
                 app:tint="?attr/accent_color"
                 android:layout_marginStart="16dp"
                 android:contentDescription="Facebook" />
-        </LinearLayout>
 
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

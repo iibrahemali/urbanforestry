@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    activity_create_post.xml
+    Defines the post type chooser screen shown after the user taps the "+" FAB.
+    It presents two mutually exclusive paths:
+      - btn_camera: filled primary button — takes a photo and routes to PostImageActivity
+      - btn_text: outlined secondary button — writes a text post and routes to PostTextActivity
+
+    The title is vertically positioned using layout_marginTop="225dp" (instead of a
+    top constraint) to push it roughly to the visual center of the screen above the buttons.
+
+    btn_camera uses the filled style (backgroundTint=accent_color) as the primary/recommended
+    action, mirroring the Log In button on the login screen.
+
+    btn_text uses the OutlinedButton style as the secondary action, mirroring the Sign Up
+    button on the welcome screen. This creates a consistent visual language across the app
+    where filled = primary, outlined = secondary.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -6,7 +24,7 @@
     android:background="?attr/background_color"
     android:padding="24dp">
 
-    <!-- Title -->
+    <!-- "Create a Post" title — positioned with marginTop=225dp to land roughly in the upper-center area -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
@@ -15,13 +33,13 @@
         android:textSize="26sp"
         android:textStyle="bold"
         android:textColor="?attr/accent_color"
+        android:layout_marginTop="225dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btn_camera"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="225dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Camera Button (PRIMARY like Login) -->
+    <!-- "Take a picture" button — filled primary style, opens camera to capture a photo for PostImageActivity -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_camera"
         style="@style/Widget.MaterialComponents.Button"
@@ -36,7 +54,7 @@
         app:cornerRadius="12dp"
         app:layout_constraintTop_toBottomOf="@id/titleText" />
 
-    <!-- Text Post Button (OUTLINED like Sign Up) -->
+    <!-- "Write a text post" button — outlined secondary style, opens PostTextActivity for text-only posts -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_text"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"

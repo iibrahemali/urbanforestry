@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    activity_feed.xml
+    Defines the community feed screen: a centered title, a circular profile image
+    button in the top-right corner, a full-height scrollable post list, a thin
+    accent-colored divider at the top of the list, and a FloatingActionButton
+    in the bottom-right corner to create new posts.
+    fitsSystemWindows="true" on the root reserves space for the status bar so the
+    title is not hidden behind it.
+    background_color_emphasis gives the header area a slightly different shade from
+    background_color on the RecyclerView, creating a subtle depth effect.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,7 +19,9 @@
     android:fitsSystemWindows="true"
     android:background="?attr/background_color_emphasis">
 
-    <!-- Title (like Welcome screen style) -->
+    <!-- "Community Feed" heading centered at the top of the screen.
+         accent_color text makes it the dominant visual anchor, consistent with all other screen titles.
+         24dp marginTop keeps it below the status bar area that fitsSystemWindows reserved. -->
     <TextView
         android:id="@+id/feedTitle"
         android:layout_width="wrap_content"
@@ -21,7 +35,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Profile Button -->
+    <!-- Circular profile picture button in the top-right corner.
+         ShapeableImageView + ShapeAppearance.UrbanForestry.Circle clips the image to a perfect circle.
+         FeedActivity loads the real profile picture via Glide; the default_pfp mipmap shows until it loads.
+         selectableItemBackgroundBorderless produces a circular ripple on tap without a rectangular outline.
+         The accent-colored 2dp stroke visually ties the button to the title and divider. -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_button"
         android:layout_width="48dp"
@@ -40,7 +58,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- RecyclerView Feed -->
+    <!-- Scrollable list of posts filling all remaining vertical space.
+         0dp width and height with four constraints means ConstraintLayout fills the available space.
+         clipToPadding=false lets the last card scroll fully out from behind the FAB.
+         background_color is slightly different from background_color_emphasis above, creating a
+         subtle layered look between the header area and the list. -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
@@ -54,6 +76,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/feedTitle" />
 
+    <!-- Thin hairline divider at the top edge of the RecyclerView.
+         1dp height is the standard Material Design separator thickness.
+         Aligned to the RecyclerView's top so it appears as the list's visual border. -->
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
@@ -61,7 +86,10 @@
         android:background="?attr/accent_color"
         app:layout_constraintTop_toTopOf="@id/recyclerView" />
 
-    <!-- Floating Action Button (Create Post) -->
+    <!-- "+" FloatingActionButton to open CreatePostActivity.
+         FeedActivity fades this to 25% alpha when the user scrolls to the bottom of the list
+         so it doesn't permanently obscure the last post.
+         bottom+end constraints with 24dp margin position it in the classic FAB location. -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add"
         android:layout_width="wrap_content"

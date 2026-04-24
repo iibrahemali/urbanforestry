@@ -1,4 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    item_route_toggle.xml
+    Defines the circular toggle button placed on the right side of the map for each
+    active navigation route. Routes.java inflates one of these per route and tints
+    the backgroundTint with a unique random color so the user can match each button
+    to its corresponding colored line on the map.
+
+    layout_width/height = 50dp — fixed square that becomes a circle via cornerRadius=25dp
+    (half of 50dp).
+
+    insetLeft/Top/Right/Bottom = 0dp — removes MaterialButton's built-in internal padding
+    that would otherwise shrink the icon inside the button and break the circular shape.
+
+    cornerRadius="25dp" — half the button's 50dp size, turning the square into a perfect circle.
+
+    app:icon="@drawable/ic_route" — route/navigation icon communicates "this is a route".
+
+    app:iconTint="@color/white" — white icon contrasts against every possible random route color.
+
+    app:iconGravity="textStart" with app:iconPadding="0dp" — effectively centers the 24dp icon
+    inside the 50dp circle when there is no button text.
+
+    app:backgroundTint="?attr/accent_color" — default tint; Routes.java overrides this at
+    runtime with the per-route color (a random vivid HSV-generated hue).
+
+    app:strokeColor="@android:color/black" / strokeWidth="2dp" — black border makes each
+    circular button visible against both light map tiles and dark areas of the map.
+-->
 <com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/btn_toggle_route"

@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    activity_post_text.xml
+    Defines the text post composition screen.
+    Layout structure:
+      1. "Write a Post" title — positioned with marginTop=64dp to leave whitespace above
+      2. EditText (350dp tall) — a large writing area for the post body
+      3. "Post" MaterialButton — pinned to the bottom of the screen
+
+    editText:
+      height=350dp — fixed tall area that gives users plenty of space to write.
+      background="@drawable/text_box" — custom rounded rectangle replaces the default underline.
+      gravity="top|start" — text starts from the top-left corner of the field, not centered.
+      inputType not set (defaults to text) — PostTextActivity reads the raw string value.
+      constrained between the title above and the Post button below using layout chain.
+
+    btn_post:
+      layout_constraintBottom_toBottomOf="parent" — always pinned to the screen bottom so it
+      is accessible even when the keyboard is open and pushes the editText up.
+      layout_marginBottom="48dp" — extra margin so the button isn't crammed against the keyboard.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -6,7 +27,7 @@
     android:background="?attr/background_color"
     android:padding="24dp">
 
-    <!-- Title -->
+    <!-- "Write a Post" title — 64dp from the top, centered horizontally -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
@@ -15,13 +36,16 @@
         android:textSize="26sp"
         android:textStyle="bold"
         android:textColor="?attr/accent_color"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="24dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="64dp"
-        android:layout_marginBottom="24dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Text Input -->
+    <!-- 350dp tall text area for the post body.
+         gravity="top|start" keeps the cursor at the top-left corner of the field.
+         text_box drawable gives it a rounded rectangle border instead of the default underline.
+         Constrained between the title above and the Post button below. -->
     <EditText
         android:id="@+id/editText"
         android:layout_width="0dp"
@@ -38,7 +62,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Post Button (Primary style like Login button) -->
+    <!-- "Post" button — pinned to the screen bottom so it is always reachable above the keyboard -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_post"
         style="@style/Widget.MaterialComponents.Button"

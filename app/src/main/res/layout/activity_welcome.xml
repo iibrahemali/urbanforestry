@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    activity_welcome.xml
+    Defines the splash/welcome screen. The logo ImageView fills all vertical space
+    between the screen top and the button container using height=0dp with four-edge
+    constraints. The buttonContainer LinearLayout is pinned to the bottom and contains
+    three buttons:
+      - gotoMapButton (GONE by default): shown when a user is already logged in
+      - goToLoginButton (filled, always shown for logged-out): navigates to LoginActivity
+      - goToSignUpButton (outlined): navigates to SignUpActivity
+
+    WelcomeActivity reveals the buttonContainer with a fade-in animation after the
+    splash delay — it is declared INVISIBLE (not GONE) so layout space is reserved
+    during the splash, preventing a layout jump when buttons appear.
+
+    android:id="@+id/mainLayout" — used by WelcomeActivity's animation code to
+    reference the root for measuring or attaching transitions.
+
+    buttonContainer layout_marginBottom="76dp" — lifts the buttons above the gesture
+    navigation area on modern Android devices.
+
+    gotoMapButton android:visibility="gone" — hidden by default; WelcomeActivity sets
+    it VISIBLE and hides goToLoginButton when FirebaseAuth.getCurrentUser() != null.
+
+    goToSignUpButton style=OutlinedButton — outlined (secondary) style visually contrasts
+    with the filled (primary) Log In button directly above it.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,6 +36,9 @@
     android:padding="24dp"
     tools:context=".WelcomeActivity">
 
+    <!-- App logo — height=0dp with top/bottom constraints fills the space above the button container.
+         fitCenter scaleType preserves the aspect ratio while fitting within the available bounds.
+         layout_marginBottom="24dp" adds a gap between the logo and the buttons below it. -->
     <ImageView
         android:id="@+id/logo"
         android:layout_width="match_parent"
@@ -23,6 +53,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Button container pinned to the bottom, lifted 76dp above the navigation bar area.
+         WelcomeActivity fades this in after the splash; it is INVISIBLE (not GONE) so
+         space is reserved during the animation, preventing a layout jump when it appears. -->
     <LinearLayout
         android:id="@+id/buttonContainer"
         android:layout_width="match_parent"
@@ -32,7 +65,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="24dp">
 
-        <!-- Top Button Slot: Map (Logged In) or Log In (Logged Out) -->
+        <!-- "Map" button — shown only when a user is already logged in; GONE by default.
+             WelcomeActivity sets this VISIBLE and hides goToLoginButton for returning users. -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/gotoMapButton"
             style="@style/Widget.MaterialComponents.Button"
@@ -47,6 +81,7 @@
             android:visibility="gone"
             app:cornerRadius="12dp" />
 
+        <!-- "Log in" button — filled accent style, the primary action for first-time visitors -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/goToLoginButton"
             style="@style/Widget.MaterialComponents.Button"
@@ -60,7 +95,7 @@
             android:textStyle="bold"
             app:cornerRadius="12dp" />
 
-        <!-- Bottom Button Slot: Sign Up (Logged Out) or Sign Out (Logged In) -->
+        <!-- "Sign Up" button — outlined style visually signals it as secondary to the filled Log In above -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/goToSignUpButton"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"

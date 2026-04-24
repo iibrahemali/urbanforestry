@@ -1,4 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    activity_sign_up.xml
+    Defines the account creation screen: title, subtitle, four input fields (full name,
+    username, email with domain autocomplete, password with toggle), a Sign Up button,
+    and a link back to login. The email field uses MaterialAutoCompleteTextView instead
+    of TextInputEditText so SignUpActivity can attach an ArrayAdapter with domain
+    suggestions (@gmail.com, @yahoo.com, etc.) as the user types.
+
+    android:background="?attr/background_color" — seasonal theme background.
+    android:padding="24dp" — 24dp content inset on all four sides.
+
+    signUpTitle:
+      textColor="?attr/alt_color" — uses alt_color (secondary accent) instead of accent_color
+      to visually distinguish this screen from the login screen at a glance.
+      layout_marginTop="32dp" — smaller than login's 64dp because more fields need vertical space.
+
+    nameInputLayout: inputType="textPersonName" — capitalizes each word, enables OS name autocomplete.
+    usernameInputLayout: inputType="text" — no auto-capitalize since usernames are typically lowercase.
+
+    emailInputLayout (MaterialAutoCompleteTextView):
+      The AutoCompleteTextView allows SignUpActivity to display a domain-suggestion dropdown.
+      popupBackground="?attr/background_color" — dropdown blends with the dark screen background.
+
+    passwordInputLayout:
+      passwordToggleEnabled — eye icon lets users verify their password before account creation.
+
+    signUpButton:
+      backgroundTint="?attr/accent_color" — filled accent = primary call-to-action.
+      textColor="?attr/background_color" — contrasts in all seasonal themes.
+
+    goToLogin (link):
+      textColor="?attr/alt_color" — matches the title color, tying the link back to the screen header.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,6 +42,7 @@
     android:padding="24dp"
     tools:context=".SignUpActivity">
 
+    <!-- "Create Account" heading — alt_color distinguishes this screen from the login screen -->
     <TextView
         android:id="@+id/signUpTitle"
         android:layout_width="wrap_content"
@@ -21,6 +56,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- "Join the urban forestry community" subtitle — plain white, 16sp -->
     <TextView
         android:id="@+id/signUpSubtitle"
         android:layout_width="wrap_content"
@@ -33,6 +69,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/signUpTitle" />
 
+    <!-- Full Name field — inputType="textPersonName" capitalizes each word and enables OS name suggestions -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nameInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -54,8 +91,10 @@
             android:textColor="@color/white"
             android:paddingStart="16dp"
             android:paddingEnd="16dp" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Username field — inputType="text" (no auto-capitalize) since usernames are case-sensitive -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/usernameInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -77,8 +116,10 @@
             android:textColor="@color/white"
             android:paddingStart="16dp"
             android:paddingEnd="16dp" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Email field — MaterialAutoCompleteTextView so SignUpActivity can attach an email domain suggestion adapter -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -91,6 +132,7 @@
         app:hintTextColor="?attr/accent_color"
         app:layout_constraintTop_toBottomOf="@id/usernameInputLayout">
 
+        <!-- popupBackground matches the dark screen background so the suggestion dropdown blends in -->
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
@@ -103,8 +145,10 @@
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
             android:popupBackground="?attr/background_color" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Password field with show/hide eye toggle so users can verify their password before creating account -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -119,6 +163,7 @@
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/white">
 
+        <!-- inputType="textPassword" masks characters and disables clipboard paste for security -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
@@ -128,8 +173,10 @@
             android:textColor="@color/white"
             android:paddingStart="16dp"
             android:paddingEnd="16dp" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- "Sign Up" primary button — filled accent background is the dominant call-to-action -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signUpButton"
         android:layout_width="match_parent"
@@ -143,6 +190,7 @@
         app:cornerRadius="12dp"
         app:layout_constraintTop_toBottomOf="@id/passwordInputLayout" />
 
+    <!-- "Already have an account? Log in" link — alt_color matches the title, tying the link to the screen header -->
     <TextView
         android:id="@+id/goToLogin"
         android:layout_width="wrap_content"
