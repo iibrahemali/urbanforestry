@@ -23,7 +23,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-// Declares AboutActivity as the screen showing contact information and social media links for the Urban Forestry team
+// Declares AboutActivity as the screen showing contact information and social media links for the Urban Forestry department
 public class AboutActivity extends AppCompatActivity {
 
     // Overrides onCreate, called when this Activity is first created

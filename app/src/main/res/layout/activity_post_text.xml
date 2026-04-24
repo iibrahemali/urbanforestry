@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     activity_post_text.xml
-    Defines the text post composition screen.
-    Layout structure:
-      1. "Write a Post" title — positioned with marginTop=64dp to leave whitespace above
-      2. EditText (350dp tall) — a large writing area for the post body
-      3. "Post" MaterialButton — pinned to the bottom of the screen
+    This layout defines the user interface for composing a text-only community post.
+    It focuses on a simple, distraction-free environment for writing content.
+-->
 
-    editText:
-      height=350dp — fixed tall area that gives users plenty of space to write.
-      background="@drawable/text_box" — custom rounded rectangle replaces the default underline.
-      gravity="top|start" — text starts from the top-left corner of the field, not centered.
-      inputType not set (defaults to text) — PostTextActivity reads the raw string value.
-      constrained between the title above and the Post button below using layout chain.
-
-    btn_post:
-      layout_constraintBottom_toBottomOf="parent" — always pinned to the screen bottom so it
-      is accessible even when the keyboard is open and pushes the editText up.
-      layout_marginBottom="48dp" — extra margin so the button isn't crammed against the keyboard.
+<!--
+    Root Container: ConstraintLayout
+    - ConstraintLayout is the preferred layout manager for modern Android apps. It enables
+      the creation of large and complex layouts with a flat view hierarchy.
+    - Flat hierarchies are significantly more performant because they reduce the number
+      of nested measurement and layout passes the system must perform.
+    - android:background="?attr/background_color": Dynamically retrieves the background
+      color from the seasonal theme, ensuring the composition experience remains
+      visually consistent with the rest of the app's current season.
+    - android:padding="24dp": Standardized internal spacing to prevent content from
+      touching the physical screen edges.
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -27,7 +24,13 @@
     android:background="?attr/background_color"
     android:padding="24dp">
 
-    <!-- "Write a Post" title — 64dp from the top, centered horizontally -->
+    <!--
+        Title: "Write a Post"
+        - 26sp bold: High-level header styling used consistently across the creation flow.
+        - textColor="?attr/accent_color": Matches the primary seasonal highlight color.
+        - layout_marginTop="64dp": Provides generous whitespace above the header to
+          avoid conflict with status bar elements.
+    -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
@@ -42,10 +45,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 350dp tall text area for the post body.
-         gravity="top|start" keeps the cursor at the top-left corner of the field.
-         text_box drawable gives it a rounded rectangle border instead of the default underline.
-         Constrained between the title above and the Post button below. -->
+    <!--
+        Post Content Field: EditText
+        - android:layout_height="350dp": Provides a large, dedicated area for writing.
+        - android:gravity="top|start": This is a critical multiline detail; it ensures the
+          cursor and text start at the top-left rather than being vertically centered.
+        - android:background="@drawable/text_box": Replaces the standard underline with a
+          themed container, creating a distinct "paper-like" area for composition.
+        - android:padding="16dp": Inset spacing within the text box for better legibility.
+    -->
     <EditText
         android:id="@+id/editText"
         android:layout_width="0dp"
@@ -62,7 +70,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- "Post" button — pinned to the screen bottom so it is always reachable above the keyboard -->
+    <!--
+        "Post" Primary Action: MaterialButton
+        - backgroundTint="?attr/accent_color": Signals that this is the primary action.
+        - layout_height="60dp": High-visibility, accessible touch target.
+        - app:layout_constraintBottom_toBottomOf="parent": Pins the button to the bottom.
+          In many cases, the OS will push this button up when the software keyboard
+          appears, keeping the primary action always reachable.
+    -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_post"
         style="@style/Widget.MaterialComponents.Button"

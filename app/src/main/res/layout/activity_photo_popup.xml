@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    activity_photo_popup.xml
+    This layout defines a modal-style popup used to display detailed information about a photo post
+    when a user interacts with a marker on the map. It includes the photo, the contributor's name,
+    a caption, and a navigation action.
+-->
+
+<!--
+    Root Container: ConstraintLayout
+    - ConstraintLayout is ideal for this popup as it allows for precise positioning of elements
+      in a flat hierarchy, which is efficient for mobile rendering.
+    - android:layout_margin="20dp": Creates a consistent "modal" appearance by ensuring the
+      popup doesn't touch the edges of the device screen.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,6 +22,14 @@
     android:layout_margin="20dp"
     tools:context=".PhotoPopupActivity">
 
+    <!--
+        Main Post Image:
+        - android:layout_width="270dp": A fixed width ensures the popup has a predictable size.
+        - android:adjustViewBounds="true": Crucial for maintaining the image's original aspect ratio
+          within the fixed width, preventing visual distortion.
+        - android:scaleType="fitCenter": Scales the image to fit inside the view bounds while
+          keeping it centered.
+    -->
     <ImageView
         android:id="@+id/image"
         android:layout_width="270dp"
@@ -15,6 +37,13 @@
         android:scaleType="fitCenter"
         android:adjustViewBounds="true" />
 
+    <!--
+        Contributor Name:
+        - Displays the "Posted by [Username]" string.
+        - textColor="@color/white": Provides high contrast against the dark modal background.
+        - app:layout_constraintTop_toBottomOf="@id/image": Vertically chains this field to
+          the bottom of the photo.
+    -->
     <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"
@@ -26,6 +55,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image" />
 
+    <!--
+        Post Caption:
+        - Displays the user-written description associated with the photo.
+        - 15sp: A slightly smaller font size than the username to establish a clear
+          information hierarchy.
+    -->
     <TextView
         android:id="@+id/caption"
         android:layout_width="wrap_content"
@@ -35,6 +70,17 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/username" />
 
+    <!--
+        Navigation Action: "Get directions"
+        - style="@style/Widget.MaterialComponents.Button": Uses the Material Design 2
+          standard button style.
+        - android:backgroundTint="?attr/accent_color": Dynamically tints the button based
+          on the current seasonal theme (e.g., orange for autumn, green for spring).
+        - app:icon="@drawable/ic_route": Adds a visual cue for the navigation action.
+        - app:iconTint="?attr/background_color": Inverts the icon color to match the button
+          text, ensuring high contrast against the themed background.
+        - app:cornerRadius="12dp": Consistent with the app's modern, rounded design language.
+    -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/getDirections"
         style="@style/Widget.MaterialComponents.Button"

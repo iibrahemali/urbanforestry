@@ -1,37 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     activity_sign_up.xml
-    Defines the account creation screen: title, subtitle, four input fields (full name,
-    username, email with domain autocomplete, password with toggle), a Sign Up button,
-    and a link back to login. The email field uses MaterialAutoCompleteTextView instead
-    of TextInputEditText so SignUpActivity can attach an ArrayAdapter with domain
-    suggestions (@gmail.com, @yahoo.com, etc.) as the user types.
+    This layout defines the user interface for the account creation (Sign Up) screen.
+    It utilizes Material Design components and a flat view hierarchy to provide a
+    modern, responsive, and seasonal-themed onboarding experience.
+-->
 
-    android:background="?attr/background_color" — seasonal theme background.
-    android:padding="24dp" — 24dp content inset on all four sides.
-
-    signUpTitle:
-      textColor="?attr/alt_color" — uses alt_color (secondary accent) instead of accent_color
-      to visually distinguish this screen from the login screen at a glance.
-      layout_marginTop="32dp" — smaller than login's 64dp because more fields need vertical space.
-
-    nameInputLayout: inputType="textPersonName" — capitalizes each word, enables OS name autocomplete.
-    usernameInputLayout: inputType="text" — no auto-capitalize since usernames are typically lowercase.
-
-    emailInputLayout (MaterialAutoCompleteTextView):
-      The AutoCompleteTextView allows SignUpActivity to display a domain-suggestion dropdown.
-      popupBackground="?attr/background_color" — dropdown blends with the dark screen background.
-
-    passwordInputLayout:
-      passwordToggleEnabled — eye icon lets users verify their password before account creation.
-
-    signUpButton:
-      backgroundTint="?attr/accent_color" — filled accent = primary call-to-action.
-      textColor="?attr/background_color" — contrasts in all seasonal themes.
-
-    goToLogin (link):
-      textColor="?attr/alt_color" — matches the title color, tying the link back to the screen header.
+<!--
+    Root Container: ConstraintLayout
+    - Selected as the root to maintain a flat view hierarchy. By avoiding nested view groups,
+      the Android system can measure and lay out the entire screen in fewer passes, which
+      optimizes UI performance and reduces battery consumption during rendering.
+    - android:background="?attr/background_color": Dynamically retrieves the base color
+      defined in the current active seasonal theme (Spring, Summer, Autumn, Winter).
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -42,7 +23,12 @@
     android:padding="24dp"
     tools:context=".SignUpActivity">
 
-    <!-- "Create Account" heading — alt_color distinguishes this screen from the login screen -->
+    <!--
+        Primary Heading: "Create Account"
+        - 32sp bold: Establishes clear visual hierarchy as the primary identifier for this task.
+        - textColor="?attr/alt_color": Uses the "alternate" seasonal accent color to
+          visually distinguish the sign-up flow from the primary login screen.
+    -->
     <TextView
         android:id="@+id/signUpTitle"
         android:layout_width="wrap_content"
@@ -56,7 +42,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- "Join the urban forestry community" subtitle — plain white, 16sp -->
+    <!--
+        Subtitle: "Join the urban forestry community"
+        - textColor="@color/white": Provides a clean, subordinate element to the bold title.
+        - 16sp: Follows standard typography scales for body/subtitle text.
+    -->
     <TextView
         android:id="@+id/signUpSubtitle"
         android:layout_width="wrap_content"
@@ -69,7 +59,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/signUpTitle" />
 
-    <!-- Full Name field — inputType="textPersonName" capitalizes each word and enables OS name suggestions -->
+    <!--
+        Full Name Input Field:
+        - TextInputLayout (OutlinedBox): Provides the floating label behavior and an animated
+          border that signals focus. The Outlined style is chosen for better input definition.
+        - app:boxStrokeColor="?attr/accent_color": The border glows with the seasonal primary
+          accent color when the user interacts with it.
+    -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nameInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -82,6 +78,11 @@
         app:hintTextColor="?attr/accent_color"
         app:layout_constraintTop_toBottomOf="@id/signUpSubtitle">
 
+        <!--
+            - android:inputType="textPersonName": Optimizes the keyboard for name entry by
+              automatically enabling Title Case (capitalizing the first letter of each word).
+            - android:minHeight="60dp": Ensures a large touch target area for accessibility.
+        -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/nameEditText"
             android:layout_width="match_parent"
@@ -94,7 +95,10 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Username field — inputType="text" (no auto-capitalize) since usernames are case-sensitive -->
+    <!--
+        Username Input Field:
+        - Positioned 16dp below the name field to create a logical grouping of identity fields.
+    -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/usernameInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -107,6 +111,10 @@
         app:hintTextColor="?attr/accent_color"
         app:layout_constraintTop_toBottomOf="@id/nameInputLayout">
 
+        <!--
+            - android:inputType="text": Standard text input used for unique handles;
+              avoids automatic capitalization found in person names.
+        -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/usernameEditText"
             android:layout_width="match_parent"
@@ -119,7 +127,12 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Email field — MaterialAutoCompleteTextView so SignUpActivity can attach an email domain suggestion adapter -->
+    <!--
+        Email Input Field:
+        - MaterialAutoCompleteTextView: This is a complex detail. Unlike a standard text field,
+          this allows SignUpActivity to attach an ArrayAdapter that suggests common email
+          domains (@gmail.com, @yahoo.com, etc.) as the user types, speeding up the process.
+    -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -132,7 +145,12 @@
         app:hintTextColor="?attr/accent_color"
         app:layout_constraintTop_toBottomOf="@id/usernameInputLayout">
 
-        <!-- popupBackground matches the dark screen background so the suggestion dropdown blends in -->
+        <!--
+            - android:inputType="textEmailAddress": Changes the keyboard layout to show
+              the "@" and "." symbols as primary keys.
+            - android:popupBackground="?attr/background_color": Ensures the domain suggestion
+              dropdown menu matches the seasonal theme background color.
+        -->
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
@@ -148,7 +166,11 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Password field with show/hide eye toggle so users can verify their password before creating account -->
+    <!--
+        Password Input Field:
+        - app:passwordToggleEnabled="true": Adds the standard Material visibility toggle,
+          allowing users to verify their password during account creation to prevent errors.
+    -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -163,7 +185,10 @@
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/white">
 
-        <!-- inputType="textPassword" masks characters and disables clipboard paste for security -->
+        <!--
+            - android:inputType="textPassword": Masks input characters and secures the
+              field from being copied to the clipboard.
+        -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
@@ -176,7 +201,14 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- "Sign Up" primary button — filled accent background is the dominant call-to-action -->
+    <!--
+        "Sign Up" Primary Action Button:
+        - backgroundTint="?attr/accent_color": The primary seasonal highlight color signals
+          the most important call-to-action on the screen.
+        - android:layout_height="60dp": Provides a large touch target for accessibility.
+        - android:textColor="?attr/background_color": For optimal contrast, the button text
+          adopts the theme's background color to stand out against the tinted button.
+    -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signUpButton"
         android:layout_width="match_parent"
@@ -190,7 +222,11 @@
         app:cornerRadius="12dp"
         app:layout_constraintTop_toBottomOf="@id/passwordInputLayout" />
 
-    <!-- "Already have an account? Log in" link — alt_color matches the title, tying the link to the screen header -->
+    <!--
+        Navigation Link: "Already have an account? Log in"
+        - textColor="?attr/alt_color": Using the alternate accent color ties this link back
+          to the screen's title, creating a unified secondary visual theme for sign-up.
+    -->
     <TextView
         android:id="@+id/goToLogin"
         android:layout_width="wrap_content"

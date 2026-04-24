@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     item_route_toggle.xml
-    Defines the circular toggle button placed on the right side of the map for each
-    active navigation route. Routes.java inflates one of these per route and tints
-    the backgroundTint with a unique random color so the user can match each button
-    to its corresponding colored line on the map.
+    This file defines a specialized circular toggle button used for map route navigation.
+    Each instance represents a specific route (e.g., "Oak Trail") and allows users
+    to toggle that route's visibility on the OSM map.
+-->
 
-    layout_width/height = 50dp — fixed square that becomes a circle via cornerRadius=25dp
-    (half of 50dp).
-
-    insetLeft/Top/Right/Bottom = 0dp — removes MaterialButton's built-in internal padding
-    that would otherwise shrink the icon inside the button and break the circular shape.
-
-    cornerRadius="25dp" — half the button's 50dp size, turning the square into a perfect circle.
-
-    app:icon="@drawable/ic_route" — route/navigation icon communicates "this is a route".
-
-    app:iconTint="@color/white" — white icon contrasts against every possible random route color.
-
-    app:iconGravity="textStart" with app:iconPadding="0dp" — effectively centers the 24dp icon
-    inside the 50dp circle when there is no button text.
-
-    app:backgroundTint="?attr/accent_color" — default tint; Routes.java overrides this at
-    runtime with the per-route color (a random vivid HSV-generated hue).
-
-    app:strokeColor="@android:color/black" / strokeWidth="2dp" — black border makes each
-    circular button visible against both light map tiles and dark areas of the map.
+<!--
+    Standalone MaterialButton:
+    - This view is designed to be inflated programmatically by Routes.java and added
+      to a vertical LinearLayout (routeControlsContainer) on the right side of the map.
+    - android:layout_width/height="50dp": Provides a compact yet accessible touch target.
+    - app:cornerRadius="25dp": Setting the radius to exactly 50% of the dimensions
+      transforms the standard rectangular button into a perfect circle.
+    - android:insetTop/Bottom/Left/Right="0dp": Critical detail. Material buttons have
+      default insets to allow for shadows. Setting these to 0 ensures the button
+      occupies the full 50x50dp space and maintains its circular shape without distortion.
+    - app:backgroundTint="?attr/accent_color": The default color matches the season,
+      but Routes.java programmatically overrides this with a unique color that matches
+      the specific Polyline drawn on the map.
+    - app:strokeWidth="2dp" and app:strokeColor="@android:color/black": Adds a distinct
+      border to ensure the button remains visible regardless of the map's terrain colors.
+    - app:icon="@drawable/ic_route": Provides immediate visual context that this
+      button controls a navigation path.
+    - app:iconGravity="textStart" and app:iconPadding="0dp": In a button with no text,
+      this configuration centers the icon perfectly within the circular bounds.
 -->
 <com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

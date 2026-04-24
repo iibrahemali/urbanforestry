@@ -1,46 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     activity_login.xml
-    Defines the login screen: title, subtitle, email field, password field with
-    show/hide toggle, a Log In button, and a link to the sign-up screen.
-    ConstraintLayout is used so each element is positioned relative to the one
-    above it, keeping the view hierarchy flat for fast rendering.
+    This layout defines the user interface for the Login screen.
+    It utilizes modern Material Design components and ConstraintLayout to create a clean,
+    responsive, and seasonal-themed authentication experience.
+-->
 
-    android:background="?attr/background_color" — reads the active seasonal theme so
-    the screen color adapts automatically (spring, summer, autumn, winter).
-
-    android:padding="24dp" — 24dp content inset on all four sides.
-
-    "Welcome Back" title:
-      textSize="32sp" bold, accent_color — dominant visual anchor establishing hierarchy.
-      layout_marginTop="64dp" — pushes the title into the upper third of the screen.
-
-    "Sign in to continue" subtitle:
-      textColor="@color/white" — plain white (not accent) keeps it subordinate to the title.
-
-    emailInputLayout (TextInputLayout OutlinedBox):
-      boxStrokeColor/hintTextColor="?attr/accent_color" — the border and floating label
-      both light up in the seasonal accent color when the field is focused.
-      layout_marginTop="48dp" — large gap below the subtitle separates text from form.
-
-    emailEditText (TextInputEditText):
-      inputType="textEmailAddress" — triggers the "@" keyboard layout and OS email autocomplete.
-
-    passwordInputLayout:
-      passwordToggleEnabled="true" — adds a show/hide eye icon so users can verify their password.
-      passwordToggleTint="@color/white" — white eye icon visible against the dark background.
-
-    passwordEditText:
-      inputType="textPassword" — masks characters and disables clipboard paste for security.
-
-    loginButton:
-      backgroundTint="?attr/accent_color" — filled accent = primary call-to-action on this screen.
-      textColor="?attr/background_color" — ensures contrast in all seasonal themes.
-      cornerRadius="12dp" — rounded corners used consistently across all app buttons.
-
-    goToSignUp (link TextView):
-      textColor="?attr/accent_color" — accent color signals this is a tappable link.
+<!--
+    Root Container: ConstraintLayout
+    - ConstraintLayout is the primary layout manager here, selected to keep the view hierarchy flat.
+      A flat hierarchy reduces the depth of the view tree, allowing the Android system to
+      perform measurement and layout operations in a single pass, which significantly improves
+      UI performance and smoothness.
+    - android:background="?attr/background_color": This is a dynamic theme attribute. It resolves
+      to a color specific to the current active seasonal theme (Spring, Summer, Autumn, Winter),
+      ensuring the app's overall aesthetic remains cohesive and immersive.
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -51,7 +25,14 @@
     android:padding="24dp"
     tools:context=".LoginActivity">
 
-    <!-- "Welcome Back" heading — large accent-colored title that anchors the screen's visual hierarchy -->
+    <!--
+        Primary Heading: "Welcome Back"
+        - 32sp bold: Establishes clear visual hierarchy as the primary identifier of the screen.
+        - textColor="?attr/accent_color": Leverages the seasonal theme's highlight color,
+          ensuring the title is prominent and visually engaging.
+        - layout_marginTop="64dp": Explicitly pushes the content down to create a comfortable
+          visual balance in the upper third of the device screen.
+    -->
     <TextView
         android:id="@+id/loginTitle"
         android:layout_width="wrap_content"
@@ -65,7 +46,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- "Sign in to continue" subtitle — plain white, 16sp, sits 8dp below the title -->
+    <!--
+        Subtitle: "Sign in to continue"
+        - textColor="@color/white": Uses a constant high-contrast color to provide a
+          subordinate visual element that complements the bold title.
+        - Positioned 8dp below the title to maintain a logical thematic group.
+    -->
     <TextView
         android:id="@+id/loginSubtitle"
         android:layout_width="wrap_content"
@@ -78,7 +64,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loginTitle" />
 
-    <!-- Email field wrapper — OutlinedBox draws an animated border that highlights in accent_color on focus -->
+    <!--
+        Email Input Container:
+        - TextInputLayout (OutlinedBox): A Material Design component that provides
+          sophisticated features like floating labels and animated border strokes.
+          The OutlinedBox style is particularly effective on dark backgrounds for defining
+          clear input boundaries.
+        - app:boxStrokeColor="?attr/accent_color": Ensures that the field's border glows
+          with the seasonal theme color when focused, providing immediate visual confirmation.
+    -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -91,7 +85,11 @@
         app:hintTextColor="?attr/accent_color"
         app:layout_constraintTop_toBottomOf="@id/loginSubtitle">
 
-        <!-- inputType="textEmailAddress" triggers the keyboard "@" key and enables OS email autocomplete -->
+        <!--
+            - android:inputType="textEmailAddress": Specifically optimizes the soft keyboard
+              for email entry by showing the "@" and "." symbols. It also enables the system's
+              auto-completion and suggestion services for saved email addresses.
+        -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
@@ -101,7 +99,12 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Password field wrapper — includes a show/hide eye icon (passwordToggleEnabled) -->
+    <!--
+        Password Input Container:
+        - app:passwordToggleEnabled="true": Adds a clickable icon that allows the user to
+          toggle the visibility of their input. This is a critical usability feature that
+          helps prevent frustration caused by hidden typos during authentication.
+    -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -116,7 +119,10 @@
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/white">
 
-        <!-- inputType="textPassword" masks characters and disables clipboard paste for security -->
+        <!--
+            - android:inputType="textPassword": Masks the characters for security and disables
+              copying text from the field to protect sensitive information.
+        -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
@@ -126,7 +132,16 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- "Log In" primary button — filled accent background is the dominant call-to-action on this screen -->
+    <!--
+        "Log In" Primary Action Button:
+        - backgroundTint="?attr/accent_color": The bright background signals that this is the
+          most important call-to-action on the screen.
+        - android:layout_height="60dp": Provides a large, accessible touch target that exceeds
+          standard accessibility guidelines for finger-friendly interaction.
+        - android:textColor="?attr/background_color": For accessibility, the button's text
+          uses the theme's background color, ensuring maximum contrast and legibility against
+          the vibrant accent-colored background.
+    -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
@@ -140,7 +155,13 @@
         app:cornerRadius="12dp"
         app:layout_constraintTop_toBottomOf="@id/passwordInputLayout" />
 
-    <!-- "Don't have an account? Sign Up" tappable link — accent color signals interactivity -->
+    <!--
+        "Sign Up" Navigation Link:
+        - textColor="?attr/accent_color": Consistent with other interactive elements, the
+          accent color signals that this text is a tappable link for navigation.
+        - layout_marginTop="24dp": Provides clear separation from the primary button to
+          prevent accidental taps.
+    -->
     <TextView
         android:id="@+id/goToSignUp"
         android:layout_width="wrap_content"

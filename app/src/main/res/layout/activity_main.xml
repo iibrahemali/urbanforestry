@@ -1,34 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     activity_main.xml
-    Defines the main map screen. The osmdroid MapView fills the entire screen behind
-    all other Views. Two circular ImageButtons float over the map corners for navigation:
-      - menuButton (top-left): opens MenuActivity via the result launcher
-      - feedButton (top-right): opens FeedActivity
-    A ScrollView on the right edge holds route toggle buttons that Routes.java adds
-    programmatically — it scrolls vertically when many routes are active so buttons
-    never run off-screen or overlap the navigation controls.
+    This layout defines the primary interactive map screen, which serves as the core of
+    the Urban Forestry application. It overlays interactive navigation and control
+    elements on top of a full-screen geographic map.
+-->
 
-    No background is set on the root ConstraintLayout because the MapView covers the
-    entire screen (match_parent on both axes).
-
-    android:id="@+id/main" — referenced by MainActivity's WindowInsetsCompat listener
-    to apply status bar and navigation bar padding so buttons aren't hidden behind system UI.
-
-    menuButton / feedButton:
-      background="@drawable/round_button" — circular filled shape drawn in accent_color.
-      app:tint="?attr/background_color" — icon tinted to background_color for contrast
-      against the lighter accent circle.
-      layout_margin="16dp" — keeps buttons away from corners where accidental taps occur.
-
-    routeScrollView:
-      height=0dp with constraints — fills the column between the Feed button and the screen bottom.
-      scrollbars="none" — hides the scrollbar since the narrow column would look cluttered.
-
-    routeControlsContainer (LinearLayout):
-      Routes.java finds this by ID and adds/removes one item_route_toggle button per active route.
-      orientation="vertical" stacks buttons from top to bottom as routes are added.
+<!--
+    Root Container: ConstraintLayout
+    - This layout manager is used to maintain a flat view hierarchy. By avoiding nested layouts,
+      the measurement and layout passes are optimized for performance, which is especially
+      important when rendering a heavy component like a MapView.
+    - android:id="@+id/main" provides a reference for programmatic UI adjustments or animations.
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -38,13 +21,27 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- Full-screen osmdroid map tile view — positioned first so it renders beneath all overlay buttons -->
+    <!--
+        Full-screen osmdroid MapView:
+        - Positioned first in the XML so it renders at the lowest Z-index (beneath all other views).
+        - android:layout_width/height="match_parent" ensures the map fills the entire device display.
+        - All subsequent ImageButtons and UI containers will float "above" this layer.
+    -->
     <org.osmdroid.views.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Menu button — circular, top-left corner, launches MenuActivity with mission data via result launcher -->
+    <!--
+        Menu Button (Top-Left Corner):
+        - android:background="@drawable/round_button": Uses a custom shape drawable to provide
+          a consistent circular aesthetic for all map overlays.
+        - android:src="@drawable/ic_menu": Displays the hamburger icon.
+        - app:tint="?attr/background_color": Dynamically inverts the icon color based on the
+          seasonal theme to ensure visibility against the primary button background.
+        - app:layout_constraintLeft_toLeftOf="parent" and app:layout_constraintTop_toTopOf="parent":
+          Pins the button relative to the top-left screen boundary with a 16dp margin for ergonomics.
+    -->
     <ImageButton
         android:id="@+id/menuButton"
         android:layout_width="50dp"
@@ -58,7 +55,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Feed button — circular, top-right corner, opens FeedActivity to show community posts -->
+    <!--
+        Feed Button (Top-Right Corner):
+        - Follows the same design pattern as the menu button for visual consistency.
+        - android:src="@drawable/ic_social": Represents the community social feed.
+        - Pins to the top-right corner, mirroring the menu button's positioning logic.
+    -->
     <ImageButton
         android:id="@+id/feedButton"
         android:layout_width="50dp"
@@ -72,8 +74,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Right-side scrollable column for route toggle buttons added dynamically by Routes.java.
-         scrollbars="none" keeps the narrow column uncluttered when many routes are active. -->
+    <!--
+        Route Controls Scroll Container (Right-Side Column):
+        - This container holds dynamic toggle buttons for different map routes.
+        - android:layout_height="0dp" (match_constraint): Allows the column to expand
+          vertically between the bottom of the feed button and the bottom of the screen.
+        - android:scrollbars="none": Keeps the narrow side column visually clean while
+          still allowing users to swipe through a large list of active routes.
+    -->
     <ScrollView
         android:id="@+id/routeScrollView"
         android:layout_width="wrap_content"
@@ -86,7 +94,13 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/feedButton">
 
-        <!-- Routes.java finds routeControlsContainer by ID and inflates one item_route_toggle per active route -->
+        <!--
+            routeControlsContainer (LinearLayout):
+            - Acts as the target for dynamic view inflation.
+            - Routes.java finds this container by ID and programmatically adds
+              'item_route_toggle' views for each active forestry route.
+            - android:orientation="vertical" ensures the toggles stack neatly in a column.
+        -->
         <LinearLayout
             android:id="@+id/routeControlsContainer"
             android:layout_width="wrap_content"

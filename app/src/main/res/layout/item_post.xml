@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    item_post.xml
+    This layout defines the visual structure of a single post item in the community feed.
+    It is designed to be highly dynamic, supporting both text-based and image-based posts,
+    along with interactive features like liking, commenting, and location-based routing.
+-->
+
+<!--
+    Root Container: MaterialCardView
+    - MaterialCardView provides a consistent "card" aesthetic with built-in support for
+      rounded corners and elevation (shadows).
+    - app:cardCornerRadius="16dp": Provides a soft, modern look.
+    - app:cardElevation="4dp": Lifts the card slightly off the background to create
+      a sense of depth and separation between feed items.
+    - app:cardBackgroundColor="@color/white": Uses a constant light color to ensure
+      the post content is legible and stands out against the themed feed background.
+-->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,18 +26,34 @@
     app:cardElevation="4dp"
     app:cardBackgroundColor="@color/white">
 
+    <!--
+        Main Content Wrapper: LinearLayout
+        - A vertical LinearLayout is used here to stack the post components (header, body,
+          actions, and comments) in a predictable, linear sequence.
+    -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!--
+            Post Header: RelativeLayout
+            - RelativeLayout is chosen specifically to allow the username to be pinned to
+              the start (left) and the action buttons to be pinned to the end (right)
+              within the same horizontal line.
+        -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp">
 
-            <!-- Username -->
+            <!--
+                Post Author Username:
+                - android:textColor="?attr/background_color": Since the card background is white,
+                  we use the theme's background color (which is typically dark) as the text
+                  color to ensure high contrast.
+            -->
             <TextView
                 android:id="@+id/post_username"
                 android:layout_width="wrap_content"
@@ -32,6 +65,11 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true" />
 
+            <!--
+                Action Buttons Group:
+                - Houses the Edit, Report, and Delete buttons.
+                - android:layout_alignParentEnd="true": Pins this group to the right side.
+            -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,7 +77,11 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true">
 
-                <!-- Edit Button -->
+                <!--
+                    Edit Button:
+                    - android:visibility="gone": Hidden by default. The adapter sets this to
+                      VISIBLE only if the current user is the author of the post.
+                -->
                 <ImageButton
                     android:id="@+id/btn_edit"
                     android:layout_width="36dp"
@@ -51,7 +93,11 @@
                     app:tint="?attr/background_color"
                     android:contentDescription="Edit Post" />
 
-                <!-- Report Button -->
+                <!--
+                    Report Button:
+                    - Standard community moderation tool accessible to all users for
+                      flagging inappropriate content.
+                -->
                 <ImageButton
                     android:id="@+id/btn_report"
                     android:layout_width="36dp"
@@ -62,7 +108,10 @@
                     app:tint="?attr/background_color"
                     android:contentDescription="Report Post" />
 
-                <!-- Delete Button -->
+                <!--
+                    Delete Button:
+                    - Similar to the Edit button, this is visibility-toggled based on authorship.
+                -->
                 <ImageButton
                     android:id="@+id/btn_delete"
                     android:layout_width="36dp"
@@ -78,7 +127,11 @@
 
         </RelativeLayout>
 
-        <!-- Text Post -->
+        <!--
+            Text Content:
+            - android:visibility="gone": The post can be EITHER text or image (or both).
+              The adapter manages visibility based on the post data model.
+        -->
         <TextView
             android:id="@+id/post_text"
             android:layout_width="match_parent"
@@ -89,7 +142,11 @@
             android:layout_marginBottom="8dp"
             android:visibility="gone" />
 
-        <!-- Image Post -->
+        <!--
+            Image Content:
+            - android:adjustViewBounds="true": Ensures that images of varying aspect ratios
+              (portrait or landscape) are displayed correctly without distortion.
+        -->
         <ImageView
             android:id="@+id/post_image"
             android:layout_width="match_parent"
@@ -100,6 +157,12 @@
             android:contentDescription="Post Image"
             android:layout_marginBottom="8dp" />
 
+        <!--
+            Route Action: "Get directions"
+            - This button is only visible if the post was created with location sharing enabled.
+            - backgroundTint="?attr/accent_color": Inverts the palette to make the button
+              pop against the white card, using the current seasonal highlight.
+        -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_get_route"
             style="@style/Widget.MaterialComponents.Button"
@@ -113,12 +176,17 @@
             android:visibility="gone"
             app:cornerRadius="12dp" />
 
-        <!-- Interaction Buttons -->
+        <!--
+            Interaction Bar:
+            - Uses horizontal weights (layout_weight="1") to ensure the Like and Comment
+              buttons share the horizontal space perfectly, regardless of screen width.
+        -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <!-- Like (Heart) Button: Icon and count are updated programmatically. -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_heart"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -131,6 +199,7 @@
                 app:iconTint="?attr/background_color"
                 app:iconGravity="textStart" />
 
+            <!-- Comment Button: Expands or collapses the comments section below. -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_comment"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -145,7 +214,11 @@
 
         </LinearLayout>
 
-        <!-- Comments Section -->
+        <!--
+            Comments Section:
+            - android:visibility="gone": Collapsed by default to keep the feed clean.
+              Expanding this section allows for deep engagement without leaving the feed.
+        -->
         <LinearLayout
             android:id="@+id/comments_section"
             android:layout_width="match_parent"
@@ -154,12 +227,14 @@
             android:layout_marginTop="8dp"
             android:visibility="gone">
 
+            <!-- Container where comment rows are programmatically injected. -->
             <LinearLayout
                 android:id="@+id/comments_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
+            <!-- Empty state message for posts with no engagement yet. -->
             <TextView
                 android:id="@+id/no_comments_tv"
                 android:layout_width="match_parent"
@@ -170,12 +245,17 @@
                 android:padding="8dp"
                 android:visibility="gone" />
 
+            <!--
+                Comment Input Area:
+                - Allows for immediate inline replies.
+            -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="8dp">
 
+                <!-- Write Comment: Standard input for user engagement. -->
                 <EditText
                     android:id="@+id/et_comment"
                     android:layout_width="0dp"
@@ -186,6 +266,7 @@
                     android:textColor="?attr/background_color"
                     android:textColorHint="?attr/background_color" />
 
+                <!-- Submit Comment: Triggers the Firestore update in the adapter. -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_send_comment"
                     style="@style/Widget.MaterialComponents.Button.TextButton"

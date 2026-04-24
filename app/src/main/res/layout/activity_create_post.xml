@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     activity_create_post.xml
-    Defines the post type chooser screen shown after the user taps the "+" FAB.
-    It presents two mutually exclusive paths:
-      - btn_camera: filled primary button — takes a photo and routes to PostImageActivity
-      - btn_text: outlined secondary button — writes a text post and routes to PostTextActivity
+    This layout serves as a "gateway" or "chooser" screen, allowing users to select
+    between two different types of posts: an image-based post or a text-only post.
+-->
 
-    The title is vertically positioned using layout_marginTop="225dp" (instead of a
-    top constraint) to push it roughly to the visual center of the screen above the buttons.
-
-    btn_camera uses the filled style (backgroundTint=accent_color) as the primary/recommended
-    action, mirroring the Log In button on the login screen.
-
-    btn_text uses the OutlinedButton style as the secondary action, mirroring the Sign Up
-    button on the welcome screen. This creates a consistent visual language across the app
-    where filled = primary, outlined = secondary.
+<!--
+    Root Container: ConstraintLayout
+    - This allows for a flat view hierarchy, reducing UI overdraw and improving rendering
+      speed by avoiding deep nesting of layouts.
+    - android:background="?attr/background_color": Retrieves the color from the current
+      seasonal theme (e.g., green for spring, orange for autumn), ensuring the app
+      remains visually dynamic throughout the year.
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -24,7 +20,12 @@
     android:background="?attr/background_color"
     android:padding="24dp">
 
-    <!-- "Create a Post" title — positioned with marginTop=225dp to land roughly in the upper-center area -->
+    <!--
+        Title: "Create a Post"
+        - The vertical position is established using a large layout_marginTop="225dp",
+          centering the group of elements in the middle of the screen's height.
+        - textColor="?attr/accent_color": Matches the primary accent of the active season.
+    -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
@@ -39,7 +40,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- "Take a picture" button — filled primary style, opens camera to capture a photo for PostImageActivity -->
+    <!--
+        Camera Button (Primary Action):
+        - style="@style/Widget.MaterialComponents.Button": A solid, filled button
+          representing the primary way to share content (via camera).
+        - android:layout_height="60dp": Provides a large, accessible touch target.
+        - android:backgroundTint="?attr/accent_color": The primary seasonal highlight color.
+        - android:textColor="?attr/background_color": Inverting the colors ensures text
+          legibility against the high-contrast button background.
+    -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_camera"
         style="@style/Widget.MaterialComponents.Button"
@@ -54,7 +63,15 @@
         app:cornerRadius="12dp"
         app:layout_constraintTop_toBottomOf="@id/titleText" />
 
-    <!-- "Write a text post" button — outlined secondary style, opens PostTextActivity for text-only posts -->
+    <!--
+        Text Post Button (Secondary Action):
+        - style="@style/Widget.MaterialComponents.Button.OutlinedButton": The outlined
+          look visually demotes this action compared to the solid camera button,
+          guiding users toward image-sharing while still providing a clear secondary option.
+        - app:strokeColor="?attr/accent_color": The border color follows the theme.
+        - app:layout_constraintTop_toBottomOf="@id/btn_camera": Chains this button to
+          the bottom of the primary action.
+    -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_text"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"

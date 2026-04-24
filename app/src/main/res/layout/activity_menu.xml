@@ -1,37 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     activity_menu.xml
-    Defines the overlay menu shown as a dialog-style Activity launched from the map.
-    Fixed width of 310dp gives it a panel-like appearance rather than full-screen.
-    The menu contains:
-      - The seasonal logo (loaded at runtime by MenuActivity)
-      - "Missions" section with two goal containers (each shows goal name + progress count)
-      - Instructions hint about how to discover trees
-      - Theme selector: a label + Spinner side-by-side
-      - Three text-style buttons: View achievements, About, Sign out
+    This layout defines the overlay menu, which typically appears as a modal dialog or
+    a side-drawer style panel. It serves as the primary navigation and configuration
+    hub for the user's active session.
+-->
 
-    Nested ConstraintLayout (inner, padding=20dp):
-      The outer ConstraintLayout is 310dp wide/wrap_content tall with no background so the
-      Activity's window background shows through. The inner ConstraintLayout carries the
-      actual padding and chains all views top-to-bottom.
-
-    logo (ImageView):
-      adjustViewBounds=true + wrap_content height — preserves the seasonal logo's aspect ratio
-      without hardcoding a height.
-
-    goalContainer1/goalContainer2:
-      Each contains two side-by-side TextViews: the goal description and the progress count.
-      Using nested ConstraintLayouts keeps the text pairs left-aligned and horizontally inline.
-
-    themeSpinner:
-      Placed inline after the "Seasonal theme:" label using a nested ConstraintLayout so the
-      label and spinner form a single row without needing a separate LinearLayout.
-
-    achievementsButton / aboutButton / signOutButton:
-      style="?android:borderlessButtonStyle" renders them as text-only links without backgrounds,
-      consistent with a compact overlay panel. aboutButton and signOutButton share the same
-      vertical position (aligned to each other) and sit at opposite horizontal ends of the panel.
+<!--
+    Root Container: ConstraintLayout
+    - android:layout_width="310dp": A fixed width is used instead of "match_parent" to create
+      a panel-like appearance. This ensures the menu looks consistent across different
+      screen sizes (phones vs. tablets) without filling the entire display.
+    - ConstraintLayout enables precise relative positioning, which is ideal for the
+      vertical stacking of diverse UI elements like mission goals, settings, and buttons.
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -41,13 +22,24 @@
     android:layout_height="wrap_content"
     tools:context=".MenuActivity">
 
-    <!-- Inner ConstraintLayout carries the 20dp padding and chains all content views top-to-bottom -->
+    <!--
+        Inner ConstraintLayout:
+        - android:padding="20dp": Provides internal breathing room for all child views.
+        - Using a nested ConstraintLayout here allows us to encapsulate the entire menu
+          content while keeping the root's dimensions fixed.
+    -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="20dp">
 
-        <!-- Seasonal logo — MenuActivity loads the correct drawable based on the active season at runtime -->
+        <!--
+            Seasonal Logo:
+            - android:adjustViewBounds="true": Ensures the logo preserves its aspect ratio
+              regardless of the image provided at runtime.
+            - MenuActivity dynamically selects the drawable (spring_logo, winter_logo, etc.)
+              based on the user's preference or current date.
+        -->
         <ImageView
             android:id="@+id/logo"
             android:layout_width="200dp"
@@ -58,7 +50,12 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
-        <!-- "Missions" section header — bold accent-colored label above the two goal containers -->
+        <!--
+            "Missions" Header:
+            - Bold, themed typography signals a major content section.
+            - textColor="?attr/accent_color": Automatically updates to match the current
+              seasonal highlight (e.g., orange for autumn, blue for winter).
+        -->
         <TextView
             android:id="@+id/missions"
             android:layout_width="wrap_content"
@@ -72,7 +69,12 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
-        <!-- Goal slot 1 — MenuActivity sets gameGoal1 (the goal description) and goalProgress1 (e.g. "2/5") -->
+        <!--
+            Goal Slot 1:
+            - A nested ConstraintLayout is used as a "data row" to keep the goal description
+              and the numeric progress text perfectly aligned horizontally.
+            - This allows for dynamic strings of varying lengths without breaking the layout.
+        -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/goalContainer1"
             android:layout_width="wrap_content"
@@ -82,7 +84,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/missions">
 
-            <!-- Goal 1 name — e.g. "Find 5 Oak trees" — set at runtime by MenuActivity -->
+            <!-- Goal Name (e.g., "Find Oak Trees"): Set programmatically by MenuActivity. -->
             <TextView
                 android:id="@+id/gameGoal1"
                 android:layout_width="wrap_content"
@@ -91,7 +93,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent" />
 
-            <!-- Goal 1 progress — e.g. " 2/5" — set to the right of the goal name with 4dp gap -->
+            <!-- Goal Progress (e.g., "3/5"): Positioned with a 4dp gap from the name. -->
             <TextView
                 android:id="@+id/goalProgress1"
                 android:layout_width="wrap_content"
@@ -103,7 +105,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Goal slot 2 — same structure as goalContainer1 but for the second active mission -->
+        <!-- Goal Slot 2: Mirroring the structure of the first goal for visual consistency. -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/goalContainer2"
             android:layout_width="wrap_content"
@@ -113,7 +115,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/goalContainer1">
 
-            <!-- Goal 2 name — set at runtime by MenuActivity -->
             <TextView
                 android:id="@+id/gameGoal2"
                 android:layout_width="wrap_content"
@@ -122,7 +123,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent" />
 
-            <!-- Goal 2 progress — placed to the right of the goal name -->
             <TextView
                 android:id="@+id/goalProgress2"
                 android:layout_width="wrap_content"
@@ -134,7 +134,11 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Tree discovery instructions — 12sp secondary text explaining the 10m discovery radius -->
+        <!--
+            Discovery Hint:
+            - Provides crucial gameplay instructions in a smaller, non-intrusive 12sp font.
+            - android:textAlignment="center" ensures multi-line hints remain visually balanced.
+        -->
         <TextView
             android:id="@+id/missionsInfo"
             android:layout_width="wrap_content"
@@ -147,7 +151,12 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
-        <!-- Theme selector row — "Seasonal theme:" label + Spinner side-by-side in a nested ConstraintLayout -->
+        <!--
+            Theme Selection Row:
+            - Groups a label and a Spinner together in a horizontal unit.
+            - app:layout_constraintBottom_toBottomOf="parent" on the text ensures it aligns
+              centered vertically with the dropdown box.
+        -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/selectTheme"
             android:layout_width="wrap_content"
@@ -157,7 +166,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/missionsInfo">
 
-            <!-- "Seasonal theme:" label — vertically centered with the Spinner to its right -->
             <TextView
                 android:id="@+id/selectThemeText"
                 android:layout_width="wrap_content"
@@ -168,7 +176,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent" />
 
-            <!-- Spinner populated by MenuActivity with season names; triggers Activity.recreate() on selection -->
+            <!--
+                Season Spinner:
+                - Populated with options like "Spring", "Summer", etc.
+                - When a selection is made, MenuActivity triggers a theme refresh and
+                  calls Activity.recreate() to apply the new color palette instantly.
+            -->
             <Spinner
                 android:id="@+id/themeSpinner"
                 android:layout_width="wrap_content"
@@ -179,7 +192,11 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- "View achievements" text button — opens AchievementsActivity to show the progress list -->
+        <!--
+            Achievements Navigation:
+            - style="?android:borderlessButtonStyle": Removes the default button background,
+              allowing the accent-colored text to act as a clean, low-emphasis link.
+        -->
         <Button
             android:id="@+id/achievementsButton"
             style="?android:borderlessButtonStyle"
@@ -193,7 +210,12 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/selectTheme" />
 
-        <!-- "About" text button — opens AboutActivity; positioned left with horizontal margin -->
+        <!--
+            About Button (Secondary Action):
+            - Positioned on the left side of the bottom row.
+            - layout_marginHorizontal="45dp": Used to push the "About" and "Sign out" buttons
+              toward their respective corners while maintaining a wide gutter in the center.
+        -->
         <Button
             android:id="@+id/aboutButton"
             style="?android:borderlessButtonStyle"
@@ -206,7 +228,12 @@
             app:layout_constraintTop_toBottomOf="@id/achievementsButton"
             app:layout_constraintLeft_toLeftOf="parent" />
 
-        <!-- "Sign out" text button — sends result code -1 back to MainActivity, which shows a confirmation dialog -->
+        <!--
+            Sign Out (Tertiary Action):
+            - Constraints are pinned to the top of the "About" button to ensure they
+              share the same horizontal baseline.
+            - Returns a specific result code to MainActivity to trigger the logout sequence.
+        -->
         <Button
             android:id="@+id/signOutButton"
             style="?android:borderlessButtonStyle"

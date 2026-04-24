@@ -1,30 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     activity_welcome.xml
-    Defines the splash/welcome screen. The logo ImageView fills all vertical space
-    between the screen top and the button container using height=0dp with four-edge
-    constraints. The buttonContainer LinearLayout is pinned to the bottom and contains
-    three buttons:
-      - gotoMapButton (GONE by default): shown when a user is already logged in
-      - goToLoginButton (filled, always shown for logged-out): navigates to LoginActivity
-      - goToSignUpButton (outlined): navigates to SignUpActivity
+    This layout defines the splash/welcome screen of the Urban Forestry application.
+    It serves as the initial entry point, providing a branded experience while
+    the app checks for an existing user session.
+-->
 
-    WelcomeActivity reveals the buttonContainer with a fade-in animation after the
-    splash delay — it is declared INVISIBLE (not GONE) so layout space is reserved
-    during the splash, preventing a layout jump when buttons appear.
-
-    android:id="@+id/mainLayout" — used by WelcomeActivity's animation code to
-    reference the root for measuring or attaching transitions.
-
-    buttonContainer layout_marginBottom="76dp" — lifts the buttons above the gesture
-    navigation area on modern Android devices.
-
-    gotoMapButton android:visibility="gone" — hidden by default; WelcomeActivity sets
-    it VISIBLE and hides goToLoginButton when FirebaseAuth.getCurrentUser() != null.
-
-    goToSignUpButton style=OutlinedButton — outlined (secondary) style visually contrasts
-    with the filled (primary) Log In button directly above it.
+<!--
+    Root Container: ConstraintLayout
+    - ConstraintLayout is used to keep the view hierarchy flat, which is critical for
+      splash screens that need to render instantly.
+    - android:background="?attr/background_color": Dynamically retrieves the seasonal
+      theme background color (e.g., Spring, Summer, Autumn, Winter).
+    - android:padding="24dp": Ensures consistent internal spacing across all screen sizes.
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -36,9 +24,15 @@
     android:padding="24dp"
     tools:context=".WelcomeActivity">
 
-    <!-- App logo — height=0dp with top/bottom constraints fills the space above the button container.
-         fitCenter scaleType preserves the aspect ratio while fitting within the available bounds.
-         layout_marginBottom="24dp" adds a gap between the logo and the buttons below it. -->
+    <!--
+        App Logo: ImageView
+        - android:layout_height="0dp": This is a "match_constraint" configuration.
+        - By constraining the top to the parent and the bottom to the buttonContainer,
+          the logo automatically expands to fill all available vertical space above the buttons.
+        - android:scaleType="fitCenter": Preserves the logo's aspect ratio while ensuring
+          it fits entirely within the dynamic vertical area.
+        - layout_marginBottom="24dp": Provides a distinct visual break before the actions start.
+    -->
     <ImageView
         android:id="@+id/logo"
         android:layout_width="match_parent"
@@ -53,9 +47,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Button container pinned to the bottom, lifted 76dp above the navigation bar area.
-         WelcomeActivity fades this in after the splash; it is INVISIBLE (not GONE) so
-         space is reserved during the animation, preventing a layout jump when it appears. -->
+    <!--
+        Button Container: LinearLayout
+        - Positioned at the bottom of the screen with a 76dp margin to avoid interference
+          with the system's navigation bar or gesture area.
+        - The WelcomeActivity typically fades this container in after a short splash delay.
+        - tools:layout_editor_absoluteX="24dp" is a design-time helper for the IDE preview.
+    -->
     <LinearLayout
         android:id="@+id/buttonContainer"
         android:layout_width="match_parent"
@@ -65,8 +63,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="24dp">
 
-        <!-- "Map" button — shown only when a user is already logged in; GONE by default.
-             WelcomeActivity sets this VISIBLE and hides goToLoginButton for returning users. -->
+        <!--
+            "Map" Button: (Authenticated State)
+            - android:visibility="gone": Hidden by default.
+            - If WelcomeActivity detects an active Firebase user, it sets this button to
+              VISIBLE and hides the Login button, providing a fast path back to the map.
+            - backgroundTint="?attr/accent_color": Uses the primary seasonal highlight.
+        -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/gotoMapButton"
             style="@style/Widget.MaterialComponents.Button"
@@ -81,7 +84,13 @@
             android:visibility="gone"
             app:cornerRadius="12dp" />
 
-        <!-- "Log in" button — filled accent style, the primary action for first-time visitors -->
+        <!--
+            "Log in" Button: (Guest State)
+            - This is the primary call-to-action for logged-out users.
+            - layout_height="60dp": Ensures a large, accessible touch target.
+            - android:textColor="?attr/background_color": Inverts the background color
+              to ensure the text is legible against the bright seasonal accent.
+        -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/goToLoginButton"
             style="@style/Widget.MaterialComponents.Button"
@@ -95,7 +104,13 @@
             android:textStyle="bold"
             app:cornerRadius="12dp" />
 
-        <!-- "Sign Up" button — outlined style visually signals it as secondary to the filled Log In above -->
+        <!--
+            "Sign Up" Button: (Secondary Action)
+            - style="...Button.OutlinedButton": The outlined style visually signals this
+              as a secondary action compared to the solid "Log in" button.
+            - app:strokeColor="?attr/accent_color": The border color matches the theme's
+              active seasonal accent.
+        -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/goToSignUpButton"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"

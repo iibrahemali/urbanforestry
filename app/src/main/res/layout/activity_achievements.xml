@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     activity_achievements.xml
-    Defines the achievements screen: a title header, a scrollable RecyclerView that fills
-    the middle space, and a "Back to Map" button pinned to the bottom.
-    AchievementsActivity populates the RecyclerView with Achievement objects using
-    AchievementAdapter; each row is inflated from activity_trophy_list.xml.
+    This layout defines the "Achievements" screen, which showcases the user's progress.
+    It utilizes a ConstraintLayout as the primary container to maintain a flat and efficient
+    view hierarchy, which is crucial for complex screens.
+-->
 
-    titleHeader:
-      textSize="26sp" bold, accent_color — consistent header style used across the app.
-      layout_marginTop="35dp" — slightly larger than the standard 24dp to give it room below the status bar.
-
-    achievementRecyclerView:
-      0dp width+height with four constraints — fills all the space between the title and the Back button.
-      AchievementsActivity attaches a LinearLayoutManager and the AchievementAdapter to this view.
-
-    backButton:
-      Pinned to the bottom of the screen with layout_marginBottom=16dp.
-      backgroundTint="?attr/accent_color" — filled primary style, the main exit action on this screen.
+<!--
+    Root Container: ConstraintLayout
+    - android:padding="16dp": Adds standard spacing around the edge of the screen.
+    - android:background="?attr/background_color": Dynamically retrieves the background color
+      defined in the current seasonal theme (e.g., deep blue for winter, soft green for spring).
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -28,7 +21,13 @@
     android:background="?attr/background_color"
     tools:context=".AchievementsActivity">
 
-    <!-- "My Achievements" title — centered, 26sp bold accent color, 35dp from the top -->
+    <!--
+        Title Header: "My Achievements"
+        - 26sp bold text: Follows standard Material Design typography for top-level headers.
+        - textColor="?attr/accent_color": Ensures the text remains visible and aesthetically consistent
+          with the app's seasonal theme accents.
+        - layout_marginTop="35dp": Provides a distinct visual break from the top system bar.
+    -->
     <TextView
         android:id="@+id/titleHeader"
         android:layout_width="wrap_content"
@@ -42,8 +41,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Scrollable achievement list — fills the space between the title and the Back button.
-         AchievementsActivity attaches a LinearLayoutManager and AchievementAdapter at runtime. -->
+    <!--
+        Achievement List: RecyclerView
+        - android:layout_height="0dp": This is "match_constraint". It allows the list to
+          dynamically expand to fill all available vertical space between the title and the button.
+        - app:layout_constraintTop_toBottomOf="@id/titleHeader": Anchors the top of the list to the title.
+        - app:layout_constraintBottom_toTopOf="@id/backButton": Pins the bottom to the back button,
+          ensuring the list doesn't overlap the primary navigation action.
+        - RecyclerView is more efficient than ListView because it recycles view holders,
+          keeping memory usage low even with long lists of trophies.
+    -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/achievementRecyclerView"
         android:layout_width="0dp"
@@ -54,7 +61,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- "Back to Map" button — filled accent, pinned to the screen bottom, exits to MainActivity -->
+    <!--
+        Back Button: MaterialButton
+        - android:layout_height="60dp": Ensures a large, accessible touch target for better usability.
+        - app:cornerRadius="12dp": Provides a modern, rounded aesthetic consistent with other Material components.
+        - android:backgroundTint="?attr/accent_color": Uses the seasonal theme's primary accent color.
+        - android:textColor="?attr/background_color": Inverts the theme background color to ensure
+          the button text has high contrast and is easy to read against the tinted background.
+        - app:layout_constraintBottom_toBottomOf="parent": Pins the button to the bottom of the screen.
+    -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/backButton"
         style="@style/Widget.MaterialComponents.Button"

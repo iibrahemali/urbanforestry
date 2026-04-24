@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     activity_tree_info.xml
-    Defines the tree detail dialog-style screen launched when a green dot marker is tapped.
-    The layout is intentionally narrow (310dp) to appear as a popup panel rather than a
-    full-screen activity.
+    This layout defines the detail panel that appears when a user selects a tree on the map.
+    It is designed to look like a floating dialog, providing a rich set of forestry data
+    in a compact, scrollable format.
+-->
 
-    Root ConstraintLayout: no fixed height — the outer container sizes to the ScrollView.
-
-    ScrollView:
-      width=310dp — panel width chosen to look like an overlay dialog.
-      height=0dp + constraintHeight_max=450dp + constrainedHeight=true — allows the ScrollView
-      to grow up to 450dp tall but never taller, ensuring it fits on small screens.
-      paddingTop=20dp, paddingBottom=30dp, clipToPadding=false — extra padding at top and bottom
-      so content doesn't abut the panel edges while the last item can still be scrolled into view.
-
-    Inner ConstraintLayout (id=main, marginHorizontal=20dp):
-      Chains all TextViews top-to-bottom. Each view is constrained to the bottom of the view
-      above it using layout_marginTop for spacing.
-
-    commonName: 25sp white, centered — the primary tree identification label.
-    botanicalName: 20sp italic, centered — scientific name displayed below the common name.
-    distance: 16sp accent_color — shown or hidden by TreeInfoActivity depending on GPS availability.
-    family, nativeOrCultivated, wildlife, fallColors, flowers, dbh, height:
-      15sp default color — pre-labeled fields; TreeInfoActivity prepends the label and appends the value.
-    description: 15sp italic — the full prose description from strings.xml; hidden if empty.
-    mortonLink: 15sp — styled as a clickable link by TreeInfoActivity; hidden if no Morton page exists.
+<!--
+    Root Container: ConstraintLayout
+    - Using a ConstraintLayout at the root ensures a flat view hierarchy. This is particularly
+      important for this screen because it is often launched as a transparent overlay on top
+      of the MapView. A flat hierarchy reduces the rendering load on the main thread.
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -34,7 +19,17 @@
     android:layout_height="match_parent"
     tools:context=".TreeInfoActivity">
 
-    <!-- 310dp wide ScrollView capped at 450dp tall — appears as a dialog panel over the map -->
+    <!--
+        Dialog Panel: ScrollView
+        - android:layout_width="310dp": This fixed width creates the "panel" effect,
+          ensuring the map remains partially visible in the background.
+        - app:layout_constraintHeight_max="450dp" & app:layout_constrainedHeight="true":
+          This is an advanced ConstraintLayout configuration. It allows the ScrollView to
+          shrink to fit its content ("wrap_content"), but prevents it from growing beyond
+          450dp. This ensures the dialog stays manageable even with long descriptions.
+        - android:clipToPadding="false": Allows content to scroll into the padding area
+          for a smoother visual experience.
+    -->
     <ScrollView
         android:layout_width="310dp"
         android:layout_height="0dp"
@@ -47,14 +42,22 @@
         app:layout_constraintHeight_max="450dp"
         app:layout_constrainedHeight="true">
 
-        <!-- Inner ConstraintLayout chains all tree detail fields vertically with 20dp horizontal margin -->
+        <!--
+            Inner Content Container:
+            - Chains all tree details vertically.
+            - android:layout_marginHorizontal="20dp" provides internal gutters.
+        -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp">
 
-            <!-- Common (everyday) name — 25sp white, centered at the top of the panel -->
+            <!--
+                Common Name:
+                - The primary identifier for the tree.
+                - 25sp bold white text provides high visibility against the dark background.
+            -->
             <TextView
                 android:id="@+id/commonName"
                 android:layout_width="wrap_content"
@@ -67,7 +70,11 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Botanical (scientific) name — italic to follow the standard scientific naming convention -->
+            <!--
+                Botanical Name:
+                - android:textStyle="italic": Follows the standard scientific naming convention.
+                - Secondary font size (20sp) creates a clear typographic hierarchy.
+            -->
             <TextView
                 android:id="@+id/botanicalName"
                 android:layout_width="wrap_content"
@@ -80,8 +87,12 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/commonName" />
 
-            <!-- Distance from user to tree — accent_color, 10dp below botanicalName.
-                 TreeInfoActivity sets this to a formatted metres string or hides it if no GPS fix. -->
+            <!--
+                Proximity Data:
+                - textColor="?attr/accent_color": The seasonal accent color highlights the
+                  dynamic distance calculation to draw the user's attention.
+                - TreeInfoActivity dynamically formats this string in real-time.
+            -->
             <TextView
                 android:id="@+id/distance"
                 android:layout_width="wrap_content"
@@ -94,7 +105,13 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/botanicalName" />
 
-            <!-- Tree family — label "Family: " prepended; filled with common+botanical family by TreeInfoActivity -->
+            <!--
+                Forestry Data Fields:
+                - Each TextView below corresponds to a specific column in the tree database CSV.
+                - MarginTop="10dp" maintains even vertical rhythm between data points.
+            -->
+
+            <!-- Taxonomic Family information. -->
             <TextView
                 android:id="@+id/family"
                 android:layout_width="wrap_content"
@@ -105,7 +122,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/distance" />
 
-            <!-- Native vs. cultivated origin — from the CSV nativeOrCultivated column -->
+            <!-- Indicates if the species is indigenous to the area. -->
             <TextView
                 android:id="@+id/nativeOrCultivated"
                 android:layout_width="wrap_content"
@@ -116,7 +133,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/family" />
 
-            <!-- Wildlife value of the tree — from the CSV wildlife column -->
+            <!-- Ecological benefit/Wildlife interaction details. -->
             <TextView
                 android:id="@+id/wildlife"
                 android:layout_width="wrap_content"
@@ -127,7 +144,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/nativeOrCultivated" />
 
-            <!-- Fall foliage color — from the CSV fallColors column -->
+            <!-- Description of fall foliage appearance. -->
             <TextView
                 android:id="@+id/fallColors"
                 android:layout_width="wrap_content"
@@ -138,7 +155,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/wildlife" />
 
-            <!-- Flower description — from the CSV flowers column -->
+            <!-- Seasonal flowering details. -->
             <TextView
                 android:id="@+id/flowers"
                 android:layout_width="wrap_content"
@@ -149,7 +166,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fallColors" />
 
-            <!-- Diameter at breast height — standard forestry trunk width measurement from the CSV -->
+            <!-- DBH: Diameter at Breast Height (standard forestry measurement). -->
             <TextView
                 android:id="@+id/dbh"
                 android:layout_width="wrap_content"
@@ -160,7 +177,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/flowers" />
 
-            <!-- Tree height in feet — from the CSV height column -->
+            <!-- Recorded height of the tree specimen. -->
             <TextView
                 android:id="@+id/height"
                 android:layout_width="wrap_content"
@@ -171,8 +188,11 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/dbh" />
 
-            <!-- Prose description from strings.xml — italic, 20dp below height.
-                 TreeInfoActivity hides this view if the description string is empty. -->
+            <!--
+                Detailed Description:
+                - Italicized to differentiate descriptive prose from the structured data above.
+                - TreeInfoActivity sets visibility to GONE if no description is available.
+            -->
             <TextView
                 android:id="@+id/description"
                 android:layout_width="wrap_content"
@@ -183,8 +203,11 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/height" />
 
-            <!-- Morton Arboretum page link — styled as a blue clickable Spannable by TreeInfoActivity.
-                 Hidden (GONE) if getMortonPageName() returns an empty string for this species. -->
+            <!--
+                External Educational Link:
+                - This TextView is transformed into a clickable hyperlink by the Activity.
+                - It directs users to the Morton Arboretum website for deep-dive learning.
+            -->
             <TextView
                 android:id="@+id/mortonLink"
                 android:layout_width="wrap_content"

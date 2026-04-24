@@ -1,50 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     activity_profile.xml
-    Defines the profile screen using CoordinatorLayout so the AppBarLayout (toolbar with
-    back arrow) and the NestedScrollView (scrollable content) work together: as the user
-    scrolls down, the AppBar can collapse and the content scrolls beneath it.
+    This layout defines the user profile screen. It uses a CoordinatorLayout to manage
+    sophisticated interactions between the App Bar and the scrollable content.
+-->
 
-    CoordinatorLayout:
-      fitsSystemWindows="true" — the root reserves space for the status bar so the toolbar
-      sits below it rather than being partially hidden.
-
-    AppBarLayout + MaterialToolbar:
-      background="@android:color/transparent" and elevation="0dp" — no visible app bar
-      background; only the back arrow and "Profile" title are shown.
-      navigationIcon="?attr/homeAsUpIndicator" — the system back-arrow icon, tinted accent_color.
-      The "Profile" title is a custom TextView inside the Toolbar (not setTitle()) so it can
-      be styled with accent_color, 18sp, bold.
-
-    NestedScrollView:
-      app:layout_behavior="@string/appbar_scrolling_view_behavior" — tells CoordinatorLayout
-      that this scroll view should scroll in coordination with the AppBarLayout above it.
-
-    Inner LinearLayout (gravity=center_horizontal, orientation=vertical, padding=24dp):
-      Centers all profile content horizontally and stacks it vertically.
-
-    Profile image (MaterialCardView + ImageView):
-      120×120dp MaterialCardView with cardCornerRadius=60dp = perfect circle.
-      strokeColor/strokeWidth draws the accent-colored ring border.
-      ImageView inside uses scaleType="centerCrop" so photos fill the circle without distortion.
-      android:background="#123D24" — dark green fill shows while the image loads via Glide.
-
-    statsCard (MaterialCardView):
-      cardBackgroundColor="?attr/accent_color" — the entire card is filled with the accent color.
-      Contains a horizontal LinearLayout with two equal-weight columns (likes count + posts count)
-      separated by a 1dp semi-transparent vertical divider (alpha=0.3).
-
-    profileBio (TextView):
-      gravity="center" — bio text is centered, lineSpacingExtra=4dp for readability.
-      textColor="?attr/alt_color" — slightly different from accent gives it secondary prominence.
-
-    editProfileButton:
-      style=OutlinedButton — secondary action, less prominent than the filled Back button.
-
-    backButton:
-      style=Widget.MaterialComponents.Button with backgroundTint=accent_color — primary filled
-      button, visually the "safe exit" action on this screen.
+<!--
+    Root Container: CoordinatorLayout
+    - CoordinatorLayout is a powerful frame that coordinates interactions between child views.
+      Specifically, it allows the AppBarLayout to react to scroll events from the NestedScrollView.
+    - android:fitsSystemWindows="true": This ensures that the layout is correctly inset
+      behind system UI components like the status bar, preventing content overlap.
+    - android:background="?attr/background_color": Dynamically retrieves the base color
+      from the seasonal theme to ensure visual continuity.
 -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -54,14 +22,25 @@
     android:fitsSystemWindows="true"
     android:background="?attr/background_color">
 
-    <!-- AppBarLayout + Toolbar: transparent background with accent-colored back arrow and "Profile" title -->
+    <!--
+        AppBarLayout:
+        - A vertical LinearLayout that implements Material Design app bar features like
+          collapsing and elevation changes.
+        - app:elevation="0dp": Removes the default shadow to maintain a flat, modern
+          look for the profile header.
+    -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         app:elevation="0dp">
 
-        <!-- MaterialToolbar hosts the back-arrow navigation icon and a custom title TextView -->
+        <!--
+            MaterialToolbar:
+            - Hosts the navigation "back" arrow and the screen title.
+            - app:navigationIconTint="?attr/accent_color": Ensures the back arrow color
+              matches the current seasonal theme.
+        -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -69,7 +48,11 @@
             app:navigationIcon="?attr/homeAsUpIndicator"
             app:navigationIconTint="?attr/accent_color">
 
-            <!-- Custom title TextView inside the toolbar so it can be styled with accent_color and bold -->
+            <!--
+                Custom Toolbar Title:
+                - Using a TextView inside the toolbar allows for specific styling (bold,
+                  accent color) that standard toolbar titles may not support as easily.
+            -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -82,13 +65,23 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Scrollable profile content — appbar_scrolling_view_behavior coordinates with the AppBarLayout above -->
+    <!--
+        NestedScrollView:
+        - Wraps the main profile content to allow scrolling on smaller screens.
+        - app:layout_behavior="@string/appbar_scrolling_view_behavior": This is a
+          crucial attribute. It tells CoordinatorLayout that this view should be
+          positioned below the AppBarLayout and should coordinate its scrolling with it.
+    -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Vertical column of profile elements, all centered horizontally -->
+        <!--
+            Content Container:
+            - A vertical LinearLayout centers all profile elements horizontally.
+            - android:padding="24dp" provides consistent internal spacing.
+        -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -96,7 +89,14 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Profile image: 120×120dp circular card with accent stroke — Glide loads the real image into profileImage -->
+            <!--
+                Profile Image Frame: MaterialCardView
+                - 120dp square frame.
+                - app:cardCornerRadius="60dp": Setting the radius to exactly 50% of the
+                  width/height creates a perfect circle.
+                - app:strokeWidth="2dp": Adds a branded ring around the photo in the
+                  seasonal accent color.
+            -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="120dp"
                 android:layout_height="120dp"
@@ -105,7 +105,13 @@
                 app:strokeColor="?attr/accent_color"
                 app:strokeWidth="2dp">
 
-                <!-- scaleType="centerCrop" fills the circle with the photo; dark green background shows while loading -->
+                <!--
+                    Profile Image:
+                    - android:scaleType="centerCrop": Ensures the photo fills the entire
+                      circular frame without being stretched.
+                    - android:background="#123D24": A placeholder color that shows
+                      before the real image is loaded from Firebase/Glide.
+                -->
                 <ImageView
                     android:id="@+id/profileImage"
                     android:layout_width="match_parent"
@@ -117,7 +123,10 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- User's full name — 26sp bold white, 20dp below the profile image -->
+            <!--
+                User Name:
+                - Large 26sp bold white text for high visibility.
+            -->
             <TextView
                 android:id="@+id/accountName"
                 android:layout_width="wrap_content"
@@ -128,7 +137,11 @@
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
-            <!-- @username — 16sp accent color, 4dp below the full name -->
+            <!--
+                Username Handle:
+                - Small 16sp text using the seasonal accent color to distinguish it
+                  from the full name.
+            -->
             <TextView
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
@@ -138,9 +151,12 @@
                 android:textColor="?attr/accent_color"
                 android:textSize="16sp" />
 
-            <!-- Stats card: horizontal row with Likes count on the left and Posts count on the right,
-                 separated by a 1dp semi-transparent vertical line.
-                 cardBackgroundColor=accent_color fills the entire card with the seasonal theme color. -->
+            <!--
+                Stats Card:
+                - Provides a visual summary of user activity (Likes and Posts).
+                - app:cardBackgroundColor="?attr/accent_color": Inverts the theme by
+                  using the accent color as the background, making this section pop.
+            -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/statsCard"
                 android:layout_width="match_parent"
@@ -152,14 +168,21 @@
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
-                <!-- Horizontal row containing two equal-weight stat columns -->
+                <!--
+                    Stats Row:
+                    - Uses a horizontal LinearLayout to split the card into two sections.
+                -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="20dp">
 
-                    <!-- Left column: total likes received across all the user's posts -->
+                    <!--
+                        Likes Column:
+                        - android:layout_weight="1": Ensures the column takes up exactly
+                          50% of the available horizontal space.
+                    -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -167,7 +190,7 @@
                         android:gravity="center"
                         android:orientation="vertical">
 
-                        <!-- Likes count number — set by ProfileActivity after querying Firestore -->
+                        <!-- Value is dynamically updated in ProfileActivity. -->
                         <TextView
                             android:id="@+id/likesCount"
                             android:layout_width="wrap_content"
@@ -177,7 +200,6 @@
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
-                        <!-- "LIKES" label — small all-caps caption below the number -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -189,7 +211,11 @@
 
                     </LinearLayout>
 
-                    <!-- Vertical divider between the two stat columns — 30dp tall, 30% opacity -->
+                    <!--
+                        Vertical Divider:
+                        - A 1dp line with reduced alpha (0.3) provides a subtle visual
+                          separation between stats without being distracting.
+                    -->
                     <View
                         android:layout_width="1dp"
                         android:layout_height="30dp"
@@ -197,7 +223,10 @@
                         android:background="?attr/background_color"
                         android:alpha="0.3" />
 
-                    <!-- Right column: total number of posts created by this user -->
+                    <!--
+                        Posts Column:
+                        - Also weighted 1 to mirror the Likes column.
+                    -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -205,7 +234,6 @@
                         android:gravity="center"
                         android:orientation="vertical">
 
-                        <!-- Posts count number — set by ProfileActivity after querying Firestore -->
                         <TextView
                             android:id="@+id/postsCount"
                             android:layout_width="wrap_content"
@@ -215,7 +243,6 @@
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
-                        <!-- "POSTS" label — small all-caps caption below the number -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -231,7 +258,13 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- User bio text — centered, alt_color, lineSpacingExtra=4dp for comfortable multi-line reading -->
+            <!--
+                User Bio:
+                - android:lineSpacingExtra="4dp": Adds vertical breathing room between
+                  lines of text, which is vital for readability in longer biographies.
+                - android:textColor="?attr/alt_color": Uses a slightly muted accent
+                  color to differentiate the bio from primary headers.
+            -->
             <TextView
                 android:id="@+id/profileBio"
                 android:layout_width="match_parent"
@@ -243,7 +276,12 @@
                 android:gravity="center"
                 android:lineSpacingExtra="4dp" />
 
-            <!-- "Edit Profile" button — outlined (secondary) style because editing is less common than just viewing -->
+            <!--
+                Secondary Action: Edit Profile
+                - style="...Button.OutlinedButton": This outlined style visually
+                  signals that it is a less frequent or secondary action compared
+                  to the primary "Back" button.
+            -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/editProfileButton"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -256,7 +294,11 @@
                 app:strokeColor="?attr/accent_color"
                 app:cornerRadius="12dp" />
 
-            <!-- "Back" button — filled accent style is the primary/safe action to close this screen -->
+            <!--
+                Primary Action: Back
+                - style="...Widget.MaterialComponents.Button": A filled button with
+                  seasonal backgroundTint indicates the primary path to exit the screen.
+            -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/backButton"
                 style="@style/Widget.MaterialComponents.Button"

@@ -1,28 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     activity_trophy_list.xml
-    Defines a single row in the achievements RecyclerView shown by AchievementsActivity.
-    AchievementAdapter inflates one of these for each Achievement object and populates
-    achievementName, achievementProgress, and achievementLevelText at runtime.
+    This layout defines the visual structure of a single "trophy" or achievement row
+    within the achievements list. It is designed to be inflated multiple times by the
+    AchievementAdapter and displayed inside a RecyclerView.
+-->
 
-    Root LinearLayout:
-      orientation="vertical" — stacks name → progress bar → level text top-to-bottom.
-      padding="16dp" — gives each row comfortable breathing room so text doesn't touch the edges.
-      background="?attr/background_color" — uses the seasonal theme so rows match the screen.
-
-    achievementName (TextView):
-      textColor="?attr/accent_color" — accent color makes the title stand out as the primary label.
-      textSize="18sp" — large enough to read at a glance without dominating the row.
-
-    achievementProgress (ProgressBar):
-      style="?android:attr/progressBarStyleHorizontal" — renders as a filled bar, not a spinner.
-      android:max="100" — the adapter sets progress as a percentage so no scaling is needed.
-      layout_width="match_parent" — full-width bar makes progress differences easy to compare.
-
-    achievementLevelText (TextView):
-      textSize="14sp" — slightly smaller than the 18sp title, creating a visual hierarchy.
-      textColor="?attr/accent_color" — matches the title color, forming a cohesive styled pair.
+<!--
+    Root Container: LinearLayout
+    - A vertical LinearLayout is used here because the data points (name, progress bar,
+      and level text) follow a simple, linear top-to-bottom flow. For such straightforward
+      stacks, LinearLayout is more lightweight and easier to manage than ConstraintLayout.
+    - android:background="?attr/background_color": Ensures the row's background matches
+      the seasonal theme (e.g., deep blue for winter), providing a cohesive look.
+    - android:padding="16dp": Provides consistent internal spacing for better readability.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -31,7 +22,13 @@
     android:padding="16dp"
     android:background="?attr/background_color">
 
-    <!-- Achievement title — e.g. "Tree Finder" or "Distance Walker" -->
+    <!--
+        Achievement Name:
+        - Displays the title of the goal, such as "Tree Finder" or "Distance Walker".
+        - textColor="?attr/accent_color": Uses the primary seasonal highlight color
+          to draw the user's attention to the achievement's title.
+        - 18sp: A prominent font size that serves as the header for the individual row.
+    -->
     <TextView
         android:id="@+id/achievementName"
         android:layout_width="wrap_content"
@@ -40,7 +37,14 @@
         android:textColor="?attr/accent_color"
         android:textSize="18sp" />
 
-    <!-- Horizontal progress bar showing progress toward the next achievement level (0–100%) -->
+    <!--
+        Horizontal Progress Bar:
+        - style="?android:attr/progressBarStyleHorizontal": Changes the default
+          circular loading spinner into a horizontal bar that can represent a percentage.
+        - android:max="100": Represents 100% of the progress required for the next level.
+        - AchievementAdapter calculates the current progress relative to the next level's
+          requirement and sets this value dynamically.
+    -->
     <ProgressBar
         android:id="@+id/achievementProgress"
         style="?android:attr/progressBarStyleHorizontal"
@@ -48,7 +52,12 @@
         android:layout_height="wrap_content"
         android:max="100" />
 
-    <!-- Level and progress label — e.g. "Level 2: 1/5 to next level" — set by the adapter -->
+    <!--
+        Level and Progress Label:
+        - Provides context to the progress bar (e.g., "Level 2: 1/5 to next level").
+        - textColor="?attr/accent_color": Maintains thematic consistency with the name above.
+        - 14sp: A smaller font size used for secondary descriptive information.
+    -->
     <TextView
         android:id="@+id/achievementLevelText"
         android:layout_width="wrap_content"

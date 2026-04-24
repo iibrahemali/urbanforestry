@@ -1,31 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
     activity_post_image.xml
-    Defines the image preview + caption screen that appears after the user takes a photo.
-    Layout structure (top to bottom):
-      1. "Add Caption" title at the top
-      2. MaterialCardView containing the image preview — fills the space between the title and caption field
-      3. Caption EditText above the Post button
-      4. "Post" MaterialButton pinned to the bottom
+    This layout defines the user interface for finalizing a photo-based post.
+    It allows the user to preview their captured image and add a descriptive caption
+    before uploading it to the community feed.
+-->
 
-    imageCard (MaterialCardView):
-      height=0dp with top constraint (below title) + bottom constraint (above captionEditText) =
-      the card fills whatever vertical space remains in the middle section.
-      cardCornerRadius=16dp and cardElevation=8dp give the image preview a raised, photo-frame feel.
-
-    imagePreview (ImageView):
-      scaleType="centerCrop" fills the card completely without leaving blank borders.
-      PostImageActivity loads the captured photo into this view using BitmapFactory.
-
-    captionEditText:
-      background="@drawable/text_box" — custom rounded rectangle drawable replacing the default underline.
-      padding=16dp — comfortable text inset inside the custom background.
-      constrained bottom_toTopOf btn_post — always sits directly above the Post button.
-
-    btn_post:
-      Pinned to the bottom of the screen with layout_marginBottom=24dp so it is always reachable
-      regardless of keyboard state.
+<!--
+    Root Container: ConstraintLayout
+    - ConstraintLayout is utilized here to ensure a flat and performant view hierarchy.
+      By defining constraints between sibling views, it minimizes the need for nested
+      layout passes, leading to smoother UI rendering.
+    - android:background="?attr/background_color": Dynamically retrieves the base color
+      from the seasonal theme (Spring, Summer, Autumn, Winter) to keep the app
+      aesthetically synchronized with the current time of year.
+    - android:padding="24dp": Ensures that the content remains readable and accessible
+      with a consistent margin from the device's hardware edges.
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -34,7 +24,12 @@
     android:background="?attr/background_color"
     android:padding="24dp">
 
-    <!-- "Add Caption" title — 26sp bold accent color at the top of the screen -->
+    <!--
+        Title: "Add Caption"
+        - 26sp bold: High-level header styling used consistently across the post-creation flow.
+        - textColor="?attr/accent_color": Adopts the seasonal highlight color (e.g., green for spring)
+          to maintain brand and thematic consistency.
+    -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
@@ -48,8 +43,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Image preview card — height=0dp fills the space between the title above and the caption field below.
-         cardCornerRadius=16dp and cardElevation=8dp give the photo a raised photo-frame appearance. -->
+    <!--
+        Image Preview Card: MaterialCardView
+        - layout_height="0dp": This is a "match_constraint" configuration. It allows the
+          card to dynamically expand vertically to consume all available space between
+           the title header above and the caption input field below.
+        - app:cardCornerRadius="16dp": Provides a modern, soft aesthetic.
+        - app:cardElevation="8dp": Adds a subtle shadow, making the photo preview appear
+          distinct and "raised" above the flat background, emphasizing it as the focal point.
+    -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/imageCard"
         android:layout_width="0dp"
@@ -63,7 +65,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- centerCrop fills the card without distortion; PostImageActivity loads the captured photo here -->
+        <!--
+            Photo Preview: ImageView
+            - android:scaleType="centerCrop": This ensures the user's photo fills the
+              entire card area. It crops the image proportionally rather than
+              stretching it, maintaining the original visual integrity of the photo.
+            - The content is loaded into this view programmatically in PostImageActivity
+              using the Glide library, which also handles image rotation.
+        -->
         <ImageView
             android:id="@+id/imagePreview"
             android:layout_width="match_parent"
@@ -73,7 +82,14 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Caption text input — custom text_box drawable replaces the default underline with a rounded rectangle -->
+    <!--
+        Caption Input: EditText
+        - android:background="@drawable/text_box": Replaces the standard platform
+          underline with a custom rounded rectangle container. This creates a clear
+          and distinct "input area" that stands out against the dark seasonal theme.
+        - app:layout_constraintBottom_toTopOf="@id/btn_post": Pins the input field directly
+          above the primary action button for a logical and linear user flow.
+    -->
     <EditText
         android:id="@+id/captionEditText"
         android:layout_width="0dp"
@@ -88,7 +104,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- "Post" button — pinned to the bottom of the screen so it is always reachable above the keyboard -->
+    <!--
+        "Post" Primary Action: MaterialButton
+        - backgroundTint="?attr/accent_color": Signals that this is the primary, most
+          important action on the screen.
+        - layout_height="60dp": Provides a large, accessible touch target that is
+          easy to reach even when the software keyboard is active.
+        - app:layout_constraintBottom_toBottomOf="parent": Pins the button to the
+          bottom of the screen, ensuring it acts as the "final" step in the flow.
+    -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_post"
         style="@style/Widget.MaterialComponents.Button"
