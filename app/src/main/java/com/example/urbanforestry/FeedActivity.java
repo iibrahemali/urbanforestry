@@ -85,6 +85,8 @@ public class FeedActivity extends AppCompatActivity {
         // Creates a pinned post showing the seasonal logo that links to Lancaster Library's location on the map
         int seasonLogo = SeasonManager.getSeasonLogo(SeasonManager.getSeasonPref(this));
         Post logoPost = new Post("Urban Forestry", seasonLogo, "Our logo (Click for directions to Lancaster Library!)");
+        // Assigns a unique, deterministic ID for local storage tracking
+        logoPost.postId = "static_logo_post";
         // Attaches the library's GPS coordinates so the "Get Directions" button works on this static post
         logoPost.hasLocation = true;
         logoPost.latitude = 40.04005;
@@ -93,6 +95,8 @@ public class FeedActivity extends AppCompatActivity {
 
         // Creates a pinned post for the historic Grant Knoll Sycamore tree
         Post sycamorePost = new Post("History Hunter", R.drawable.grant_noll_sycamore, "Grant Knoll Sycamore, The Oldest Tree in Lancaster County");
+        // Assigns a unique, deterministic ID for local storage tracking
+        sycamorePost.postId = "static_sycamore_post";
         // Attaches the sycamore's GPS coordinates so users can get directions to it
         sycamorePost.hasLocation = true;
         sycamorePost.latitude = 40.03814;
@@ -194,6 +198,11 @@ public class FeedActivity extends AppCompatActivity {
                     List<Post> fetchedPosts = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : value) {
                         Post post = doc.toObject(Post.class);
+                        post.postId = doc.getId(); // Sync the document ID
+                        // SKIP static posts in the main list to avoid duplication with the pinned versions
+                        if (post.postId != null && post.postId.startsWith("static_")) {
+                            continue;
+                        }
 
                         // Backfills the text field from caption for legacy compatibility — some older UI paths use "text"
                         if (post.text == null && doc.contains("caption")) {
@@ -219,12 +228,39 @@ public class FeedActivity extends AppCompatActivity {
                         }
                     }
 
+                    // For static posts, we now fetch their server-side like/comment state
+                    for (Post staticPost : staticPosts) {
+                        fetchStaticPostState(staticPost);
+                    }
+
                     // Rebuilds the combined list: static pinned posts first, then Firestore posts newest-first
                     postList.clear();
                     postList.addAll(staticPosts);
                     postList.addAll(fetchedPosts);
                     // Tells the adapter the entire dataset changed so it redraws all visible items
                     adapter.notifyDataSetChanged();
+                });
+    }
+
+    // Fetches the real-time like/comment counts for static demo posts so their social stats persist
+    private void fetchStaticPostState(Post post) {
+        if (post.postId == null) return;
+        
+        db.collection("posts").document(post.postId).get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        post.likeCount = doc.getLong("likeCount") != null ? doc.getLong("likeCount").intValue() : 0;
+                        post.commentCount = doc.getLong("commentCount") != null ? doc.getLong("commentCount").intValue() : 0;
+                        
+                        // Check if the current user has liked/reported these static posts
+                        checkIfLiked(post);
+                        checkIfReported(post);
+                        
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        // If the static post doesn't exist in Firestore yet (e.g. fresh DB), we create it so social features work
+                        db.collection("posts").document(post.postId).set(post);
+                    }
                 });
     }
 
