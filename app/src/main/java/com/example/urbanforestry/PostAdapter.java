@@ -134,6 +134,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         // Resets the visibility of content views before binding to prevent stale state from recycled views
         holder.imageView.setVisibility(View.GONE);
         holder.textView.setVisibility(View.GONE);
+        holder.btnGetRoute.setVisibility(View.GONE);
         holder.commentsList.removeAllViews();
         holder.commentsSection.setVisibility(View.GONE);
         holder.noCommentsTv.setVisibility(View.GONE);
@@ -303,19 +304,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         if (post.resourceId != -1) {
             // Static demo posts use a local drawable resource ID
             holder.imageView.setVisibility(View.VISIBLE);
-            holder.btnGetRoute.setVisibility(View.VISIBLE);
+            if (post.hasLocation) holder.btnGetRoute.setVisibility(View.VISIBLE);
             holder.imageView.setImageResource(post.resourceId);
         } else if (post.imageUrl != null && !post.imageUrl.isEmpty()) {
             // Real Firestore posts load their image from a Firebase Storage download URL using Glide
             holder.imageView.setVisibility(View.VISIBLE);
-            holder.btnGetRoute.setVisibility(View.VISIBLE);
+            if (post.hasLocation) holder.btnGetRoute.setVisibility(View.VISIBLE);
             Glide.with(holder.itemView.getContext())
                     .load(post.imageUrl)
                     .into(holder.imageView);
         } else if (post.imagePath != null && !post.imagePath.isEmpty()) {
             // Legacy fallback for posts created with local file paths before Firebase Storage was used
             holder.imageView.setVisibility(View.VISIBLE);
-            holder.btnGetRoute.setVisibility(View.VISIBLE);
+            if (post.hasLocation) holder.btnGetRoute.setVisibility(View.VISIBLE);
             Bitmap bitmap = BitmapFactory.decodeFile(post.imagePath);
             holder.imageView.setImageBitmap(bitmap);
         }

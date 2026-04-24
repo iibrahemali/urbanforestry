@@ -70,6 +70,9 @@ public class PostImageActivity extends AppCompatActivity {
 
         // Reads the image file path passed in from CreatePostActivity via the Intent
         imagePath = getIntent().getStringExtra("imagePath");
+        // Reads whether the user consented to share their location from the Intent
+        boolean shareLocation = getIntent().getBooleanExtra("shareLocation", false);
+
         // If no image path was provided, there's nothing to post — show an error and close this screen
         if (imagePath == null) {
             Toast.makeText(this, "Error loading image. Please try again.", Toast.LENGTH_SHORT).show();
@@ -98,6 +101,12 @@ public class PostImageActivity extends AppCompatActivity {
             // Disables the button and updates the label to prevent duplicate submissions while uploading
             postBtn.setEnabled(false);
             postBtn.setText("Posting...");
+
+            // If the user explicitly chose NOT to share location, post without it immediately
+            if (!shareLocation) {
+                submitPost(caption, null, null);
+                return;
+            }
 
             // Checks location permission before attempting to read GPS coordinates
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
