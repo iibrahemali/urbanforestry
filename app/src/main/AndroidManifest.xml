@@ -26,61 +26,76 @@
         <activity
             android:name=".AboutActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".AchievementsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".CreatePostActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".EditProfileActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".FeedActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:exported="true"
             android:launchMode="singleTop" />
         <activity
             android:name=".MenuActivity"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.Dialog" />
         <activity
             android:name=".PhotoPopupActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.Dialog" />
         <activity
             android:name=".PostImageActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".PostTextActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ProfileActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".SignUpActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".TreeInfoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.Dialog" />
         <activity
             android:name=".WelcomeActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:exported="true"
             android:theme="@style/Theme.App.Starting">
             <intent-filter>
