@@ -26,6 +26,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 // Imports osmdroid GeoPoint and Marker classes for placing markers on the map
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
 
 // Imports I/O classes for reading the CSV files bundled in the assets folder
 import java.io.BufferedReader;
@@ -149,6 +150,7 @@ public class MapMarkers {
         // Passes the common and botanical family names (columns 55 and 56)
         i.putExtra("familyCommon", treeData[55]);
         i.putExtra("familyBotanical", treeData[56]);
+        // Passes the botanical name (column 2)
         i.putExtra("botanicalName", treeData[2]);
         // Passes the native/cultivated status (column 23) for the origin label
         i.putExtra("nativeOrCultivated", treeData[23]);
@@ -331,6 +333,18 @@ public class MapMarkers {
                         // Null value means the listener was detached — nothing to display
                         if (value == null) return;
 
+                        // Clear only the photo markers to avoid duplication on refresh, while keeping tree/compost markers
+                        List<Overlay> toRemove = new ArrayList<>();
+                        for (Overlay overlay : MainActivity.map.getOverlays()) {
+                            if (overlay instanceof Marker) {
+                                Marker m = (Marker) overlay;
+                                if ("post_marker".equals(m.getId())) {
+                                    toRemove.add(overlay);
+                                }
+                            }
+                        }
+                        MainActivity.map.getOverlays().removeAll(toRemove);
+
                         // Iterates through every post document in the snapshot
                         for (QueryDocumentSnapshot doc : value) {
                             Post post = doc.toObject(Post.class);
@@ -339,6 +353,7 @@ public class MapMarkers {
                                 GeoPoint point = new GeoPoint(post.latitude, post.longitude);
                                 Marker marker = new Marker(MainActivity.map);
                                 marker.setPosition(point);
+                                marker.setId("post_marker"); // Assign an ID to easily identify and remove these markers
                                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
                                 // Uses a blue dot to distinguish user photo posts from tree and compost markers
                                 marker.setIcon(ContextCompat.getDrawable(ctx, R.drawable.blue_dot));
@@ -361,6 +376,8 @@ public class MapMarkers {
                                 MainActivity.map.getOverlays().add(marker);
                             }
                         }
+                        // Refresh the map to show changes
+                        MainActivity.map.invalidate();
                     });
         } catch (Exception e) {
             e.printStackTrace();
