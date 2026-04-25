@@ -2,6 +2,7 @@
 package com.example.urbanforestry;
 
 // Imports Intent for navigating to CreatePostActivity and ProfileActivity
+
 import android.content.Intent;
 // Imports Bundle, the key-value container Android passes to onCreate with any saved state
 import android.os.Bundle;
@@ -138,7 +139,8 @@ public class FeedActivity extends AppCompatActivity {
             mDatabase.child("users").child(userId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    // Guards against crashes from background callbacks after the Activity is destroyed
+                    // Confirm that the data exists and the activity is still open
+                    // Then, update the profile pic in the top-right
                     if (snapshot.exists() && !isDestroyed() && !isFinishing()) {
                         String picUrl = snapshot.child("profilePicUrl").getValue(String.class);
                         if (picUrl != null)
@@ -160,7 +162,7 @@ public class FeedActivity extends AppCompatActivity {
         // Fades the "+" button to 25% opacity when the user scrolls to the bottom — prevents it from covering the last post
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
                 // canScrollVertically(1) returns false when the list can't scroll down any further (i.e., at the bottom)
