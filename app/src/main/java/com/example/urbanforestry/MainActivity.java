@@ -182,7 +182,14 @@ public class MainActivity extends AppCompatActivity {
         routes.rebuildRouteUI();
 
         // Checks the incoming Intent for directions data (e.g., from PostAdapter's "Get Directions" button)
-        routes.handleDirectionsIntent(getIntent());
+        Intent intent = getIntent();
+        routes.handleDirectionsIntent(intent);
+        // FIX: Clear the intent extras after processing so they don't trigger again on Activity recreation (e.g. theme change)
+        if (intent != null) {
+            intent.removeExtra("getDirections");
+            intent.removeExtra("destLat");
+            intent.removeExtra("destLng");
+        }
 
         // Overrides the back gesture to do nothing — prevents the user from accidentally returning to the login screen
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -200,6 +207,13 @@ public class MainActivity extends AppCompatActivity {
         // Updates the stored Intent so handleDirectionsIntent uses the freshly received data, not the original launch intent
         setIntent(intent);
         routes.handleDirectionsIntent(intent);
+        
+        // FIX: Clear the intent extras here as well for consistency
+        if (intent != null) {
+            intent.removeExtra("getDirections");
+            intent.removeExtra("destLat");
+            intent.removeExtra("destLng");
+        }
     }
 
     // Resumes the map and location tracking when the user returns to this screen
@@ -277,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
             // Checks each permission — only adds it to the request list if not already granted
             if (ContextCompat.checkSelfPermission(this, permission)
                     != PackageManager.PERMISSION_GRANTED) {
-                permissionsToRequest.add(permission);
+                permissionsToRequest.add(permissionsToRequest.size(), permission);
             }
         }
         if (!permissionsToRequest.isEmpty()) {
@@ -287,7 +301,6 @@ public class MainActivity extends AppCompatActivity {
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
             // Sets up location tracking even before the user responds — it will start showing once permission is granted
-            setupLocationTracking();
         } else {
             // All permissions are already granted, so set up location tracking immediately
             setupLocationTracking();
