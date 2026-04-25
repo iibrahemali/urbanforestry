@@ -165,18 +165,17 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Creates a temporary file and opens the camera to capture a new profile photo
     private void openCamera() {
-        File photoFile = null;
         try {
             // Creates a new unique temp file in the Pictures directory for the camera to write into
-            photoFile = createImageFile();
+            File photoFile = createImageFile();
+            if (photoFile != null) {
+                // Converts the file path to a content URI using FileProvider — required for camera access on Android 7+
+                photoUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", photoFile);
+                // Launches the camera, instructing it to save the captured photo to our URI
+                cameraLauncher.launch(photoUri);
+            }
         } catch (IOException ex) {
             Toast.makeText(this, "Error creating file", Toast.LENGTH_SHORT).show();
-        }
-        if (photoFile != null) {
-            // Converts the file path to a content URI using FileProvider — required for camera access on Android 7+
-            photoUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", photoFile);
-            // Launches the camera, instructing it to save the captured photo to our URI
-            cameraLauncher.launch(photoUri);
         }
     }
 
@@ -205,6 +204,7 @@ public class ProfileActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Uri> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.TakePicture(),
             success -> {
+                // success is a Boolean indicating if the photo was captured
                 if (success && photoUri != null) {
                     // Uploads the captured photo to Firebase Storage using the URI we created before launching the camera
                     uploadImage(photoUri);
@@ -214,6 +214,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Uploads the selected or captured image to Firebase Storage and updates the profile picture displayed on screen
     private void uploadImage(Uri uri) {
+        if (mAuth.getCurrentUser() == null) return;
+        
         // Gets the current user's UID to use as the storage path key
         String userId = mAuth.getCurrentUser().getUid();
         userRepository.uploadProfilePicture(userId, uri)
@@ -230,6 +232,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Clears the profile picture URL from the database and reverts the displayed image to the default avatar
     private void removeProfilePic() {
+        if (mAuth.getCurrentUser() == null) return;
+
         String userId = mAuth.getCurrentUser().getUid();
         // Sets the profilePicUrl field to null in the Realtime Database so future loads use the default avatar
         mDatabase.child("users").child(userId).child("profilePicUrl").setValue(null)
