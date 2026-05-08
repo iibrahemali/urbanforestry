@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 // Imports ArrayList and List for building collections of addresses
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 // Declares MapMarkers as a helper class responsible for loading and placing all three marker types on the map
 public class MapMarkers {
@@ -46,93 +47,82 @@ public class MapMarkers {
         this.ctx = ctx;
     }
 
-    // Reads the trees.csv asset and places a green dot marker on the map for every tree in the file
+    // Listens to Firestore for tree data and places green dot markers on the map
+    // This replaces the old showTreeMarkers() which read from a local CSV
     public void showTreeMarkers() {
         try {
-            // Opens the trees.csv file from the app's assets folder
-            InputStream is = ctx.getAssets().open("trees.csv");
-            // Wraps the stream in a BufferedReader for efficient line-by-line reading
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            FirebaseFirestore.getInstance().collection("trees")
+                    .addSnapshotListener((value, error) -> {
+                        if (error != null) {
+                            Log.w("MapMarkers", "Listen failed.", error);
+                            return;
+                        }
 
-            String line;
-            // Tracks whether we're on the header row so we can find the column indices before reading data
-            boolean firstLine = true;
+                        if (value == null) return;
 
-            // Stores the column index of the latitude and longitude fields — -1 means not yet found
-            int latIndex = -1;
-            int lngIndex = -1;
+                        // Clear existing tree markers to avoid duplication on update
+                        List<Overlay> toRemove = new ArrayList<>();
+                        for (Overlay overlay : MainActivity.map.getOverlays()) {
+                            if (overlay instanceof Marker) {
+                                Marker m = (Marker) overlay;
+                                if ("tree_marker".equals(m.getId())) {
+                                    toRemove.add(overlay);
+                                }
+                            }
+                        }
+                        MainActivity.map.getOverlays().removeAll(toRemove);
 
-            // Reads the CSV one line at a time until the end of the file
-            while ((line = reader.readLine()) != null) {
+                        for (QueryDocumentSnapshot doc : value) {
+                            Map<String, Object> data = doc.getData();
+                            
+                            try {
+                                double lat = Double.parseDouble(String.valueOf(data.get("LATITUDE")));
+                                double lng = Double.parseDouble(String.valueOf(data.get("LONGITUDE")));
 
-                // Splits on commas while respecting quoted strings that may contain embedded commas
-                String[] cols = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                                GeoPoint point = new GeoPoint(lat, lng);
+                                Marker marker = new Marker(MainActivity.map);
+                                marker.setPosition(point);
+                                marker.setId("tree_marker");
+                                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                                marker.setIcon(ContextCompat.getDrawable(ctx, R.drawable.green_dot));
 
-                // Strips surrounding double-quotes from each field value
-                for (int i = 0; i < cols.length; i++)
-                    cols[i] = cols[i].replaceAll("^\"|\"$", "");
+                                // Map Firestore fields back to the array format TreeInfoActivity expects
+                                // This maintains compatibility with your existing UI code
+                                String[] treeData = new String[60]; // Adjusted for your CSV structure
+                                treeData[1] = String.valueOf(data.getOrDefault("iTree Common Name", ""));
+                                treeData[2] = String.valueOf(data.getOrDefault("iTree Botantical Name", ""));
+                                treeData[5] = String.valueOf(data.getOrDefault("DBH", ""));
+                                treeData[23] = String.valueOf(data.getOrDefault("Native or Cultivated", ""));
+                                treeData[27] = String.valueOf(data.getOrDefault("Height (ft)", ""));
+                                treeData[31] = String.valueOf(data.getOrDefault("Wildlife", ""));
+                                treeData[33] = String.valueOf(data.getOrDefault("Fall Color", ""));
+                                treeData[35] = String.valueOf(data.getOrDefault("Flower Description", ""));
+                                treeData[55] = String.valueOf(data.getOrDefault("Family (English)", ""));
+                                treeData[56] = String.valueOf(data.getOrDefault("Family (Botanic)", ""));
 
-                // On the first line (the header row), finds which column indices hold LATITUDE and LONGITUDE
-                if (firstLine) {
-                    firstLine = false;
+                                marker.setRelatedObject(treeData);
 
-                    for (int i = 0; i < cols.length; i++) {
-                        if (cols[i].equals("LATITUDE")) latIndex = i;
-                        if (cols[i].equals("LONGITUDE")) lngIndex = i;
-                    }
-                    // Skips to the next line after storing the header column indices
-                    continue;
-                }
+                                marker.setOnMarkerClickListener((m, mapView) -> {
+                                    String id = m.getPosition().getLatitude() + "," + m.getPosition().getLongitude();
 
-                // Skips the row if the lat/lng columns were never found — prevents crashing on malformed CSVs
-                if (latIndex == -1 || lngIndex == -1) continue;
+                                    if (MainActivity.locationOverlay.getMyLocation() != null) {
+                                        double distance = MainActivity.locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
+                                        if (distance <= 10.0)
+                                            Missions.updateGoalProgress(id, treeData, ctx);
+                                    }
 
-                // Parses the latitude and longitude strings into doubles for use with GeoPoint
-                double lat = Double.parseDouble(cols[latIndex]);
-                double lng = Double.parseDouble(cols[lngIndex]);
+                                    Intent i = getTreeInfoIntent(treeData, m);
+                                    ctx.startActivity(i);
+                                    return true;
+                                });
 
-                // Creates an osmdroid GeoPoint from the coordinates
-                GeoPoint point = new GeoPoint(lat, lng);
-
-                // Creates a Marker and places it at the tree's position on the map
-                Marker marker = new Marker(MainActivity.map);
-                marker.setPosition(point);
-                // Centers the marker icon both horizontally and vertically on the coordinate point
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-
-                // Attaches the full row data to the marker so we can access all tree fields when it's tapped
-                marker.setRelatedObject(cols.clone());
-
-                // Uses a small green dot drawable to represent a tree — keeps the map uncluttered
-                marker.setIcon(ContextCompat.getDrawable(ctx, R.drawable.green_dot));
-
-                // Sets up the tap listener for this tree marker
-                marker.setOnMarkerClickListener((m, mapView) -> {
-                    // Retrieves the full CSV row data attached to this marker
-                    String[] treeData = (String[]) m.getRelatedObject();
-                    // Builds a unique ID for this tree using its coordinates — used as the key in the visited set
-                    String treeId = m.getPosition().getLatitude() + "," + m.getPosition().getLongitude();
-
-                    // Only awards goal progress if the user is close enough to the tree — prevents remote farming
-                    if (MainActivity.locationOverlay.getMyLocation() != null) {
-                        double distance = MainActivity.locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
-                        // Trees can only be "discovered" if the user is within 10 metres
-                        if (distance <= 10.0)
-                            // Checks if discovering this tree makes progress toward any active goals
-                            Missions.updateGoalProgress(treeId, treeData, ctx);
-                    }
-
-                    // Launches TreeInfoActivity with the tree's data passed as Intent extras
-                    Intent i = getTreeInfoIntent(treeData, m);
-                    ctx.startActivity(i);
-
-                    // Returns true to consume the tap event and prevent default marker behavior
-                    return true;
-                });
-
-                // Adds the marker to the map's overlay list so it becomes visible
-                MainActivity.map.getOverlays().add(marker);
-            }
+                                MainActivity.map.getOverlays().add(marker);
+                            } catch (Exception e) {
+                                Log.e("MapMarkers", "Error parsing tree data: " + doc.getId(), e);
+                            }
+                        }
+                        MainActivity.map.invalidate();
+                    });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -150,8 +140,6 @@ public class MapMarkers {
         // Passes the common and botanical family names (columns 55 and 56)
         i.putExtra("familyCommon", treeData[55]);
         i.putExtra("familyBotanical", treeData[56]);
-        // Passes the botanical name (column 2)
-        i.putExtra("botanicalName", treeData[2]);
         // Passes the native/cultivated status (column 23) for the origin label
         i.putExtra("nativeOrCultivated", treeData[23]);
         // Passes the wildlife value (column 31) for ecological information
@@ -176,6 +164,7 @@ public class MapMarkers {
 
     // Looks up the description string for a tree by converting its botanical name to a string resource identifier
     private String getTreeDescription(String[] treeData) {
+        if (treeData[2] == null) return "";
         // Replaces spaces in the botanical name with underscores to match the string resource naming convention
         String strName = treeData[2].replaceAll(" ", "_");
         // Dynamically resolves the string resource ID — returns 0 if no matching resource exists
@@ -201,6 +190,7 @@ public class MapMarkers {
 
     // Maps a tree's common name to the correct URL slug for its Morton Arboretum page — must be updated when new species are added
     private String getMortonPageName(String[] treeData) {
+        if (treeData[1] == null) return "";
         // Handles cases where the common name in our CSV doesn't match the slug used on the Morton site
         switch (treeData[1]) {
             case "Baldcypress":

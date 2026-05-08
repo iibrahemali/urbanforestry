@@ -2,12 +2,13 @@
 package com.example.urbanforestry;
 
 // Imports Intent for navigating to CreatePostActivity and ProfileActivity
-
 import android.content.Intent;
 // Imports Bundle, the key-value container Android passes to onCreate with any saved state
 import android.os.Bundle;
 // Imports Log for recording non-fatal errors from the Firestore snapshot listener
 import android.util.Log;
+// Imports ImageButton for the back navigation button
+import android.widget.ImageButton;
 // Imports ImageView for the profile picture button in the toolbar
 import android.widget.ImageView;
 // Imports Toast for brief feedback messages
@@ -78,7 +79,11 @@ public class FeedActivity extends AppCompatActivity {
         // Links the FloatingActionButton, profile image button, and RecyclerView to their Views in the layout
         fab = findViewById(R.id.fab_add);
         ImageView profileButton = findViewById(R.id.profile_button);
+        ImageButton backButton = findViewById(R.id.back_button);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
+
+        // Closes the Activity when the user taps the back button
+        backButton.setOnClickListener(v -> finish());
 
         // Initializes the static posts list before populating it
         staticPosts = new ArrayList<>();

@@ -28,6 +28,26 @@
     android:background="?attr/background_color_emphasis">
 
     <!--
+        Back Navigation Button:
+        - Positioned in the top-left corner to provide a standard exit path back to the map.
+        - android:src="?attr/homeAsUpIndicator": Uses the theme's standard back arrow icon.
+        - app:tint="?attr/accent_color": Ensures the icon color matches the seasonal theme.
+    -->
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Back"
+        android:padding="8dp"
+        android:src="?attr/homeAsUpIndicator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/accent_color" />
+
+    <!--
         Heading: "Community Feed"
         - This TextView serves as the primary visual anchor for the screen.
         - textColor="?attr/accent_color": Dynamically adapts to the current season's
