@@ -2,6 +2,7 @@
 package com.example.urbanforestry;
 
 // Imports Context to access assets, resources, and start Activities without needing an Activity reference directly
+
 import android.content.Context;
 // Imports Intent for launching TreeInfoActivity and PhotoPopupActivity when a marker is tapped
 import android.content.Intent;
@@ -74,7 +75,7 @@ public class MapMarkers {
 
                         for (QueryDocumentSnapshot doc : value) {
                             Map<String, Object> data = doc.getData();
-                            
+
                             try {
                                 double lat = Double.parseDouble(String.valueOf(data.get("LATITUDE")));
                                 double lng = Double.parseDouble(String.valueOf(data.get("LONGITUDE")));
@@ -105,7 +106,7 @@ public class MapMarkers {
                                 marker.setOnMarkerClickListener((m, mapView) -> {
                                     String id = m.getPosition().getLatitude() + "," + m.getPosition().getLongitude();
 
-                                    if (MainActivity.locationOverlay.getMyLocation() != null) {
+                                    if (MainActivity.locationOverlay != null && MainActivity.locationOverlay.getMyLocation() != null) {
                                         double distance = MainActivity.locationOverlay.getMyLocation().distanceToAsDouble(m.getPosition());
                                         if (distance <= 10.0)
                                             Missions.updateGoalProgress(id, treeData, ctx);
@@ -240,7 +241,7 @@ public class MapMarkers {
     // Calculates the distance in metres from the user's current location to the given marker's position
     private double getDistanceToTree(Marker m) {
         // Returns POSITIVE_INFINITY as a sentinel if no GPS fix is available — TreeInfoActivity won't show distance in this case
-        if (MainActivity.locationOverlay.getMyLocation() == null)
+        if (MainActivity.locationOverlay == null || MainActivity.locationOverlay.getMyLocation() == null)
             return Double.POSITIVE_INFINITY;
         else
             // Uses osmdroid's built-in method which calculates the great-circle distance between two GeoPoints
