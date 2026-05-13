@@ -2,6 +2,7 @@
 package com.example.urbanforestry;
 
 // Imports Manifest to reference location permission constants
+
 import android.Manifest;
 // Imports Context for passing to osmdroid's configuration loader
 import android.content.Context;
@@ -207,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         // Updates the stored Intent so handleDirectionsIntent uses the freshly received data, not the original launch intent
         setIntent(intent);
         routes.handleDirectionsIntent(intent);
-        
+
         // FIX: Clear the intent extras here as well for consistency
         if (intent != null) {
             intent.removeExtra("getDirections");
@@ -248,15 +249,15 @@ public class MainActivity extends AppCompatActivity {
         // Creates a GPS location provider that feeds updates to the location overlay
         GpsMyLocationProvider provider = new GpsMyLocationProvider(this);
         // Creates the overlay that draws the blue "my location" dot on the map
-        this.locationOverlay = new MyLocationNewOverlay(provider, map);
+        locationOverlay = new MyLocationNewOverlay(provider, map);
 
         // Starts receiving GPS updates so the blue dot appears on the map
-        this.locationOverlay.enableMyLocation();
+        locationOverlay.enableMyLocation();
         // Makes the map camera follow the user's position as they walk
-        this.locationOverlay.enableFollowLocation();
+        locationOverlay.enableFollowLocation();
 
         // Adds the location overlay to the map so it renders above all other overlays
-        map.getOverlays().add(this.locationOverlay);
+        map.getOverlays().add(locationOverlay);
         // Sets an initial zoom level that shows a useful area around the user
         map.getController().setZoom(18.0);
 
@@ -294,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
                 permissionsToRequest.add(permissionsToRequest.size(), permission);
             }
         }
+
         if (!permissionsToRequest.isEmpty()) {
             // Shows the system permission dialog for any missing permissions
             ActivityCompat.requestPermissions(
@@ -301,8 +303,10 @@ public class MainActivity extends AppCompatActivity {
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
             // Sets up location tracking even before the user responds — it will start showing once permission is granted
-        } else {
-            // All permissions are already granted, so set up location tracking immediately
+        }
+
+        if (!permissionsToRequest.contains("ACCESS_FINE_LOCATION")) {
+            // Location permission is already granted, so set up location tracking immediately
             setupLocationTracking();
         }
     }
