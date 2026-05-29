@@ -16,6 +16,7 @@ local.properties
 app/google-services.json
 
 # Build artifacts
+
 *.apk
 *.aab
 
@@ -24,9 +25,11 @@ app/google-services.json
 *.keystore
 
 # JVM / Gradle crash logs
+
 hs_err_pid*
 *.log
 
 # Editors
+
 .vscode/
 .kotlin/
