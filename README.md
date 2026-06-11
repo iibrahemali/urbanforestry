@@ -49,3 +49,6 @@ app/src/main/
 ## Team
 
 Will, Ibrahem, Aiden, John
+
+## Download the App
+The app should be in the store under the city of lancaster account soon. (last update: May 2026)
