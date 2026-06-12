@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
     activity_photo_popup.xml
     This layout defines a modal-style popup used to display detailed information about a photo post
     when a user interacts with a marker on the map. It includes the photo, the contributor's name,
@@ -88,12 +87,35 @@
         android:layout_height="wrap_content"
         android:backgroundTint="?attr/accent_color"
         app:icon="@drawable/ic_route"
+        app:iconSize="20dp"
+        app:iconPadding="4dp"
         app:iconTint="?attr/background_color"
-        android:text="Get directions"
+        android:text="Get route"
         android:textColor="?attr/background_color"
+        android:textSize="12sp"
+        android:paddingHorizontal="12dp"
         android:layout_marginTop="20dp"
         app:cornerRadius="12dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/caption" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/openInMaps"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="?attr/accent_color"
+        app:icon="@drawable/ic_maps"
+        app:iconSize="20dp"
+        app:iconPadding="4dp"
+        app:iconTint="?attr/background_color"
+        android:text="Open in Maps"
+        android:textColor="?attr/background_color"
+        android:textSize="12sp"
+        android:paddingHorizontal="12dp"
+        android:layout_marginLeft="10dp"
+        app:cornerRadius="12dp"
+        app:layout_constraintLeft_toRightOf="@id/getDirections"
+        app:layout_constraintTop_toTopOf="@id/getDirections" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

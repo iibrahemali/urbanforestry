@@ -2,12 +2,14 @@
 package com.example.urbanforestry;
 
 // Imports Context for loading theme attributes and creating dialogs without holding an Activity reference
+
 import android.content.Context;
 // Imports Intent for navigating to MainActivity to get directions
 import android.content.Intent;
 // Imports Bitmap and BitmapFactory to decode local image file paths into displayable bitmaps
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 // Imports TypedValue to resolve theme attributes (like accent color) at runtime
 import android.util.TypedValue;
 // Imports layout and view classes used to build the dynamic comment list and inflate item layouts
@@ -69,6 +71,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         TextView textView;
         // Button for navigating to the post's GPS location on the map
         MaterialButton btnGetRoute;
+        // Button for opening the post's GPS location in an external app
+        MaterialButton btnOpenMaps;
         // Like/heart reaction button that shows the current count
         MaterialButton btnHeart;
         // Comment button that expands/collapses the comment section and shows the current count
@@ -99,6 +103,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             username = view.findViewById(R.id.post_username);
             textView = view.findViewById(R.id.post_text);
             btnGetRoute = view.findViewById(R.id.btn_get_route);
+            btnOpenMaps = view.findViewById(R.id.btn_open_maps);
             btnHeart = view.findViewById(R.id.btn_heart);
             btnComment = view.findViewById(R.id.btn_comment);
             btnDelete = view.findViewById(R.id.btn_delete);
@@ -135,6 +140,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.imageView.setVisibility(View.GONE);
         holder.textView.setVisibility(View.GONE);
         holder.btnGetRoute.setVisibility(View.GONE);
+        holder.btnOpenMaps.setVisibility(View.GONE);
         holder.commentsList.removeAllViews();
         holder.commentsSection.setVisibility(View.GONE);
         holder.noCommentsTv.setVisibility(View.GONE);
@@ -174,7 +180,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             } else {
                 // Shows a confirmation dialog before submitting the report — prevents accidental reports
                 new AlertDialog.Builder(holder.itemView.getContext())
-                        .setMessage("Are you sure you want to report this post for inappropriate content?")
+                        .setMessage("Are you sure you want to report this post for inappropriate or off-topic content?")
                         .setPositiveButton("Report", (dialog, which) -> {
                             postRepository.reportPost(post.postId)
                                     .addOnSuccessListener(deleted -> {
@@ -233,7 +239,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             builder.show();
         });
 
-        // Handles the "Get Directions" button — launches MainActivity with routing data if the post has a location
+        // Handles the "Get Route" button — launches MainActivity with routing data if the post has a location
         holder.btnGetRoute.setOnClickListener(v -> {
             if (post.hasLocation) {
                 // Navigates to MainActivity with the destination coordinates and post metadata
@@ -249,6 +255,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 intent.putExtra("postText", infoText);
 
                 v.getContext().startActivity(intent);
+            } else {
+                // Informs the user if this post doesn't have location data attached
+                Toast.makeText(v.getContext(), "No location data for this photo", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Handles the "Open in Maps" button — opens the post's location in the user's Maps app
+        holder.btnOpenMaps.setOnClickListener(v -> {
+            if (post.hasLocation) {
+                Uri mapsIntentUri = Uri.parse("geo:0,0?q=" + post.latitude + "," + post.longitude);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, mapsIntentUri);
+                v.getContext().startActivity(mapIntent);
             } else {
                 // Informs the user if this post doesn't have location data attached
                 Toast.makeText(v.getContext(), "No location data for this photo", Toast.LENGTH_SHORT).show();
@@ -295,28 +313,38 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         TypedValue tv = new TypedValue();
         ctx.getTheme().resolveAttribute(R.attr.accent_color, tv, true);
         if (tv.resourceId == R.color.spring_accent_color) {
-            // Sets an alternative green color for the Get Directions button to match the Spring theme palette
+            // Sets an alternative green color for the Get Directions & Open in Maps buttons to match the Spring theme palette
             int altColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.spring_alt_color);
             holder.btnGetRoute.setBackgroundColor(altColor);
+            holder.btnOpenMaps.setBackgroundColor(altColor);
         }
 
         // Loads the post's image using the appropriate source depending on which field is set
         if (post.resourceId != -1) {
             // Static demo posts use a local drawable resource ID
             holder.imageView.setVisibility(View.VISIBLE);
-            if (post.hasLocation) holder.btnGetRoute.setVisibility(View.VISIBLE);
+            if (post.hasLocation) {
+                holder.btnGetRoute.setVisibility(View.VISIBLE);
+                holder.btnOpenMaps.setVisibility(View.VISIBLE);
+            }
             holder.imageView.setImageResource(post.resourceId);
         } else if (post.imageUrl != null && !post.imageUrl.isEmpty()) {
             // Real Firestore posts load their image from a Firebase Storage download URL using Glide
             holder.imageView.setVisibility(View.VISIBLE);
-            if (post.hasLocation) holder.btnGetRoute.setVisibility(View.VISIBLE);
+            if (post.hasLocation) {
+                holder.btnGetRoute.setVisibility(View.VISIBLE);
+                holder.btnOpenMaps.setVisibility(View.VISIBLE);
+            }
             Glide.with(holder.itemView.getContext())
                     .load(post.imageUrl)
                     .into(holder.imageView);
         } else if (post.imagePath != null && !post.imagePath.isEmpty()) {
             // Legacy fallback for posts created with local file paths before Firebase Storage was used
             holder.imageView.setVisibility(View.VISIBLE);
-            if (post.hasLocation) holder.btnGetRoute.setVisibility(View.VISIBLE);
+            if (post.hasLocation) {
+                holder.btnGetRoute.setVisibility(View.VISIBLE);
+                holder.btnOpenMaps.setVisibility(View.VISIBLE);
+            }
             Bitmap bitmap = BitmapFactory.decodeFile(post.imagePath);
             holder.imageView.setImageBitmap(bitmap);
         }

@@ -2,9 +2,12 @@
 package com.example.urbanforestry;
 
 // Imports Intent for navigating to MainActivity when the user taps "Get Directions"
+
 import android.content.Intent;
+import android.net.Uri;
 // Imports Bundle, the key-value container Android passes to onCreate with any saved state
 import android.os.Bundle;
+import android.view.View;
 // Imports Button for the "Get Directions" button
 import android.widget.Button;
 // Imports ImageView to display the photo from the post
@@ -58,11 +61,15 @@ public class PhotoPopupActivity extends AppCompatActivity {
         TextView caption = findViewById(R.id.caption);
         caption.setText(i.getStringExtra("caption"));
 
+        // Hide the caption view if no caption exists
+        if (i.getStringExtra("caption").isEmpty())
+            caption.setVisibility(View.GONE);
+
         // Finds the ImageView and loads the post image from its Firebase Storage URL using Glide
         ImageView image = findViewById(R.id.image);
         Glide.with(this).load(i.getStringExtra("imageUrl")).into(image);
 
-        // Finds the "Get Directions" button and attaches a listener to navigate back to the map with routing data
+        // Finds the "Get Route" button and attaches a listener to navigate back to the map with routing data
         Button getDirections = findViewById(R.id.getDirections);
         getDirections.setOnClickListener(v -> {
             // Creates an Intent targeting MainActivity, which handles the routing logic
@@ -79,6 +86,17 @@ public class PhotoPopupActivity extends AppCompatActivity {
 
             // Starts MainActivity with the routing data — it will handle building and displaying the route
             v.getContext().startActivity(intent);
+        });
+
+        // Finds the "Open in Maps" button and attaches a listener to open in the user's Maps app
+        Button openInMaps = findViewById(R.id.openInMaps);
+        openInMaps.setOnClickListener(v -> {
+            double lat = i.getDoubleExtra("latitude", 0);
+            double lon = i.getDoubleExtra("longitude", 0);
+            // Creates an implicit intent with the latitude & longitude data
+            Uri mapsIntentUri = Uri.parse("geo:0,0?q=" + lat + "," + lon);
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, mapsIntentUri);
+            startActivity(mapIntent);
         });
     }
 }
